@@ -3,7 +3,11 @@
     <Header @func="getMsgFormSon" @message="getMessage" :unread="unread" @sousuo="getSearchWord"></Header>
     <el-container style="height: 100vh; padding-top: 60px;">
       <!--------- 左菜单栏 start --------->
-      <el-aside width="128px" style="background-color: rgb(238, 241, 246);position: relative;" class="leftNav">
+      <el-aside
+        width="128px"
+        style="background-color: rgb(238, 241, 246);position: relative;"
+        class="leftNav"
+      >
         <div class="navList">
           <div
             :class="[show_acti=='2' || show_acti=='6'?'title act':'title']"
@@ -38,11 +42,29 @@
           </div>
         </div>
         <div class="bottom">
-          <el-tooltip class="item" effect="dark" content="点击查看操作文档" placement="top" :hide-after="1000" :tabindex="-1">
-            <div @click="operator">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="点击查看操作文档"
+            placement="top"
+            :hide-after="1000"
+          >
+            <div @click="operator(1)">
               <i class="el-icon-document-remove"></i>
               <br />
               <span>操作文档</span>
+            </div>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="点击查看规范文档"
+            placement="top"
+          >
+            <div @click="operator(2)">
+              <i class="el-icon-document-checked"></i>
+              <br />
+              <span>操作规范</span>
             </div>
           </el-tooltip>
           <div @click="problemFeedback">
@@ -80,15 +102,14 @@
     <el-drawer
       title="添加项目"
       :visible.sync="drawer"
-      :with-header="false"
       @open="openSaveProject"
       @close="closeSaveProject"
     >
       <el-scrollbar style="height: 100%">
         <el-row class="add_box">
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-col :span="6" class="title title1">{{typeName}}</el-col>
-          </el-col>
+          </el-col> -->
           <el-col :span="6" class="title">项目名称</el-col>
           <el-col :span="18">
             <el-input placeholder="请输入内容" v-model="new_project.new_name" clearable></el-input>
@@ -139,10 +160,6 @@
               ></el-option>
             </el-select>
           </el-col>
-          <!-- <el-col :span="18" :offset="6">
-            <el-radio v-model="new_project.radio1" label="1">专项</el-radio>
-            <el-radio v-model="new_project.radio1" label="0">日常</el-radio>
-          </el-col>-->
           <el-col :span="6" class="title">预计时间</el-col>
           <el-col :span="18" class="presetTime">
             <el-date-picker
@@ -152,6 +169,16 @@
               :picker-options="pickerOptions"
             ></el-date-picker>
           </el-col>
+          <!-- <el-col :span="18" :offset="6">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 6, maxRows: 8}"
+              placeholder="请输入内容"
+              v-model="new_project.reasonTime"
+              maxlength="300"
+              show-word-limit
+            ></el-input>
+          </el-col> -->
           <el-col :span="6" class="title center">需求</el-col>
           <el-col :span="18">
             <el-input
@@ -202,27 +229,7 @@
           <el-col :span="24" v-show="radio2 == 2">
             <el-col :offset="6" :span="18" class="remind">会对选中的人创建任务，执行人需完成此任务。</el-col>
             <el-col :offset="6" :span="12">
-              <!-- <el-select
-                v-model="add_list0"
-                filterable
-                clearable
-                :disabled="disabledDouser"
-                placeholder="请选择"
-                class="userList"
-              >
-                <el-option
-                  v-for="item in userList"
-                  :key="item.index"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select> -->
-              <el-cascader
-                v-model="doUserAdd"
-                :options="deptList"
-                clearable
-                filterable
-              ></el-cascader>
+              <el-cascader v-model="doUserAdd" :options="deptList" clearable filterable></el-cascader>
             </el-col>
             <el-col :span="4" :offset="1">
               <el-button
@@ -242,14 +249,6 @@
                 class="know_pop_list"
               >{{tag}}</el-tag>
             </el-col>
-            <!-- <el-checkbox-group v-model="new_project.checkList" class="check_box">
-              <el-checkbox
-                :label="items.id"
-                v-for="items in deptList"
-                :key="items.index"
-                :disabled="checkListBan"
-              >{{items.name}}</el-checkbox>
-            </el-checkbox-group>-->
           </el-col>
           <el-col :span="6" class="title nobgimg">知晓人</el-col>
           <!-- 知晓人编辑 start -->
@@ -289,9 +288,9 @@
     </el-drawer>
     <!--------- 抽屉添加项目 end --------->
     <!--------- 抽屉消息面板 start --------->
-    <el-drawer title="消息列表" :visible.sync="drawer2" :with-header="false">
+    <el-drawer title="消息列表" :visible.sync="drawer2">
       <el-row class="messageBox">
-        <el-col :span="24" class="title">消息列表</el-col>
+        <!-- <el-col :span="24" class="title">消息列表</el-col> -->
         <el-col :span="24" class="tabsBox">
           <el-col
             :span="8"
@@ -377,12 +376,15 @@
       </el-row>
     </el-drawer>
     <!--------- 抽屉消息面板 end --------->
+
     <!--------- 抽屉问题反馈 start --------->
-    <el-drawer title="问题反馈" :visible.sync="drawer3" :with-header="false" @close="feedbackClose" @opened="feedbackOpened">
+    <el-drawer
+      title="问题反馈"
+      :visible.sync="drawer3"
+      @close="feedbackClose"
+      @opened="feedbackOpened"
+    >
       <el-row class="problemFeedback" v-loading="loadingFeedback">
-        <el-col :span="24">
-          <el-col :span="6" class="title title1">问题反馈</el-col>
-        </el-col>
         <el-col :span="6" class="title snow">问题版块</el-col>
         <el-col :span="13">
           <el-select
@@ -471,7 +473,9 @@ export default {
         manager: '', // 项目经理
         managerId: '', // 项目经理ID
         checkList: [], // 执行部门
-        dynamicTags: [] // 知晓人
+        dynamicTags: [], // 知晓人
+        oldPresetTime: '', // 旧预计时间
+        reasonTime: '', // 修改时间原因
       },
       doUserAdd: [],
       clientList: [], // 客户列表
@@ -624,6 +628,8 @@ export default {
     this.problemListShowIf()
     // 获取用户列表
     this.getListAjax()
+    //
+    // this.test()
   },
   // 方法
   methods: {
@@ -670,7 +676,7 @@ export default {
     send: function() {
       // this.socket.send(params)
       this.socket.send('test')
-      console.log('test')
+      // console.log('test')
     },
     close: function() {
       console.log('socket已经关闭')
@@ -838,9 +844,6 @@ export default {
       let tabs = this.tabs
       this.getMessageListAjax(tabs)
     },
-    // test(){
-    //   console.log("test")
-    // },
     ///////// 消息面板选项卡 end /////////
 
     matchType, // 文件格式判断
@@ -1089,6 +1092,7 @@ export default {
       //   this.new_project.radio1 = '1'
       // }
       this.new_project.presetTime = data.expertTime.replace(/-/g, '/')
+      this.new_project.oldPresetTime = new Date(data.expertTime.replace(/-/g, '/'))
       // console.log(this.new_project.presetTime)
       this.new_project.remark = data.remark
       if (data.manager != null) {
@@ -1134,7 +1138,7 @@ export default {
         }
         // console.log(knowUserList)
 
-        console.log(userList)
+        // console.log(userList)
         let knowUserListName = []
         for (let i = 0; i < knowUserList.length; i++) {
           let element = knowUserList[i]
@@ -1307,7 +1311,7 @@ export default {
 
     ///////// 搜索 start /////////
     changePasprojectId(res) {
-      console.log(res)
+      // console.log(res)
       if (res != '') {
         this.getProjectapiDetai(res)
       }
@@ -1324,7 +1328,7 @@ export default {
           'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax' + data
         )
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             let data = res.data
             if (data.protype == 2) {
@@ -1377,7 +1381,7 @@ export default {
         pasprojectId: this.pasprojectId, // 立项ID
         pasproName: this.pasprojectName, // 立项名称
         isUsual: this.new_project.isUsual, // '专项日常（0-日常，1-专项）',
-        expertTime: this.new_project.presetTime, // '预计完成时间',
+        expertTime: new Date(this.new_project.presetTime), // '预计完成时间',
         remark: this.new_project.remark, // '需求',
         knowUser: knowUser, // '知晓人id，多个用逗号隔开',
         listProFile: this.listProFile // 需求文档列表
@@ -1385,7 +1389,7 @@ export default {
       if (this.initUserId != '') {
         data.initUserId = this.initUserId
       }
-      // console.log(data)
+      console.log(data.expertTime)
       let changeId = ''
       if (radio2 == 1) {
         changeId = this.new_project.managerId
@@ -1471,25 +1475,22 @@ export default {
       this.new_project.radio1 = '0'
     },
     // 操作文档链接
-    operator() {
+    operator(id) {
       let newPage = window.open() // 防止浏览器拦截
-      newPage.location.href =
+      if (id==1) {
+        newPage.location.href =
         'http://218.106.254.122:8084/doc/OperationDocument.pdf'
-      // download(row) {
-      // let localPath = row.localPath
-      // console.log("123")
-      // let a = document.createElement('a')
-      // a.download = `操作文档.pdf`
-      // a.setAttribute('href', 'http://218.106.254.122:8084/doc/OperationDocument.pdf')
-      // a.click()
-      // },
+      }else if (id==2) {
+        newPage.location.href =
+        'http://218.106.254.122:8084/doc/OperationSpecification.pdf'
+      }
     },
     ///////// 问题反馈 start /////////
     problemFeedback() {
       this.drawer3 = true
       // setTimeout(this.blur(), 100)
     },
-    
+
     // 问题反馈文件上传回调
     handleFeedbackSuccess(response, file, fileList) {
       // console.log(fileList)
@@ -1511,7 +1512,7 @@ export default {
           feedbackFileList.push(fileData)
         })
         this.feedbackFileList = feedbackFileList
-        console.log(feedbackFileList)
+        // console.log(feedbackFileList)
       }
     },
     // 问题反馈文件删除回调
@@ -1527,7 +1528,7 @@ export default {
         feedbackFileList.push(fileData)
       })
       this.feedbackFileList = feedbackFileList
-      console.log(feedbackFileList)
+      // console.log(feedbackFileList)
     },
     // 取消按钮
     closeProblem() {
@@ -1537,7 +1538,7 @@ export default {
       this.fileListFeedback = []
       this.drawer3 = false
     },
-    feedbackOpened(){
+    feedbackOpened() {
       this.$refs['input'].blur()
     },
     feedbackClose() {
@@ -1565,7 +1566,7 @@ export default {
         this.loadingFeedback = true
         this.$axios.post('/pmbs/api/problem/save', data).then(res => {
           this.loadingFeedback = false
-          console.log(res)
+          // console.log(res)
           if (res.status == 200) {
             this.closeProblem()
             this.messageWin(res.data.msg)
@@ -1690,7 +1691,7 @@ export default {
 }
 .home .add_box {
   box-sizing: border-box;
-  padding: 36px 49px 108px;
+  padding: 0 49px 108px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1787,29 +1788,23 @@ export default {
   width: 39%;
 }
 .home >>> .el-drawer__body {
-  height: 100%;
+  height: calc(100% - 52px);
 }
 .home >>> .el-main .cell {
   text-align: left;
 }
 .home .messageBox {
   height: 100%;
-  padding: 36px;
-}
-.home .messageBox .title {
-  font-weight: 600;
-  font-size: 18px;
+  padding: 0 36px;
 }
 .home .tabsBox {
   height: 40px;
-  margin-top: 24px;
 }
 .home .tabs {
   height: 40px;
   line-height: 40px;
   text-align: center;
   border: 1px solid rgb(224, 227, 234);
-  /* border-radius: 3px; */
   cursor: pointer;
 }
 .home .tabs:hover {
@@ -1870,7 +1865,8 @@ export default {
 }
 .home .problemFeedback {
   height: 100%;
-  padding: 36px 49px;
+  box-sizing: border-box;
+  padding: 0 49px;
   position: relative;
 }
 .home .problemFeedback > div {
@@ -1901,7 +1897,7 @@ export default {
 .noData {
   text-align: center;
 }
-.home .leftNav{
+.home .leftNav {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1921,7 +1917,7 @@ export default {
   left: 0;
   bottom: 0; */
 }
-.home .navList{
+.home .navList {
   width: 100%;
 }
 .home .bottom > div {

@@ -1,5 +1,5 @@
 <template>
-  <div class="document task">
+  <div id="document" class="document">
     <div>
       <el-row>
         <el-col :span="24" class="top">
@@ -91,7 +91,7 @@
               class="sousuo"
             >
               <el-button @click="searchHandle" slot="append" size="small" icon="el-icon-search"></el-button>
-            </el-input> -->
+            </el-input>-->
           </el-col>
         </el-col>
       </el-row>
@@ -101,6 +101,8 @@
         v-loading="loading"
         :data="tableData"
         style="width: 100%"
+        height="100%"
+        ref="documentTable"
         :default-sort="{prop: 'date', order: 'descending'}"
         :row-class-name="tableRowClassName"
         @row-click="rowClick"
@@ -171,7 +173,11 @@
               <el-button @click="enterDetail(scope.row)" size="mini" icon="el-icon-share"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="历史文档" placement="top">
-              <el-button @click="lookHistory(scope.$index,scope.row)" size="mini" icon="el-icon-time"></el-button>
+              <el-button
+                @click="lookHistory(scope.$index,scope.row)"
+                size="mini"
+                icon="el-icon-time"
+              ></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -190,10 +196,10 @@
         </div>
       </div>
     </div>
-    <el-drawer title="历史文档" :visible.sync="openHistory" :with-header="false">
+    <el-drawer title="历史文档" :visible.sync="openHistory">
       <el-scrollbar>
         <div class="history-main">
-          <div class="title">历史</div>
+          <!-- <div class="title">历史</div> -->
           <el-timeline v-loading="fileHistoryLoading">
             <el-timeline-item
               v-for="item in fileHistoryList"
@@ -382,7 +388,7 @@ export default {
       this.rowClick()
     },
     // 搜索关键字
-    searchWordData: function(newQuestion, oldQuestion){
+    searchWordData: function(newQuestion, oldQuestion) {
       // console.log(newQuestion)
       this.name = newQuestion.value
       this.searchHandle()
@@ -481,6 +487,9 @@ export default {
     handleSizeChange() {},
     //下一页
     handleCurrentChange(page) {
+      this.$nextTick(() => {
+        this.$refs.documentTable.bodyWrapper.scrollTop = 0
+      })
       this.pageNum = page
       this.getTaskfilePageList()
     },
@@ -610,20 +619,25 @@ export default {
       //成功后关闭
     },
     changeNum(index, row) {
-      //设置是否可以编辑
-      this.editable = new Array(this.tableData.length)
-      this.editable[index] = true
-
-      this.saveItem = this.tableData[index]
-
-      this.$set(this.editable, index, true)
-      //让input自动获取焦点
-      this.$nextTick(function() {
-        var editInputList = document.getElementsByClassName('editRemarkInput')
-        editInputList[0].children[0].focus()
-      })
-      // 绑定当前点击的文件名
-      this.editFileName = row.fileName
+      // console.log(row.doUserId)
+      let userId = this.userId
+      // console.log(userId)
+      if (row.doUserId == userId) {
+        //设置是否可以编辑
+        this.editable = new Array(this.tableData.length)
+        this.editable[index] = true
+        this.saveItem = this.tableData[index]
+        this.$set(this.editable, index, true)
+        //让input自动获取焦点
+        this.$nextTick(function() {
+          var editInputList = document.getElementsByClassName('editRemarkInput')
+          editInputList[0].children[0].focus()
+        })
+        // 绑定当前点击的文件名
+        this.editFileName = row.fileName
+      } else {
+        this.messageWarning('您不是该任务执行人，无法修改文档名称！')
+      }
     },
     /**
      * [upload2 重新上传]
@@ -638,10 +652,15 @@ export default {
      * [download 下载附件]
      */
     download(row) {
+      console.log(row)
       let localPath = row.localPath
       let a = document.createElement('a')
-      a.download = `${row.fileName}.${row.suffix}`
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      // a.download = `${row.fileName}.${row.suffix}`
+      // a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      a.setAttribute(
+        'href',
+        'http://218.106.254.122:8084/pmbs/file/' + localPath + '/download'
+      )
       a.click()
     },
     /**
@@ -748,9 +767,9 @@ export default {
 }
 </script>
 <style scoped>
-/* .project {
-  background: red;
-} */
+#document {
+  height: 100%;
+}
 .history-main {
   padding: 20px;
   box-sizing: border-box;
@@ -761,6 +780,7 @@ export default {
   line-height: 100px;
 }
 .table-main {
+  height: calc(100% - 150px);
   margin-top: 24px;
 }
 .fileName {
@@ -886,7 +906,7 @@ export default {
   display: inline;
 }
 .document >>> .el-drawer__body {
-  height: 100%;
+  height: calc(100% - 52px);
 }
 .document >>> .el-scrollbar {
   height: 100%;

@@ -1,6 +1,6 @@
 <template>
-  <div class="task" :style="project_style">
-    <el-row>
+  <div id="task">
+    <el-row class="task">
       <el-col :span="24" class="top">
         <el-col :span="5" class="">
           <el-col :span="4" class="title">客户</el-col>
@@ -83,18 +83,10 @@
         </el-col>
         <el-col :span="8" class="tab tab3">
           <el-button-group>
-            <!-- <el-tooltip class="item" effect="dark" content="新任务" placement="bottom"> -->
             <el-button type="primary" size="small" @click="tab3_change(1)">新任务</el-button>
-            <!-- </el-tooltip> -->
-            <!-- <el-tooltip class="item" effect="dark" content="延期" placement="bottom"> -->
             <el-button type="danger" size="small" @click="tab3_change(4)">延期</el-button>
-            <!-- </el-tooltip> -->
-            <!-- <el-tooltip class="item" effect="dark" content="审核中" placement="bottom"> -->
             <el-button type="warning" size="small" @click="tab3_change(2)">审核中</el-button>
-            <!-- </el-tooltip> -->
-            <!-- <el-tooltip class="item" effect="dark" content="执行中" placement="bottom"> -->
             <el-button type="success" size="small" @click="tab3_change(1)">执行中</el-button>
-            <!-- </el-tooltip> -->
           </el-button-group>
         </el-col>
       </el-col>
@@ -107,9 +99,10 @@
       <el-col :span="24" class="table table2" v-show="tabs_activity==1">
         <el-table
           v-loading="loading"
-          ref="filterTable"
+          ref="joinTable"
           :data="tasklist_"
           style="width: 100%"
+          height="100%"
           :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
           align="left"
         >
@@ -223,17 +216,15 @@
             filter-placement="bottom-end"
             v-if="userId!=152"
           >
-            <template slot-scope="scope" v-if="scope.row.isIgnore!=true&&scope.row.isIgnore!=1">
+            <template slot-scope="scope" v-if="scope.row.isIgnore!=true&&scope.row.isIgnore!=1&&scope.row.doUserId==userId && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5">
               <el-button
                 size="mini"
-                v-if="scope.row.isIgnore != true && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5"
                 type="info"
                 slot="reference"
                 @click="join_redact(scope.row.taskId)"
               >忽略</el-button>
               <el-button
                 size="mini"
-                v-if="scope.row.isIgnore != true && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5"
                 type="primary"
                 slot="reference"
                 @click="task_detail(scope.row,1)"
@@ -256,9 +247,10 @@
       <el-col :span="24" class="table table1" v-show="tabs_activity==0">
         <el-table
           v-loading="loading"
-          ref="filterTable"
+          ref="initiateTable"
           :data="tasklist"
           style="width: 100%"
+          height="100%"
           :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
           :row-style="{'text_aling':'left'}"
         >
@@ -337,10 +329,10 @@
       <taskDetail :taskId="taskId" @closeDrawer="closeDrawer"></taskDetail>
       <!-- 任务详情抽屉 end -->
       <!-- 抽屉-反馈 -->
-      <el-drawer title="任务" :visible.sync="drawer2" :with-header="false" @close="feedbackClose">
+      <el-drawer :title="drawer2_task" :visible.sync="drawer2" @close="feedbackClose">
         <el-row class="feedback">
           <el-col :span="24">
-            <el-col :span="24" class="title">{{drawer2_task}}</el-col>
+            <!-- <el-col :span="24" class="title">{{drawer2_task}}</el-col> -->
             <el-col :span="6" class="title snow">反馈</el-col>
             <el-col :span="24">
               <el-input
@@ -375,10 +367,10 @@
         </el-row>
       </el-drawer>
       <!-- 抽屉 -->
-      <el-drawer title="任务" :visible.sync="drawer3" :with-header="false">
+      <el-drawer :title="drawer3_task" :visible.sync="drawer3">
         <el-row class="feedback">
           <el-col :span="24">
-            <el-col :span="24" class="title">{{drawer3_task}}</el-col>
+            <!-- <el-col :span="24" class="title">{{drawer3_task}}</el-col> -->
             <el-col :span="6" class="title">延期原因</el-col>
             <el-col :span="24">
               <el-input
@@ -445,7 +437,7 @@ export default {
       nextuserList: [], // 下属信息
       nextuserValue: '', // 修改后执行人
       loginState: true, // 避免多次点击
-      project_style: '',
+      // project_style: '',
       // 筛选目录
       filtratePro: [], // 通过项目筛选
       filtrateDep: [], // 通过部门筛选
@@ -629,6 +621,7 @@ export default {
           )
           let newTime = new Date()
           let data = {
+            proId: taskData.proId,
             taskId: taskData.taskId,
             expertTime: taskData.expertTime,
             status: 3
@@ -965,6 +958,9 @@ export default {
     // 我发起分页
     initiateTaskList(page) {
       this.pageNum0 = page
+      this.$nextTick(() => {
+        this.$refs.initiateTable.bodyWrapper.scrollTop = 0
+      })
       let data0 = {
         type: 0,
         clientId: this.clientId,
@@ -982,6 +978,9 @@ export default {
     // 我参与分页
     participateTaskList(page) {
       this.pageNum1 = page
+      this.$nextTick(() => {
+        this.$refs.joinTable.bodyWrapper.scrollTop = 0
+      })
       let data1 = {
         type: 1,
         clientId: this.clientId,
@@ -1004,8 +1003,9 @@ export default {
       let localPath = row.localPath
       // console.log("123")
       let a = document.createElement('a')
-      a.download = `${row.fileName}.${row.suffix}`
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      // a.download = `${row.fileName}.${row.suffix}`
+      // a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/file/' + localPath+'/download')
       a.click()
     },
     // 抽屉取消按钮
@@ -1086,9 +1086,12 @@ export default {
 }
 </script>
 <style scoped>
-/* .project {
-  background: red;
-} */
+#task {
+  height: 100%;
+}
+.task {
+  height: 100%;
+}
 .task .top {
   height: 36px;
   line-height: 36px;
@@ -1206,6 +1209,9 @@ export default {
 .task .tabs .act {
   border-bottom: 2px solid black;
   color: black;
+}
+.task .table{
+  height:calc(100% - 150px);
 }
 .task .table .title,
 .task .table .list {
@@ -1384,17 +1390,17 @@ export default {
 }
 .feedback {
   height: 100%;
-  padding: 36px 49px;
+  padding: 0 49px 36px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: flex-start;
   align-content: space-between;
 }
-.feedback .title:nth-of-type(1) {
+/* .feedback .title:nth-of-type(1) {
   font-weight: 600;
   margin-bottom: 36px;
-}
+} */
 .feedback .title {
   font-size: 18px;
   margin-bottom: 13px;

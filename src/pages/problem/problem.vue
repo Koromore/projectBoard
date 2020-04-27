@@ -116,8 +116,7 @@ export default {
       let localPath = row.localPath
       // console.log(row)
       let a = document.createElement('a')
-      a.download = `${row.picName}`
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/file/' + localPath+'/download')
       a.click()
     },
     /////////  [download 下载附件] end /////////

@@ -1,14 +1,14 @@
 <template>
-  <div class="statistics">
-    <el-row>
+  <div id="statistics">
+    <el-row class="statistics">
       <el-col :span="10" class="gantt_box">
-        <div id="business" :style="{width: '100%', height: '300px'}"></div>
+        <div id="business"></div>
       </el-col>
       <el-col :span="10" :offset="1" class="gantt_box">
-        <div id="project_state" :style="{width: '100%', height: '300px'}"></div>
+        <div id="project_state"></div>
       </el-col>
       <el-col :span="21" class="gantt_box">
-        <div id="client_state" :style="{width: '100%', height: '450px'}"></div>
+        <div id="client_state"></div>
       </el-col>
     </el-row>
   </div>
@@ -609,12 +609,38 @@ export default {
 }
 </script>
 <style scoped>
-.statistics .gantt_box {
-  margin-bottom: 36px;
+#statistics{
+  height: 100%;
+}
+.statistics{
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: space-between;
+}
+#business{
+  width: 100%;
+  height: 100%;
+}
+#project_state{
+  width: 100%;
+  height: 100%;
+}
+#client_state{
+  width: 100%;
+  height: 100%;
+}
+#statistics .gantt_box {
   box-sizing: border-box;
   border: 1px solid rgb(211, 211, 211);
 }
-.statistics .gantt_box:nth-of-type(3) {
-  margin-bottom: 0;
+#statistics .gantt_box:nth-of-type(1),
+#statistics .gantt_box:nth-of-type(2){
+  height: 39%;
+}
+#statistics .gantt_box:nth-of-type(3) {
+  height: 57%;
 }
 </style>

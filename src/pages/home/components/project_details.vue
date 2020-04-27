@@ -268,7 +268,7 @@
               placement="top"
               v-for="item in projectShowDetail.listProFile"
               :key="item.index"
-              tabindex=""
+              tabindex
             >
               <div class="fileList_" @click="download(item)">
                 <img
@@ -342,12 +342,12 @@
       </el-col>
       <!--------- 项目需求 end --------->
       <!--------- 抽屉创建任务 --------->
-      <el-drawer title="创建任务" :visible.sync="drawer1" :with-header="false" @close="addTaskClose">
+      <el-drawer title="创建任务" :visible.sync="drawer1" @close="addTaskClose">
         <el-scrollbar style="height: 100%">
           <el-row class="add_box">
-            <el-col :span="24">
+            <!-- <el-col :span="24">
               <el-col :span="6" class="title title1">创建任务</el-col>
-            </el-col>
+            </el-col>-->
             <el-col :span="6" class="title">父任务</el-col>
             <el-col :span="18">
               <el-select
@@ -451,9 +451,9 @@
         </el-col>
       </el-drawer>
       <!-- 抽屉 -->
-      <el-drawer title="历史记录" :visible.sync="drawer2" :with-header="false">
+      <el-drawer title="历史记录" :visible.sync="drawer2">
         <el-row class="records">
-          <el-col :span="23" :offset="1" class="title">历史记录</el-col>
+          <!-- <el-col :span="23" :offset="1" class="title">历史记录</el-col> -->
           <el-col :span="23" :offset="1" class="records_list" :style="style1">
             <el-scrollbar>
               <el-timeline>
@@ -473,11 +473,11 @@
           </el-col>
         </el-row>
       </el-drawer>
-      <!-- 抽屉 -->
-      <el-drawer title="任务" :visible.sync="drawer3" :with-header="false" @close="feedbackClose">
+      <!--------- 任务反馈抽屉 start --------->
+      <el-drawer :title="drawer3_task" :visible.sync="drawer3" @close="feedbackClose">
         <el-row class="feedback">
           <el-col :span="24">
-            <el-col :span="24" class="title">{{drawer3_task}}</el-col>
+            <!-- <el-col :span="24" class="title">{{drawer3_task}}</el-col> -->
             <el-col :span="6" class="title snow">反馈</el-col>
             <el-col :span="24">
               <el-input
@@ -513,8 +513,10 @@
           <el-button size="small" type="primary" @click="taskFeedback">提交</el-button>
         </el-col>
       </el-drawer>
-      <!-- 抽屉 -->
-      <el-drawer title="任务" :visible.sync="drawer4" :with-header="false">
+      <!--------- 任务反馈抽屉 end --------->
+
+      <!--------- 延期原因抽屉 start --------->
+      <el-drawer title="延期原因" :visible.sync="drawer4" :with-header="false">
         <el-row class="feedback">
           <el-col :span="24">
             <el-col :span="24" class="title">{{drawer4_task}}</el-col>
@@ -536,6 +538,8 @@
           </el-col>
         </el-row>
       </el-drawer>
+      <!--------- 延期原因抽屉 end --------->
+
       <!--------- 任务详情抽屉 start --------->
       <taskDetail :taskId="taskId" @closeDrawer="closeDrawer"></taskDetail>
       <!--------- 任务详情抽屉 end --------->
@@ -686,7 +690,7 @@ export default {
   // 方法
   methods: {
     pickerOptionsTime() {
-      let expertTime = this.proExpertTime
+      let expertTime = this.proExpertTime.replace(/-/g, '/')
       this.pickerOptions = {
         disabledDate(time) {
           return (
@@ -1435,9 +1439,12 @@ export default {
     download(row) {
       let localPath = row.localPath
       let a = document.createElement('a')
-      a.download = `${row.fileName}.${row.suffix}`
-      console.log(a.download)
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      // a.download = `${row.fileName}.${row.suffix}`
+      // a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      a.setAttribute(
+        'href',
+        'http://218.106.254.122:8084/pmbs/file/' + localPath + '/download'
+      )
       a.click()
     },
     // 消息提示
@@ -1724,9 +1731,9 @@ export default {
   color: rgb(255, 0, 0);
 }
 .project_details .add_box {
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
-  padding: 36px 49px 72px;
+  padding: 0 49px 72px;
 }
 .project_details .add_box .parent_task {
   width: 100%;
@@ -1794,6 +1801,7 @@ export default {
 }
 .project_details .records {
   height: 100%;
+  padding: 24px;
 }
 .project_details .records .title {
   font-weight: bold;
@@ -1833,17 +1841,17 @@ export default {
 
 .feedback {
   height: 100%;
-  padding: 36px 49px 72px;
+  padding: 0 49px 72px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: flex-start;
   align-content: space-between;
 }
-.feedback .title:nth-of-type(1) {
+/* .feedback .title:nth-of-type(1) {
   font-weight: 600;
   margin-bottom: 36px;
-}
+} */
 .feedback .title {
   font-size: 18px;
   margin-bottom: 13px;

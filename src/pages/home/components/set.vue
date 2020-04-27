@@ -1,6 +1,6 @@
 <template>
-  <div class="set" :style="project_style">
-    <el-row>
+  <div class="set">
+    <el-row class="set">
       <!--  -->
       <el-col :span="24" class="tabs">
         <div @click="table_tab(1)" :class="[tabs_activity==1 ? 'act' : '']">业务类型</div>
@@ -8,15 +8,22 @@
       </el-col>
       <!--  -->
       <el-col :span="24" class="add" :style="addBut">
-        <el-button size="small" type="primary" :disabled="disabled" @click="add_drawer()" :style="addBut">新增</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          :disabled="disabled"
+          @click="add_drawer()"
+          :style="addBut"
+        >新增</el-button>
       </el-col>
       <!-- 业务类型 -->
       <el-col :span="24" class="table table1" v-show="tabs_activity==1">
         <el-table
           v-loading="loading"
-          ref="filterTable"
+          ref="businessTable"
           :data="businessList"
           style="width: 100%"
+          height="100%"
           :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
         >
           <el-table-column prop="businessName" label="名称"></el-table-column>
@@ -51,12 +58,17 @@
           ref="filterTable"
           :data="clientList"
           style="width: 100%"
+          height="100%"
           :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
         >
           <el-table-column prop="clientName" label="客户"></el-table-column>
           <el-table-column prop="businessList" label="业务">
             <template slot-scope="scope">
-              <span v-for="(items, index) in scope.row.businessList" :key="index" v-if="items != null">
+              <span
+                v-for="(items, index) in scope.row.businessList"
+                :key="index"
+                v-if="items != null"
+              >
                 <span v-if="index != 0">、</span>
                 {{items.businessName}}
               </span>
@@ -81,7 +93,7 @@
       </el-col>
     </el-row>
     <!-- 抽屉 -->
-    <el-drawer title="新增" :visible.sync="drawer" :with-header="false">
+    <el-drawer :title="drawerTitle" :visible.sync="drawer">
       <el-row class="add_box">
         <el-col :span="24" class="new_name">
           <el-col :span="6" class="title title1">名称</el-col>
@@ -89,7 +101,7 @@
             <el-input placeholder="请输入内容" v-model="new_name" clearable :disabled="disabled"></el-input>
           </el-col>
           <el-col :span="6" class="title title2" v-show="tabs_activity == 2">业务</el-col>
-          <el-col :span="13" :offset="6" class="check_box" v-show="tabs_activity == 2">
+          <el-col :span="13" class="check_box" v-show="tabs_activity == 2">
             <!-- 业务类型列表 -->
             <el-checkbox-group v-model="businessListCheck">
               <el-checkbox
@@ -100,7 +112,7 @@
             </el-checkbox-group>
           </el-col>
         </el-col>
-        <el-col :span="12" :offset="7" class="batton">
+        <el-col :span="20" :offset="2" class="batton">
           <el-button size="small" type="info">取消</el-button>
           <el-button size="small" type="primary" @click="putIn">提交</el-button>
         </el-col>
@@ -115,6 +127,7 @@ export default {
     return {
       loading: true,
       loginState: true, // 避免多次点击
+      drawerTitle: '',
       project_style: '',
       drawer: false,
       // 客户列表
@@ -174,10 +187,10 @@ export default {
       this.tabs_activity = e
       if (e == 1) {
         this.disabled = false
-        this.addBut= 'display: block;'
+        this.addBut = 'display: block;'
       } else if (e == 2) {
         this.disabled = true
-        this.addBut= 'display: none;'
+        this.addBut = 'display: none;'
       }
     },
     ///////// 业务类型列表获取 start /////////
@@ -280,6 +293,7 @@ export default {
     add_drawer() {
       this.drawer = true
       this.operation = 1
+      this.drawerTitle = '业务类型新增'
       this.transferId = ''
       this.new_name = ''
       this.businessListCheck = []
@@ -288,6 +302,7 @@ export default {
     business_change(id, name) {
       this.drawer = true
       this.operation = 2
+      this.drawerTitle = '业务类型修改'
       this.transferId = id
       this.new_name = name
     },
@@ -300,7 +315,7 @@ export default {
       this.operation = 2
       this.transferId = data.clientId
       this.new_name = data.clientName
-
+      this.drawerTitle = '客户业务类型修改'
       let businessListCheck = []
       for (let i = 0; i < data.businessList.length; i++) {
         let element = data.businessList[i]
@@ -532,9 +547,9 @@ export default {
 }
 </script>
 <style scoped>
-/* .project {
-  background: red;
-} */
+.set {
+  height: 100%;
+}
 .set .top {
   display: flex;
   flex-wrap: wrap;
@@ -576,6 +591,9 @@ export default {
   border-bottom: 2px solid rgb(16, 142, 233);
   color: rgb(16, 142, 233);
 }
+.set .table{
+  height: calc(100% - 182px);
+}
 .set .table .title,
 .set .table .list {
   width: 100%;
@@ -603,6 +621,7 @@ export default {
   border-bottom: 1px solid rgb(187, 187, 187);
 }
 .set .table .page {
+  margin-top: 24px;
   text-align: center;
 }
 .set .add_box {
@@ -618,6 +637,9 @@ export default {
   text-align: center;
 }
 .set .add_box .title2 {
+  margin-top: 64px;
+}
+.set .add_box .check_box{
   margin-top: 64px;
 }
 .set .add_box .check_box .el-checkbox {

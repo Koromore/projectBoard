@@ -51,4 +51,13 @@ select{outline:none; appearance:none; -webkit-appearance: none; -moz-appearance:
 .el-drawer{
     min-width: 480px;
 }
+.el-drawer .el-drawer__header span{
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+}
+:focus{
+ 
+        outline:0;
+    }
 </style>

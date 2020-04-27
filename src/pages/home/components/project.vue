@@ -1,6 +1,6 @@
 <template>
-  <div class="project" :style="project_style">
-    <el-row>
+  <div id="project" :style="project_style">
+    <el-row class="project">
       <el-col :span="24" class="top">
         <el-col :span="5" class>
           <el-col :span="4" class="title">客户</el-col>
@@ -14,7 +14,7 @@
               class="filtrateClient"
             >
               <el-option
-                v-for="item in userclientIdList"
+                v-for="item in filtrateClient"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -99,9 +99,10 @@
       <el-col :span="24" class="table table2" v-show="tabs_activity == 1">
         <el-table
           v-loading="loading"
-          ref="filterTable"
+          ref="joinTable"
           :data="currentData_"
           style="width: 100%"
+          height="100%"
           :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
         >
           <el-table-column prop="name" label="项目名称" show-overflow-tooltip min-width="270">
@@ -162,9 +163,10 @@
       <el-col :span="24" class="table table1" v-show="tabs_activity == 0">
         <el-table
           v-loading="loading"
-          ref="filterTable"
+          ref="initiateTable"
           :data="currentData"
-          style="width: 100%"
+          style="width: 100%;"
+          height="100%"
           :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
         >
           <el-table-column prop="proName" label="项目名称" show-overflow-tooltip min-width="180">
@@ -255,10 +257,10 @@
       </el-col>
       <!-- 抽屉 -->
       <!-- 抽屉 -->
-      <el-drawer title="任务" :visible.sync="drawer1" :with-header="false" @close="feedbackClose">
+      <el-drawer :title="drawer1_name" :visible.sync="drawer1" @close="feedbackClose">
         <el-row class="feedback">
           <el-col :span="24" class="content">
-            <el-col :span="24" class="title">{{drawer1_name}}</el-col>
+            <!-- <el-col :span="24" class="title">{{drawer1_name}}</el-col> -->
             <el-col :span="6" class="title snow">反馈</el-col>
             <el-col :span="24">
               <el-input
@@ -306,17 +308,17 @@
               </el-upload>
             </el-col>
           </el-col>
-          <el-col :span="12" :offset="7" class="batton">
+          <el-col :span="24" class="batton">
             <el-button size="small" type="info" @click="empty">取消</el-button>
             <el-button size="small" type="primary" @click="projectFeedback">提交</el-button>
           </el-col>
         </el-row>
       </el-drawer>
       <!--------- 延迟原因抽屉 --------->
-      <el-drawer title="延期原因" :visible.sync="drawer3" :with-header="false">
+      <el-drawer :title="drawer3_name" :visible.sync="drawer3">
         <el-row class="feedback">
           <el-col :span="24">
-            <el-col :span="24" class="title">{{drawer3_name}}</el-col>
+            <!-- <el-col :span="24" class="title">{{drawer3_name}}</el-col> -->
             <el-col :span="6" class="title snow">延期原因</el-col>
             <el-col :span="24">
               <el-input
@@ -337,15 +339,14 @@
       </el-drawer>
       <!--------- 设置项目担当抽屉 start --------->
       <el-drawer
-        title="项目担当"
+        title="项目担当&知晓人"
         :visible.sync="drawer4"
-        :with-header="false"
         @close="closePrincipal"
         @opened="openedPrincipal"
       >
         <el-scrollbar style="height: 100%">
           <el-row class="principal">
-            <el-col :span="24" class="title">项目担当&知晓人</el-col>
+            <!-- <el-col :span="24" class="title">项目担当&知晓人</el-col> -->
             <el-col :span="6" class="key">项目担当:</el-col>
             <el-col :span="18" class="value prin">
               <!--------- 项目担当 start --------->
@@ -492,6 +493,7 @@ export default {
       loading: false, // 表格loading
       // 查询条件
       clientIdList: this.$store.state.clientIdList, // 用户列表
+      filtrateClient: [], // 用户列表
       clientId: '', // 用户ID
       serviceId: '', // 业务ID
       isUsual: '', // 专项-1/日常-0
@@ -502,7 +504,7 @@ export default {
       drawer3: false,
       drawer4: false,
       drawer1_name: '',
-      drawer3_name: '任务名称',
+      drawer3_name: '项目名称',
       // plain: false,
       autofocus: true,
       loginState: true, // 避免多次点击
@@ -1244,7 +1246,7 @@ export default {
       // console.log(res)
       this.loading = false
       if (res.status == 200) {
-        let projectListOriginate = res.data.data
+        let projectListOriginate = res.data.data.listProject
         for (let i = 0; i < projectListOriginate.length; i++) {
           let element = projectListOriginate[i]
           let unfintask = 0
@@ -1261,6 +1263,22 @@ export default {
           projectListOriginate[i].unfintask = unfintask
         }
         // console.log(projectListOriginate)
+        let filtrateListClient = res.data.data.listClient
+        if (
+          filtrateListClient != '' &&
+          filtrateListClient != [] &&
+          filtrateListClient != null
+        ) {
+          let filtrateClient = []
+          filtrateListClient.forEach(element => {
+            let filtrateClientData = {
+              value: element.clientId,
+              label: element.clientName
+            }
+            filtrateClient.push(filtrateClientData)
+          })
+          this.filtrateClient = filtrateClient
+        }
 
         this.projectListOriginate = projectListOriginate
 
@@ -1285,7 +1303,24 @@ export default {
     getProjectUserjoinprojectSuss(res) {
       this.loading = false
       if (res.status == 200) {
-        let projectListJoin = res.data.data
+        let projectListJoin = res.data.data.listProject
+
+        let filtrateListClient = res.data.data.listClient
+        if (
+          filtrateListClient != '' &&
+          filtrateListClient != [] &&
+          filtrateListClient != null
+        ) {
+          let filtrateClient = []
+          filtrateListClient.forEach(element => {
+            let filtrateClientData = {
+              value: element.clientId,
+              label: element.clientName
+            }
+            filtrateClient.push(filtrateClientData)
+          })
+          this.filtrateClient = filtrateClient
+        }
         // for (let i = 0; i < projectListJoin.length; i++) {
         //   let element = projectListJoin[i]
         // }
@@ -1307,7 +1342,7 @@ export default {
               projectListJoin[i].listBearShow = true
             }
           })
-        });
+        })
         this.projectListJoin = projectListJoin
 
         this.totalnum_ = this.projectListJoin.length
@@ -1331,8 +1366,10 @@ export default {
     handleCurrentChange(page) {
       this.pageNum = page
       // console.log(page)
-
       this.totalnum = this.projectListOriginate.length
+      this.$nextTick(() => {
+        this.$refs.initiateTable.bodyWrapper.scrollTop = 0
+      })
 
       var json = JSON.parse(JSON.stringify(this.projectListOriginate)) //拷贝数据 避免影响原始数据
 
@@ -1349,6 +1386,10 @@ export default {
     //下一页
     handleCurrentChange_(page) {
       this.pageNum_ = page
+      this.totalnum = this.projectListOriginate.length
+      this.$nextTick(() => {
+        this.$refs.joinTable.bodyWrapper.scrollTop = 0
+      })
       // console.log(page)
       this.totalnum_ = this.projectListJoin.length
       var json = JSON.parse(JSON.stringify(this.projectListJoin)) //拷贝数据 避免影响原始数据
@@ -1636,9 +1677,15 @@ export default {
 }
 </script>
 <style scoped>
-/* .project {
-  background: red;
-} */
+#project {
+  height: 100%;
+}
+.table {
+  height: calc(100% - 150px);
+}
+.project {
+  height: 100%;
+}
 .pixi-item {
   display: flex;
 }
@@ -1810,15 +1857,15 @@ export default {
   font-size: 18px;
   margin-bottom: 13px;
 }
-.project .feedback .title:nth-of-type(1) {
+/* .project .feedback .title:nth-of-type(1) {
   margin-top: 0;
   font-weight: 600;
   font-size: 18px;
   margin-bottom: 36px;
-}
+} */
 .feedback {
   height: 100%;
-  padding: 36px 49px;
+  padding: 0 49px 36px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -1922,14 +1969,14 @@ export default {
 .project .principal {
   height: 100%;
   box-sizing: border-box;
-  padding: 36px 49px 130px;
+  padding: 0 49px 130px;
 }
-.project .principal .title {
+/* .project .principal .title {
   height: 40px;
   line-height: 40px;
   font-weight: bold;
   margin-bottom: 16px;
-}
+} */
 .project .principal .key {
   text-align-last: justify;
   box-sizing: border-box;

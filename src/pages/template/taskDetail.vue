@@ -1,10 +1,9 @@
 <template>
   <div class="taskDetail">
     <!-- 任务详情抽屉 start -->
-    <el-drawer title="任务" :visible.sync="drawer5" :with-header="false" @close="close">
+    <el-drawer :title="taskData.proName" :visible.sync="drawer5" @close="close">
       <el-scrollbar style="height: 100%" v-loading="drawerLoading">
         <el-row class="task_details">
-          <el-col :span="24" class="title">{{taskData.proName}}</el-col>
           <el-col :span="24" class="tabsBox">
             <el-col
               :span="8"
@@ -793,8 +792,7 @@ export default {
       let localPath = row.localPath
       // console.log(row)
       let a = document.createElement('a')
-      a.download = `${row.fileName}.${row.suffix}`
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
+      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/file/' + localPath+'/download')
       a.click()
     },
     /////////  [download 下载附件] end /////////
@@ -878,8 +876,8 @@ export default {
   font-size: 18px;
 }
 .taskDetail .task_details {
-  height: 100%;
-  padding: 36px 24px 108px;
+  height: calc(100% - 52px);
+  padding: 0 24px 108px;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
