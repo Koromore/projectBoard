@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="24" class="paneBox">
             <el-col :span="24" class="pane" v-show="tabs_activity == 1">
-              <el-col :span="5" class="title">任务名称</el-col>：
+              <el-col :span="5" class="title">任务名称</el-col>:
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -32,9 +32,9 @@
                 </template>
                 <template v-else>{{taskData.taskName}}</template>
               </el-col>
-              <el-col :span="5" class="title">执行部门</el-col>：
+              <el-col :span="5" class="title">执行部门</el-col>:
               <el-col :span="18">{{taskData.deptName}}</el-col>
-              <el-col :span="5" class="title">任务类型</el-col>：
+              <el-col :span="5" class="title">任务类型</el-col>:
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -50,7 +50,7 @@
                 </template>
                 <template v-else>{{taskData.typeName}}</template>
               </el-col>
-              <el-col :span="5" class="title">执行人</el-col>：
+              <el-col :span="5" class="title">执行人</el-col>:
               <el-col :span="18">
                 <span v-if="!changeNameShow">{{taskData.doUserName}}</span>
                 <el-select
@@ -77,7 +77,7 @@
                   <img src="static/images/task/change.png" width="18" alt srcset />
                 </el-link>
               </el-col>
-              <el-col :span="5" class="title">状态</el-col>：
+              <el-col :span="5" class="title">状态</el-col>:
               <el-col :span="18">
                 <span v-if="taskData.status==1" class="state_color1">执行中</span>
                 <span v-if="taskData.status==2" class="state_color2">审核中</span>
@@ -85,7 +85,7 @@
                 <span v-else-if="taskData.status==4" class="state_color4">延期</span>
                 <span v-else-if="taskData.status==5" class="state_color3">延期完成</span>
               </el-col>
-              <el-col :span="5" class="title">预计时间</el-col>：
+              <el-col :span="5" class="title">预计时间</el-col>:
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -101,16 +101,26 @@
                 </template>
                 <template v-else>{{$date(taskData.expertTime)}}</template>
               </el-col>
-              <el-col :span="5" class="title">完成时间</el-col>：
+              <!-- <el-col :span="18" :offset="6">
+                <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 3, maxRows: 9}"
+                  placeholder="请输入修改时间原因"
+                  v-model="taskData.remark"
+                  maxlength="300"
+                  show-word-limit
+                ></el-input>
+              </el-col> -->
+              <el-col :span="5" class="title">完成时间</el-col>:
               <el-col :span="18">{{$time(taskData.overTime)}}</el-col>
-              <el-col :span="5" class="title">需求</el-col>：
+              <el-col :span="5" class="title">需求</el-col>:
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
                 >
                   <el-input
                     type="textarea"
-                    :autosize="{ minRows: 1, maxRows: 9}"
+                    :autosize="{ minRows: 3, maxRows: 9}"
                     placeholder="请输入内容"
                     v-model="taskData.remark"
                     maxlength="300"
@@ -119,7 +129,7 @@
                 </template>
                 <template v-else>{{taskData.remark}}</template>
               </el-col>
-              <el-col :span="5" class="title">附件</el-col>：
+              <el-col :span="5" class="title">附件</el-col>:
               <el-col :span="18" class="proFileList">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -176,8 +186,8 @@
               <el-col
                 :span="6"
                 :class="[taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5 ? 'snow' : '', 'title']"
-              >完成结果</el-col>：
-              <el-col :span="24">
+              >完成结果</el-col>:
+              <el-col :span="17">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5"
                 >
@@ -193,8 +203,8 @@
                 </template>
                 <template v-else>{{taskData.overDesc}}</template>
               </el-col>
-              <el-col :span="6" class="title center">附件</el-col>：
-              <el-col :span="24" class="proFileList">
+              <el-col :span="6" class="title center">附件</el-col>:
+              <el-col :span="17" class="proFileList">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5"
                 >
@@ -792,7 +802,10 @@ export default {
       let localPath = row.localPath
       // console.log(row)
       let a = document.createElement('a')
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/file/' + localPath+'/download')
+      a.setAttribute(
+        'href',
+        'http://218.106.254.122:8084/pmbs/file/' + localPath + '/download'
+      )
       a.click()
     },
     /////////  [download 下载附件] end /////////
@@ -808,10 +821,10 @@ export default {
       this.oldFileId = ''
       this.closeType = 0
       this.changeNameShow = false
-      if (this.$refs['needFileUpload']!=undefined) {
+      if (this.$refs['needFileUpload'] != undefined) {
         this.$refs['needFileUpload'].clearFiles()
       }
-      if (this.$refs['resultFileUpload']!=undefined) {
+      if (this.$refs['resultFileUpload'] != undefined) {
         this.$refs['resultFileUpload'].clearFiles()
       }
     },
@@ -877,7 +890,7 @@ export default {
 }
 .taskDetail .task_details {
   height: calc(100% - 52px);
-  padding: 0 24px 108px;
+  padding: 0 24px 148px;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;

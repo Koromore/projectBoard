@@ -1094,7 +1094,7 @@ export default {
 }
 .task .top {
   height: 36px;
-  line-height: 36px;
+  /* line-height: 36px; */
   margin-bottom: 13px;
   display: flex;
   flex-wrap: wrap;
@@ -1105,8 +1105,8 @@ export default {
   width: 100%;
 }
 .task .top .title {
-  height: 36px;
-  line-height: 36px;
+  height: 32px;
+  line-height: 32px;
   text-align: center;
 }
 .task .top .tab1 {
@@ -1178,9 +1178,6 @@ export default {
   background: #409eff;
   color: white;
   border: 1px solid #409eff;
-}
-.task .top .tab3 >>> .el-button {
-  width: 80px;
 }
 .el-button + .el-button {
   margin: 0;

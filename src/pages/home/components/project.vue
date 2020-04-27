@@ -195,17 +195,17 @@
           <el-table-column prop="overTime" label="完成时间" sortable min-width="100">
             <template slot-scope="scope">{{$date(scope.row.overTime)}}</template>
           </el-table-column>
-          <el-table-column prop="realName" label="下达人" min-width="81"></el-table-column>
+          <el-table-column prop="realName" label="下达人" min-width="80"></el-table-column>
           <el-table-column
             prop="managerName"
             label="项目经理"
             filter-placement="bottom-end"
-            min-width="81"
+            min-width="80"
           ></el-table-column>
           <el-table-column
             prop="tag"
             label="操作"
-            min-width="160"
+            min-width="150"
             filter-placement="bottom-end"
             v-if="userId!=152"
           >
@@ -1759,7 +1759,8 @@ export default {
   margin-top: 9px;
 }
 .project .top button {
-  width: 80px;
+  width: 72px;
+  padding: 9px;
 }
 .project .top .more {
   width: 32px;
@@ -1787,10 +1788,6 @@ export default {
   background: #409eff;
   color: white;
   border: 1px solid #409eff;
-}
-.project .top >>> .el-button {
-  width: 72px;
-  padding: 9px;
 }
 .project .top .tab1 div:nth-of-type(1),
 .project .top .tab2 div:nth-of-type(1) {

@@ -55,12 +55,7 @@
               <span>操作文档</span>
             </div>
           </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="点击查看规范文档"
-            placement="top"
-          >
+          <el-tooltip class="item" effect="dark" content="点击查看规范文档" placement="top">
             <div @click="operator(2)">
               <i class="el-icon-document-checked"></i>
               <br />
@@ -107,15 +102,12 @@
     >
       <el-scrollbar style="height: 100%">
         <el-row class="add_box">
-          <!-- <el-col :span="24">
-            <el-col :span="6" class="title title1">{{typeName}}</el-col>
-          </el-col> -->
           <el-col :span="6" class="title">项目名称</el-col>
-          <el-col :span="18">
+          <el-col :span="17">
             <el-input placeholder="请输入内容" v-model="new_project.new_name" clearable></el-input>
           </el-col>
           <el-col :span="6" class="title">客户</el-col>
-          <el-col :span="18">
+          <el-col :span="17">
             <el-select v-model="clientId" filterable clearable placeholder="请选择" class="pasproject">
               <el-option
                 v-for="item in clientList"
@@ -126,7 +118,7 @@
             </el-select>
           </el-col>
           <el-col :span="6" class="title">业务类型</el-col>
-          <el-col :span="18">
+          <el-col :span="17">
             <el-select
               v-model="businessId"
               filterable
@@ -143,7 +135,7 @@
             </el-select>
           </el-col>
           <el-col :span="6" class="title">所属立项</el-col>
-          <el-col :span="18">
+          <el-col :span="17">
             <el-select
               v-model="pasprojectId"
               filterable
@@ -161,26 +153,30 @@
             </el-select>
           </el-col>
           <el-col :span="6" class="title">预计时间</el-col>
-          <el-col :span="18" class="presetTime">
+          <el-col :span="17" class="presetTime">
             <el-date-picker
               v-model="new_project.presetTime"
               type="date"
               placeholder="选择日期"
               :picker-options="pickerOptions"
+              @change="presetTimeChange"
             ></el-date-picker>
           </el-col>
-          <!-- <el-col :span="18" :offset="6">
+
+          <!-- <el-col :span="6" class="title title0" v-if="reasonShow"></el-col>
+          <el-col :span="17" v-if="reasonShow">
             <el-input
               type="textarea"
-              :autosize="{ minRows: 6, maxRows: 8}"
-              placeholder="请输入内容"
+              :autosize="{ minRows: 3, maxRows: 8}"
+              placeholder="请输入预计时间变更原因"
               v-model="new_project.reasonTime"
               maxlength="300"
               show-word-limit
             ></el-input>
-          </el-col> -->
+          </el-col>-->
+
           <el-col :span="6" class="title center">需求</el-col>
-          <el-col :span="18">
+          <el-col :span="17">
             <el-input
               type="textarea"
               :autosize="{ minRows: 6, maxRows: 8}"
@@ -192,7 +188,7 @@
           </el-col>
           <el-col :span="6" class="title nobgimg">附件</el-col>
           <!-- 上传 -->
-          <el-col :span="18" class="upload">
+          <el-col :span="17" class="upload">
             <el-upload
               :action="uploadUrl"
               :on-remove="handleRemove"
@@ -203,12 +199,12 @@
             </el-upload>
           </el-col>
           <el-col :span="6" class="title">执行选择</el-col>
-          <el-col :span="18">
+          <el-col :span="17">
             <el-radio v-model="radio2" label="1" :disabled="disabled1">项目经理</el-radio>
             <el-radio v-model="radio2" label="2" :disabled="disabled2">执行人</el-radio>
           </el-col>
           <el-col :span="24" v-show="radio2 == 1">
-            <el-col :offset="6" :span="18" class="remind">项目经理为此项目的统筹人，负责任务分发与审核</el-col>
+            <el-col :offset="6" :span="17" class="remind">项目经理为此项目的统筹人，负责任务分发与审核</el-col>
             <el-col :offset="6" :span="12">
               <el-select
                 v-model="new_project.managerId"
@@ -227,9 +223,15 @@
             </el-col>
           </el-col>
           <el-col :span="24" v-show="radio2 == 2">
-            <el-col :offset="6" :span="18" class="remind">会对选中的人创建任务，执行人需完成此任务。</el-col>
+            <el-col :offset="6" :span="17" class="remind">会对选中的人创建任务，执行人需完成此任务。</el-col>
             <el-col :offset="6" :span="12">
-              <el-cascader v-model="doUserAdd" :options="deptList" clearable filterable></el-cascader>
+              <el-cascader
+                v-model="doUserAdd"
+                :options="deptList"
+                clearable
+                filterable
+                :disabled="disabledDouser"
+              ></el-cascader>
             </el-col>
             <el-col :span="4" :offset="1">
               <el-button
@@ -239,7 +241,7 @@
                 :disabled="disabledDouser"
               >添加</el-button>
             </el-col>
-            <el-col :span="18" :offset="6" class="doUser">
+            <el-col :span="17" :offset="6" class="doUser">
               <el-tag
                 :key="tag.index"
                 v-for="tag in dynamicTags0"
@@ -266,7 +268,7 @@
           <el-col :span="4" :offset="1">
             <el-button size="small" type="primary" @click="showInput">添加</el-button>
           </el-col>
-          <el-col :span="18" :offset="6" class="know_pop">
+          <el-col :span="17" :offset="6" class="know_pop">
             <el-tag
               :key="tag.index"
               v-for="tag in new_project.dynamicTags"
@@ -378,12 +380,7 @@
     <!--------- 抽屉消息面板 end --------->
 
     <!--------- 抽屉问题反馈 start --------->
-    <el-drawer
-      title="问题反馈"
-      :visible.sync="drawer3"
-      @close="feedbackClose"
-      @opened="feedbackOpened"
-    >
+    <el-drawer title="问题反馈" :visible.sync="drawer3" @close="feedbackClose" @opened="feedbackOpened">
       <el-row class="problemFeedback" v-loading="loadingFeedback">
         <el-col :span="6" class="title snow">问题版块</el-col>
         <el-col :span="13">
@@ -475,8 +472,9 @@ export default {
         checkList: [], // 执行部门
         dynamicTags: [], // 知晓人
         oldPresetTime: '', // 旧预计时间
-        reasonTime: '', // 修改时间原因
+        reasonTime: '' // 修改时间原因
       },
+      reasonShow: false, // 修改时间原因是否显示
       doUserAdd: [],
       clientList: [], // 客户列表
       clientId: '', // 分类 客户
@@ -601,9 +599,13 @@ export default {
       }
       // console.log(this.pasprojectName)
     },
+    // 监听路由变化
     $route(to, from) {
       // console.log(to.path)
       this.router_url()
+    },
+    new_project: function(newQuestion, oldQuestion) {
+      console.log(newQuestion)
     }
   },
   // 钩子函数
@@ -946,6 +948,17 @@ export default {
       // 获取立项用户列表
       this.getClientapiListAjax()
     },
+    // 监听预计时间更改
+    presetTimeChange(data) {
+      let new_project = this.new_project
+      let newTime = data.getTime()
+      let oldTime = new_project.oldPresetTime.getTime()
+      if (newTime == oldTime) {
+        this.reasonShow = false
+      } else {
+        this.reasonShow = true
+      }
+    },
     // 关闭项目添加/修改抽屉
     closeSaveProject() {
       // 点击新建项目时置空信息
@@ -961,6 +974,7 @@ export default {
       this.new_project.checkList = [] // 执行部门
       this.new_project.remark = '' // 需求
       this.new_project.dynamicTags = [] // 知晓人
+      this.new_project.reasonTime = '' // 修改时间原因
       this.dynamicTags0 = [] // 执行人
       this.new_project.managerId = '' // 项目经理
       this.disabled1 = false
@@ -968,6 +982,7 @@ export default {
       this.fileList = []
       this.listProFile = []
       this.checkListBan = false
+      this.reasonShow = false
     },
     ///////// 接受子组件数据 start /////////
     getMsgFormSon(data) {
@@ -1075,7 +1090,26 @@ export default {
     ///////// 立项列表获取 end /////////
     // 获取项目详情
     getProjectShowDetail(data) {
-      console.log(data)
+      // console.log(data)
+      let department = ''
+      let listImplementer = data.listImplementer
+      let listImplementerList = []
+      listImplementer.forEach(element => {
+        listImplementerList.push(element.userId)
+      })
+      department = listImplementerList.toString()
+      // console.log(department)
+      data.department = department
+
+      let knowUser = ''
+      let listKnowUser = data.listKnowUser
+      let listKnowUserList = []
+      listKnowUser.forEach(element => {
+        listKnowUserList.push(element.userId)
+      })
+      knowUser = listKnowUserList.toString()
+      // console.log(department)
+      data.knowUser = knowUser
       // 用户列表
       let userList = this.userList
       this.initUserId = data.initUserId
@@ -1085,6 +1119,7 @@ export default {
       this.clientId = data.clientId
       this.businessId = data.serviceId
       this.pasprojectId = data.pasprojectId
+      this.pasprojectName = data.pasproName
       // this.new_project.business_type = [data.clientId, data.serviceId]
       // if (data.isUsual == false) {
       //   this.new_project.radio1 = '0'
@@ -1092,8 +1127,10 @@ export default {
       //   this.new_project.radio1 = '1'
       // }
       this.new_project.presetTime = data.expertTime.replace(/-/g, '/')
-      this.new_project.oldPresetTime = new Date(data.expertTime.replace(/-/g, '/'))
-      // console.log(this.new_project.presetTime)
+      this.new_project.oldPresetTime = new Date(
+        data.expertTime.replace(/-/g, '/')
+      )
+      // console.log(this.new_project.oldPresetTime)
       this.new_project.remark = data.remark
       if (data.manager != null) {
         this.radio2 = '1'
@@ -1477,12 +1514,12 @@ export default {
     // 操作文档链接
     operator(id) {
       let newPage = window.open() // 防止浏览器拦截
-      if (id==1) {
+      if (id == 1) {
         newPage.location.href =
-        'http://218.106.254.122:8084/doc/OperationDocument.pdf'
-      }else if (id==2) {
+          'http://218.106.254.122:8084/doc/OperationDocument.pdf'
+      } else if (id == 2) {
         newPage.location.href =
-        'http://218.106.254.122:8084/doc/OperationSpecification.pdf'
+          'http://218.106.254.122:8084/doc/OperationSpecification.pdf'
       }
     },
     ///////// 问题反馈 start /////////
@@ -1720,6 +1757,12 @@ export default {
     no-repeat;
   background-size: 7px;
 }
+.home .add_box .title.title0 {
+  align-self: flex-start;
+  background: url('../../../static/images/task/snowflake.png') 90% 13px
+    no-repeat;
+  background-size: 7px;
+}
 .home .add_box .nobgimg {
   background: none;
   align-self: flex-start;
@@ -1752,12 +1795,23 @@ export default {
 }
 .home .add_box .doUser {
   margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.home .add_box .know_pop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 }
 .home .add_box .know_pop span {
   margin-left: 0;
   margin-right: 9px;
 }
-.home .add_box .know_pop .know_pop_list {
+.home .add_box .know_pop_list {
+  margin: 0;
   margin-bottom: 13px;
 }
 .home .add_box .userList {

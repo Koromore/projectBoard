@@ -268,7 +268,6 @@
               placement="top"
               v-for="item in projectShowDetail.listProFile"
               :key="item.index"
-              tabindex
             >
               <div class="fileList_" @click="download(item)">
                 <img
@@ -345,9 +344,6 @@
       <el-drawer title="创建任务" :visible.sync="drawer1" @close="addTaskClose">
         <el-scrollbar style="height: 100%">
           <el-row class="add_box">
-            <!-- <el-col :span="24">
-              <el-col :span="6" class="title title1">创建任务</el-col>
-            </el-col>-->
             <el-col :span="6" class="title">父任务</el-col>
             <el-col :span="18">
               <el-select
@@ -464,8 +460,8 @@
                   placement="top"
                 >
                   <el-card class="content">
-                    <p>变动内容：{{item.result}}</p>
-                    <p>更新人：{{item.people}}</p>
+                    <p>变动内容:{{item.result}}</p>
+                    <p>更新人:{{item.people}}</p>
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -951,6 +947,19 @@ export default {
             knowUserShow = false
           }
         })
+        if (
+          data.listTask != '' ||
+          data.listTask != [] ||
+          data.listTask != null
+        ) {
+          let taskDoUserId = ''
+          data.listTask.forEach(element => {
+            if (element.doUserId == userId) {
+              knowUserShow = true
+            }
+          })
+        }
+
         this.knowUserShow = knowUserShow
         // console.log(knowUserShow)
         let pasprojectId = this.projectShowDetail.pasprojectId

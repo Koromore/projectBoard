@@ -85,6 +85,7 @@ export default {
   methods: {
     logout() {
       //退出登录
+      console.log('123')
       // this.$store.commit('logout');
       // this.$router.push({ path: '/logout' })
       this.$axios

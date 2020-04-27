@@ -796,6 +796,7 @@ export default {
 }
 
 .document .top {
+  height: 36px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
