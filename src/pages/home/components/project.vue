@@ -977,6 +977,7 @@ export default {
       // this.$emit('getShopCode',value)
     },
     delayAchieve() {
+      let userId = this.userId
       let proId = this.proId
       let overTime = this.formatData2(new Date())
       let delayReason = this.delayReason
@@ -984,7 +985,11 @@ export default {
         proId: proId,
         status: 5,
         delayReason: delayReason, // 延期原因
-        overTime: overTime
+        overTime: overTime,
+
+        operationDetail: delayReason,
+        operationType: 12,
+        operationUserId: userId
       }
       if (data.delayReason == '') {
         this.messageError('带*信息不能为空')
@@ -995,6 +1000,7 @@ export default {
     },
     achieve(proDate) {
       // console.log('完成' + proId)
+      let userId = this.userId
       this.proId = proDate.proId
       let expertTime = new Date(
         new Date(proDate.expertTime).getTime() + 24 * 60 * 60 * 1000
@@ -1015,7 +1021,11 @@ export default {
             let data = {
               proId: proDate.proId,
               status: 3,
-              overTime: overTime
+              overTime: overTime,
+
+              operationDetail: '',
+              operationType: 13,
+              operationUserId: userId
             }
             this.getProjectSave(data)
           })
@@ -1975,9 +1985,14 @@ export default {
   margin-bottom: 16px;
 } */
 .project .principal .key {
-  text-align-last: justify;
+  text-align: justify;
   box-sizing: border-box;
   padding: 0 9px 0 0;
+}
+.project .principal .key:after {
+  display: inline-block;
+  content: '';
+  padding-left: 100%;
 }
 .project .principal .value.prin {
   margin-bottom: 99px;

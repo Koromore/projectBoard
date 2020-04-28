@@ -23,16 +23,9 @@
             @click="table_tab(2)"
             :class="[tabs_activity=='2' ? 'act' : '']"
           >项目需求</el-button>
-          <!-- <el-button
-            type="primary"
-            plain
-            size="small"
-            @click="table_tab(3)"
-            :class="[tabs_activity=='3' ? 'act' : '']"
-          >立项背景</el-button>-->
         </el-button-group>
       </el-col>
-      <el-col :span="4" :offset="13" class="detail_list">
+      <el-col :span="7" :offset="10" class="detail_list">
         <el-col :span="24" v-show="!sousuo_show">
           <el-tooltip class="item" effect="dark" content="新增任务" placement="bottom">
             <i
@@ -44,7 +37,9 @@
           <el-tooltip class="item" effect="dark" content="甘特图" placement="bottom">
             <i @click="gantt(1)" class="el-icon-tickets"></i>
           </el-tooltip>
-          <!-- <i @click="drawer2 = true" class="el-icon-time"></i> -->
+          <!-- <el-tooltip class="item" effect="dark" content="历史记录" placement="bottom">
+            <i @click="records" class="el-icon-time"></i>
+          </el-tooltip> -->
           <el-tooltip class="item" effect="dark" content="任务查询" placement="bottom">
             <i @click.stop="sousuoShow" class="el-icon-search"></i>
           </el-tooltip>
@@ -82,12 +77,6 @@
             <template slot-scope="scope">
               <div v-show="changeDoUserNameShow != scope.$index" class="doUserName">
                 <span>{{scope.row.doUserName}}</span>
-                <!-- <el-link
-                  type="primary"
-                  @click.stop="changeDoUserName(scope.$index,scope.row.listOaUser)"
-                  v-if="scope.row.isIgnore != true && scope.row.listOaUser.length > 1 && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5 && scope.row.deptId == subordinate"
-                >-->
-
                 <img
                   src="static/images/task/change.png"
                   width="18"
@@ -96,8 +85,6 @@
                   @click.stop="changeDoUserName(scope.$index,scope.row.listOaUser)"
                   v-if="scope.row.isIgnore != true && scope.row.listOaUser.length > 1 && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5 && scope.row.deptId == subordinate"
                 />
-                <!-- </el-link> -->
-                <!-- doUserId -->
               </div>
               <div v-show="changeDoUserNameShow == scope.$index">
                 <el-select
@@ -172,7 +159,6 @@
                 srcset
               />
               <img v-else src="static/images/document/other.png" width="16" alt srcset />
-              <!-- <br /> -->
               <el-link type="primary" class="filenametext">{{scope.row.taskfileList[0].fileName}}</el-link>
             </div>
           </el-table-column>
@@ -446,22 +432,40 @@
           <el-button size="small" type="primary" @click="putIn">提交</el-button>
         </el-col>
       </el-drawer>
-      <!-- 抽屉 -->
-      <el-drawer title="历史记录" :visible.sync="drawer2">
+      <!--------- 历史记录抽屉 start --------->
+      <el-drawer title="历史记录" :visible.sync="drawer2" @open="openRecords" @close="closeRecords">
         <el-row class="records">
-          <!-- <el-col :span="23" :offset="1" class="title">历史记录</el-col> -->
           <el-col :span="23" :offset="1" class="records_list" :style="style1">
             <el-scrollbar>
-              <el-timeline>
+              <el-row class="content">
+                <el-col :span="24" class="tabsBox">
+                  <el-col
+                    :span="12"
+                    :class="[recordsTabsact == 0 ? 'act' : '', 'tabs']"
+                    @click.native="changeTabs(0)"
+                  >项目</el-col>
+                  <el-col
+                    :span="12"
+                    :class="[recordsTabsact == 1 ? 'act' : '', 'tabs']"
+                    @click.native="changeTabs(1)"
+                  >任务</el-col>
+                </el-col>
+                <el-col :span="24" v-if="recordsOnShow" class="recordsOnShow">暂无记录...</el-col>
+              </el-row>
+              <el-timeline class="timeline123" v-loading="timelineLoading">
                 <el-timeline-item
-                  v-for="item in records_list"
+                  v-for="item in recordsList"
                   :key="item.index"
-                  :timestamp="item.time"
+                  :timestamp="item.createTime"
                   placement="top"
                 >
-                  <el-card class="content">
-                    <p>变动内容:{{item.result}}</p>
-                    <p>更新人:{{item.people}}</p>
+                  <el-card>
+                    <el-row class="content">
+                      <el-col :span="16" class="title">标题</el-col>
+                      <el-col :span="8" class="operator">操作人:{{item.realName}}</el-col>
+                      <el-col :span="24" calss="result">{{item.remark}}</el-col>
+                      <el-col :span="24" class="reason">{{item.reason}}</el-col>
+                    </el-row>
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -469,6 +473,8 @@
           </el-col>
         </el-row>
       </el-drawer>
+      <!--------- 历史记录抽屉 end --------->
+
       <!--------- 任务反馈抽屉 start --------->
       <el-drawer :title="drawer3_task" :visible.sync="drawer3" @close="feedbackClose">
         <el-row class="feedback">
@@ -600,24 +606,10 @@ export default {
       // 禁止选择当前时间之前的时间
       proExpertTime: '',
       pickerOptions: {},
-      records_list: [
-        {
-          time: '20/04/02 20:46',
-          result: '前端开发时间变动',
-          people: '解雨臣',
-          file_name: '文档',
-          file_format: 'ppt',
-          file_url: ''
-        },
-        {
-          time: '20/04/02 20:46',
-          result: '策划方案预计完成时间改动',
-          people: '解雨臣',
-          file_name: '文档',
-          file_format: 'ppt',
-          file_url: ''
-        }
-      ],
+      recordsList: [], // 历史记录列表
+      timelineLoading: false, // 时间线loading
+      recordsTabsact: 0, // tab选项卡
+      recordsOnShow: false,
       style1: '',
       // 反馈信息
       feedbackContent: '', // 任务反馈内容
@@ -808,27 +800,6 @@ export default {
       this.taskFeedbackId = taskId
       this.projFeedbackId = proId
       console.log(this.feedbackFileList)
-    },
-    achieve(id, status) {
-      if (status == 1) {
-        let data = {
-          taskId: id,
-          status: 2
-        }
-        this.taskSave(data)
-      } else if (status == 2) {
-        let overTime = this.formatData2(new Date())
-        let data = {
-          // proId: this.proId, // 项目ID
-          taskId: id, // 任务ID
-          status: 3, // 改变状态
-          overTime: overTime // 完成时间
-        }
-        this.taskSave(data)
-      } else if (status == 4) {
-        this.drawer4 = true
-        this.drawer4_task = task
-      }
     },
     gantt(e) {
       let proId = this.$route.query.id
@@ -1169,7 +1140,12 @@ export default {
         proId: this.proId, // '所属项目id',
         remark: this.new_task.remark, // '需求',
         taskName: this.new_task.new_name, //'任务名',
-        typeId: this.task_type_value //'任务类型id'
+        typeId: this.task_type_value, //'任务类型id'
+
+        // 操作标识
+        operationDetail: '',
+        operationType: 4,
+        operationUserId: this.userId
       }
       // data.taskName[0].oldFileId = this.oldFileId
       // console.log(data)
@@ -1415,7 +1391,12 @@ export default {
           let data = {
             taskId: taskData.taskId,
             expertTime: taskData.expertTime,
-            status: 3
+            status: 3,
+
+            // 操作标识
+            operationDetail: '',
+            operationType: 14,
+            operationUserId: this.userId
           }
           if (expertTime < newTime) {
             data.status = 5
@@ -1443,6 +1424,50 @@ export default {
       if (res == 1) {
         this.getParams()
       }
+    },
+    // 打开历史记录页面
+    records() {
+      this.drawer2 = true
+    },
+    openRecords() {
+      console.log('打开历史')
+      let modularId = this.proId
+      let data = `?modularId=${modularId}&optype=0`
+      this.operationList(data)
+    },
+    closeRecords() {
+      console.log('关闭历史')
+      this.recordsTabsact = 0
+      this.recordsList = []
+    },
+    changeTabs(id) {
+      this.recordsTabsact = id
+      let modularId = this.proId
+      let data = `?modularId=${modularId}&optype=${id}`
+      this.operationList(data)
+    },
+    operationList(data) {
+      this.timelineLoading = true
+      this.$axios.post('/pmbs/operation/list' + data).then(res => {
+        if (res.status == 200) {
+          let data = res.data.data
+          // data = ''
+          if (data == [] || data == '' || data == null) {
+            this.recordsOnShow = true
+          } else {
+            this.recordsOnShow = false
+            data.forEach((element, i) => {
+              data[i].createTime = this.$date(element.createTime)
+            })
+          }
+
+          // data.updateTime = this.$data(data.updateTime)
+          // console.log(data)
+          this.recordsList = data
+          this.timelineLoading = false
+          // console.log(this.recordsList)
+        }
+      })
     },
     //  [download 下载附件]
     download(row) {
@@ -1630,7 +1655,12 @@ export default {
 .project_details .table2 .title {
   display: inline-block;
   width: 113px;
-  text-align-last: justify;
+  text-align: justify;
+}
+.project_details .table2 .title:after {
+  display: inline-block;
+  content: '';
+  padding-left: 100%;
 }
 .project_details pre {
   color: #000;
@@ -1761,12 +1791,16 @@ export default {
   text-align: right;
   box-sizing: border-box;
   padding: 0 9px;
-  text-align-last: justify;
+  text-align: justify;
   background: url('../../../../static/images/task/snowflake.png') left center
     no-repeat;
   background-size: 7px;
 }
-
+.project_details .add_box .title:after {
+  display: inline-block;
+  content: '';
+  padding-left: 100%;
+}
 .project_details .add_box .nobgimg {
   background: none;
 }
@@ -1775,13 +1809,6 @@ export default {
   text-align: center;
   color: rgba(0, 0, 0, 0.65);
 }
-/* .project_details .feedbackUpload {
-  margin-top: 24px;
-} */
-/* .project_details .add_box .new_name {
-  height: 40px;
-  line-height: 40px;
-} */
 .project_details .add_box .batton {
   display: flex;
   flex-wrap: wrap;
@@ -1805,23 +1832,53 @@ export default {
 .project_details .add_box .task_type > div {
   width: 100%;
 }
-.project_details .records_box {
-  height: 100%;
-}
 .project_details .records {
   height: 100%;
   padding: 24px;
 }
+.project_details .records .tabsBox {
+  height: 40px;
+}
+.project_details .records .tabs {
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid rgb(224, 227, 234);
+  /* border-radius: 3px; */
+  cursor: pointer;
+}
+.project_details .records .tabs:nth-of-type(1) {
+  border-right: none;
+}
+.project_details .records .tabs:hover {
+  color: rgb(56, 148, 255);
+}
+.project_details .records .tabs.act {
+  height: 40px;
+  line-height: 40px;
+  color: rgb(56, 148, 255);
+}
 .project_details .records .title {
   font-weight: bold;
-  height: 100px;
-  line-height: 100px;
+}
+.project_details .timeline123 {
+  min-height: 360px;
+}
+.project_details .recordsOnShow {
+  padding-top: 24px;
+  text-align: center;
 }
 .project_details .records .el-card {
-  font-size: 16px;
+  font-size: 14px;
 }
 .project_details .records .el-card:hover {
   background: #eee;
+}
+.project_details .records .content div {
+  margin-bottom: 6px;
+}
+.project_details .records .content .reason {
+  color: red;
 }
 .project_details .batton {
   height: 72px;

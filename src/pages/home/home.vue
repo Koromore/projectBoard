@@ -169,11 +169,11 @@
               type="textarea"
               :autosize="{ minRows: 3, maxRows: 8}"
               placeholder="请输入预计时间变更原因"
-              v-model="new_project.reasonTime"
+              v-model="reasonTime"
               maxlength="300"
               show-word-limit
             ></el-input>
-          </el-col>-->
+          </el-col> -->
 
           <el-col :span="6" class="title center">需求</el-col>
           <el-col :span="17">
@@ -263,7 +263,6 @@
                 :value="item.value"
               ></el-option>
             </el-select>
-            <!-- {{add_list}} -->
           </el-col>
           <el-col :span="4" :offset="1">
             <el-button size="small" type="primary" @click="showInput">添加</el-button>
@@ -292,7 +291,6 @@
     <!--------- 抽屉消息面板 start --------->
     <el-drawer title="消息列表" :visible.sync="drawer2">
       <el-row class="messageBox">
-        <!-- <el-col :span="24" class="title">消息列表</el-col> -->
         <el-col :span="24" class="tabsBox">
           <el-col
             :span="8"
@@ -471,10 +469,11 @@ export default {
         managerId: '', // 项目经理ID
         checkList: [], // 执行部门
         dynamicTags: [], // 知晓人
-        oldPresetTime: '', // 旧预计时间
-        reasonTime: '' // 修改时间原因
+        oldPresetTime: '' // 旧预计时间
       },
+      operationType: '', // 操作标识
       reasonShow: false, // 修改时间原因是否显示
+      reasonTime: '', // 修改时间原因
       doUserAdd: [],
       clientList: [], // 客户列表
       clientId: '', // 分类 客户
@@ -945,18 +944,25 @@ export default {
     openSaveProject() {
       // 获取部门列表
       this.getDeptList()
-      // 获取立项用户列表
-      this.getClientapiListAjax()
     },
     // 监听预计时间更改
     presetTimeChange(data) {
       let new_project = this.new_project
-      let newTime = data.getTime()
-      let oldTime = new_project.oldPresetTime.getTime()
-      if (newTime == oldTime) {
-        this.reasonShow = false
-      } else {
-        this.reasonShow = true
+      // console.log(new_project.oldPresetTime)
+      if (
+        new_project.oldPresetTime != '' &&
+        data != '' &&
+        this.operationType == 2
+      ) {
+        let newTime = this.$date(data)
+        let oldTime = this.$date(new_project.oldPresetTime)
+        // console.log(newTime)
+        // console.log(oldTime)
+        if (newTime == oldTime) {
+          this.reasonShow = false
+        } else {
+          this.reasonShow = true
+        }
       }
     },
     // 关闭项目添加/修改抽屉
@@ -983,13 +989,18 @@ export default {
       this.listProFile = []
       this.checkListBan = false
       this.reasonShow = false
+      this.operationType = ''
     },
     ///////// 接受子组件数据 start /////////
     getMsgFormSon(data) {
       this.drawer = true
       // 新建项目
       this.typeName = '创建项目'
+      this.operationType = 1 // 操作标识
       this.disabledDouser = false // 不禁用执行人
+      // 获取立项用户列表
+      let userId = this.userId
+      this.getClientapiListAjax(userId)
     },
     getData(data) {
       this.drawer = true
@@ -997,7 +1008,11 @@ export default {
       this.getProjectShowDetail(data)
       // 编辑项目
       this.typeName = '编辑项目'
+      this.operationType = 2 // 操作标识
       this.disabledDouser = true // 禁用执行人
+      // 获取立项用户列表
+      let userId = data.initUserId
+      this.getClientapiListAjax(userId)
     },
     getMessage() {
       this.drawer2 = true
@@ -1008,19 +1023,18 @@ export default {
     ///////// 接受子组件数据 end /////////
 
     ///////// 用户列表获取 start /////////
-    getClientapiListAjax(res) {
-      let clientList = this.clientList
-      let userId = this.userId
+    getClientapiListAjax(userId) {
+      // let clientList = this.clientList
       // let userId = 113
-      if (clientList.length == 0) {
-        // let data = {
-        //   userId: userId
-        // }
-        let data = `?userId=${userId}`
-        this.$axios
-          .post('http://pms.guoxinad.com.cn/pas/clientapi/listAjax' + data)
-          .then(this.getClientapiListAjaxSuss)
-      }
+      // if (clientList.length == 0) {
+      // let data = {
+      //   userId: userId
+      // }
+      let data = `?userId=${userId}`
+      this.$axios
+        .post('http://pms.guoxinad.com.cn/pas/clientapi/listAjax' + data)
+        .then(this.getClientapiListAjaxSuss)
+      // }
     },
     // 用户列表获取回调
     getClientapiListAjaxSuss(res) {
@@ -1090,7 +1104,7 @@ export default {
     ///////// 立项列表获取 end /////////
     // 获取项目详情
     getProjectShowDetail(data) {
-      // console.log(data)
+      console.log(data)
       let department = ''
       let listImplementer = data.listImplementer
       let listImplementerList = []
@@ -1421,7 +1435,19 @@ export default {
         expertTime: new Date(this.new_project.presetTime), // '预计完成时间',
         remark: this.new_project.remark, // '需求',
         knowUser: knowUser, // '知晓人id，多个用逗号隔开',
-        listProFile: this.listProFile // 需求文档列表
+        listProFile: this.listProFile, // 需求文档列表
+
+        // 操作标识
+        operationDetail: this.reasonTime,
+        operationType: this.operationType,
+        operationUserId: userId
+      }
+      let reasonShow = this.reasonShow
+      if (reasonShow == true) {
+        data.operationType = 17
+      } else if (reasonShow == false) {
+        data.operationType = 2
+        data.operationDetail = ''
       }
       if (this.initUserId != '') {
         data.initUserId = this.initUserId
@@ -1448,7 +1474,7 @@ export default {
         changeId = knowUserList0.join(',')
         data.department = changeId // '参与部门ID',
       }
-      // console.log(data)
+      console.log(data)
       if (
         data.proName == '' ||
         this.new_project.business_type == [] ||
@@ -1749,13 +1775,18 @@ export default {
 .home .add_box .title {
   height: 40px;
   line-height: 40px;
-  text-align-last: justify;
-  text-align: right;
+  /* text-align-last: justify; */
+  text-align: justify;
   box-sizing: border-box;
   padding: 0 9px;
   background: url('../../../static/images/task/snowflake.png') left center
     no-repeat;
   background-size: 7px;
+}
+.home .add_box .title:after {
+  display: inline-block;
+  content: '';
+  padding-left: 100%;
 }
 .home .add_box .title.title0 {
   align-self: flex-start;
@@ -1932,10 +1963,14 @@ export default {
   margin: 0 0 13px;
 }
 .home .problemFeedback .title {
-  text-align-last: justify;
-  text-align: right;
+  text-align: justify;
   box-sizing: border-box;
   padding: 0 13px 0 9px;
+}
+.home .problemFeedback .title:after {
+  display: inline-block;
+  content: '';
+  padding-left: 100%;
 }
 .home .problemFeedback .batton {
   background: white;

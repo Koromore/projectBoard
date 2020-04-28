@@ -97,20 +97,23 @@
                     placeholder="选择日期"
                     :picker-options="pickerOptions"
                     size="mini"
+                    @change="expertTimeChange"
                   ></el-date-picker>
                 </template>
                 <template v-else>{{$date(taskData.expertTime)}}</template>
               </el-col>
-              <!-- <el-col :span="18" :offset="6">
+
+              <!-- <el-col :span="18" :offset="6" v-if="reasonShow">
                 <el-input
                   type="textarea"
                   :autosize="{ minRows: 3, maxRows: 9}"
                   placeholder="请输入修改时间原因"
-                  v-model="taskData.remark"
+                  v-model="reasonTime"
                   maxlength="300"
                   show-word-limit
                 ></el-input>
               </el-col> -->
+
               <el-col :span="5" class="title">完成时间</el-col>:
               <el-col :span="18">{{$time(taskData.overTime)}}</el-col>
               <el-col :span="5" class="title">需求</el-col>:
@@ -187,7 +190,7 @@
                 :span="6"
                 :class="[taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5 ? 'snow' : '', 'title']"
               >完成结果</el-col>:
-              <el-col :span="17">
+              <el-col :span="17" class="overDesc">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5"
                 >
@@ -360,6 +363,8 @@ export default {
       // 禁止选择当前时间之前的时间
       proExpertTime: '',
       pickerOptions: {},
+      oldExpertTime: '', // 旧预计时间
+      reasonTime: '', // 修改时间原因
       // 状态列表
       statusList: [
         { value: 1, label: '执行中' },
@@ -404,7 +409,9 @@ export default {
       // 详情内更换执行人
       changeNameShow: false,
       userValue: '', // 修改后执行人
-      knowUserShow: true // 知晓人添加任务按钮判断
+      knowUserShow: true, // 知晓人添加任务按钮判断
+      // 修改时间原因
+      reasonShow: false
     }
   },
   // 侦听器
@@ -425,20 +432,6 @@ export default {
     clickCloseNum: function(newQuestion, oldQuestion) {
       this.changeDoUserNameShow = 'true'
     }
-    // listProFile: function(newValue, oldValue) {
-    //   if (newValue.length == 0) {
-    //     this.disabled0 = true
-    //   } else {
-    //     this.disabled0 = false
-    //   }
-    // },
-    // listProFileResult: function(newValue, oldValue) {
-    //   if (newValue.length == 0) {
-    //     this.disabled1 = true
-    //   } else {
-    //     this.disabled1 = false
-    //   }
-    // }
   },
   // 方法
   methods: {
@@ -449,13 +442,6 @@ export default {
       // this.messageData = [] // 消息列表重置
       // this.getMessageListAjax(tabs) // 消息列表获取
     },
-    // load() {
-    //   let tabs = this.tabs
-    //   this.getMessageListAjax(tabs)
-    // },
-    // test(){
-    //   console.log("test")
-    // },
     ///////// 面板选项卡 end /////////
     ///////// fileList0 start /////////
     fileListShow() {
@@ -557,6 +543,22 @@ export default {
       }
     },
     ///////// 禁止时间 end /////////
+    ///////// 任务预计时间修改 start /////////
+    expertTimeChange(data) {
+      // console.log(data)
+      let newExpertTime = this.$date0(data)
+      let oldExpertTime = this.oldExpertTime
+      console.log(newExpertTime)
+      let oldDate
+      if (newExpertTime == oldExpertTime) {
+        console.log(1)
+        this.reasonShow = false
+      } else {
+        console.log(2)
+        this.reasonShow = true
+      }
+    },
+    ///////// 任务预计时间修改 end /////////
     ///////// 获取任务详情 start /////////
     getTaskShow(data) {
       this.drawerLoading = true
@@ -576,6 +578,11 @@ export default {
         //   this.batton_pa = false
         // }
         this.proId = data.proId
+        this.oldExpertTime = data.expertTime
+        data.expertTime = new Date(data.expertTime.replace(/-/g, '/'))
+        console.log(data.expertTime)
+        console.log(this.oldExpertTime)
+        // console.log(new Date(data.expertTime))
         this.taskData = data
         this.doUserId = data.doUserId
         this.pickerOptionsTime()
@@ -720,7 +727,7 @@ export default {
     },
     ///////// 附件下载 end /////////
 
-    ///////// 修改任务详情 start /////////
+    ///////// 完成任务 start /////////
     changeTaskDeil() {
       this.closeType = 1
       let taskData = this.taskData // 任务详情
@@ -747,17 +754,36 @@ export default {
       }
       taskData.doUserId = this.doUserId
       // console.log(this.listProFile)
-      // console.log(taskData)
+      console.log(taskData)
+      // 操作标识
+      taskData.operationDetail = this.reasonTime
+      taskData.operationType = 5
+      taskData.operationUserId = this.userId
       let tabs_activity = this.tabs_activity
       if (tabs_activity == 1) {
-        this.taskSave(taskData)
+        if (this.reasonShow == true) {
+          taskData.operationType = 18
+          if (taskData.operationDetail == '') {
+            this.messageError('修改时间原因不能为空！')
+          } else {
+            this.taskSave(taskData)
+          }
+        } else if (this.reasonShow == false) {
+          taskData.operationDetail = ''
+          this.taskSave(taskData)
+        }
       } else if (tabs_activity == 2) {
         let data = {
           proId: taskData.proId,
           taskId: taskData.taskId,
           doUserId: taskData.doUserId,
           overDesc: taskData.overDesc,
-          taskfileList: taskData.taskfileList
+          taskfileList: taskData.taskfileList,
+
+          // 操作标识
+          operationDetail: '',
+          operationType: 6,
+          operationUserId: this.userId
         }
         if (data.overDesc == '') {
           this.messageError('带*信息不能为空')
@@ -767,7 +793,7 @@ export default {
         }
       }
     },
-    ///////// 修改任务详情 end /////////
+    ///////// 完成任务 end /////////
     ///////// 任务提交审核中 start /////////
     finishTask(data) {
       this.drawer5 = false
@@ -778,12 +804,13 @@ export default {
       })
     },
     ///////// 任务提交审核中 end /////////
-    ///////// 任务修改/完成 start /////////
+
+    ///////// 任务修改 start /////////
     taskSave(data) {
       this.drawer5 = false
       this.$axios.post('/pmbs/api/task/save', data).then(this.taskSaveSuss)
     },
-    // 任务修改/完成回调
+    // 任务修改回调
     taskSaveSuss(res) {
       // console.log(res)
       if (res.status == 200) {
@@ -796,7 +823,7 @@ export default {
         // console.log(this.projectListJoin)
       }
     },
-    ///////// 任务新增/修改/完成 end /////////
+    ///////// 任务修改 end /////////
     /////////  [download 下载附件] start /////////
     download(row) {
       let localPath = row.localPath
@@ -827,6 +854,8 @@ export default {
       if (this.$refs['resultFileUpload'] != undefined) {
         this.$refs['resultFileUpload'].clearFiles()
       }
+      this.reasonShow = false
+      this.reasonTime = ''
     },
     // 消息提示
     messageWin(message) {
@@ -879,15 +908,6 @@ export default {
 .state_color4 >>> input {
   color: rgb(255, 0, 0);
 }
-.taskDetail .task_details > .title:nth-of-type(1) {
-  text-align-last: left;
-  text-align: left;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  /* padding-left: 18px; */
-  font-weight: 600;
-  font-size: 18px;
-}
 .taskDetail .task_details {
   height: calc(100% - 52px);
   padding: 0 24px 148px;
@@ -901,9 +921,13 @@ export default {
   margin-bottom: 18px;
 }
 .taskDetail .task_details .title {
-  text-align-last: justify;
+  text-align: justify;
   box-sizing: border-box;
-  /* padding-right: 18px; */
+}
+.taskDetail .task_details .title:after {
+  display: inline-block;
+  content: '';
+  padding-left: 100%;
 }
 .taskDetail .task_details .smname {
   width: 72px;
@@ -1031,5 +1055,8 @@ export default {
   background: url('../../../static/images/task/snowflake.png') 0 center
     no-repeat;
   background-size: 7px;
+}
+.overDesc {
+  word-wrap: break-word;
 }
 </style>
