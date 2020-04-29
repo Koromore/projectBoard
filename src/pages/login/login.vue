@@ -14,8 +14,17 @@ export default {
       // let timestamp=new Date().getTime();
       // console.log(timestamp)
 
+      // var user = JSON.parse(localStorage.getItem('user'))
+      // let token = localStorage.getItem('token')
+      // let userSign = localStorage.getItem('userSign')
+
       let url = window.location.href
       let aesStr = url.substring(url.lastIndexOf('?') + 1)
+
+      if (!aesStr) {
+        aesStr = localStorage.getItem('userSign')
+      }
+
       this.$axios
         .post('/pmbs/api/login', {
           // aesStr: 'NTI3LGZ1ZmVxdWFuLDIwMjAtMDMtMDk='
@@ -36,6 +45,7 @@ export default {
             this.$store.commit('clearToken')
           }
         })
+
     }
   },
   created() {

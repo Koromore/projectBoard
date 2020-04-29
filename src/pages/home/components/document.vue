@@ -781,7 +781,7 @@ export default {
 }
 .table-main {
   height: calc(100% - 150px);
-  margin-top: 24px;
+  margin-top: 13px;
 }
 .fileName {
   margin-bottom: 20px;

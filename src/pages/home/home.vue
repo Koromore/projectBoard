@@ -163,7 +163,7 @@
             ></el-date-picker>
           </el-col>
 
-          <!-- <el-col :span="6" class="title title0" v-if="reasonShow"></el-col>
+          <el-col :span="6" class="title title0" v-if="reasonShow"></el-col>
           <el-col :span="17" v-if="reasonShow">
             <el-input
               type="textarea"
@@ -173,7 +173,7 @@
               maxlength="300"
               show-word-limit
             ></el-input>
-          </el-col> -->
+          </el-col>
 
           <el-col :span="6" class="title center">需求</el-col>
           <el-col :span="17">
@@ -249,7 +249,7 @@
                 :disable-transitions="false"
                 @close="handleClose0(tag)"
                 class="know_pop_list"
-              >{{tag}}</el-tag>
+              >{{tag.name}}</el-tag>
             </el-col>
           </el-col>
           <el-col :span="6" class="title nobgimg">知晓人</el-col>
@@ -917,7 +917,10 @@ export default {
         for (let i = 0; i < userList.length; i++) {
           const element = userList[i]
           if (element.value == add_list) {
-            add_list_data = element.label
+            add_list_data = {
+              id: add_list,
+              name: element.label
+            }
           }
         }
         for (let i = 0; i < list.length; i++) {
@@ -938,6 +941,7 @@ export default {
     },
     // 删除执行人标签
     handleClose0(tag) {
+      console.log(tag)
       this.dynamicTags0.splice(this.dynamicTags0.indexOf(tag), 1)
     },
     // 打开项目添加/修改抽屉
@@ -1105,16 +1109,6 @@ export default {
     // 获取项目详情
     getProjectShowDetail(data) {
       console.log(data)
-      let department = ''
-      let listImplementer = data.listImplementer
-      let listImplementerList = []
-      listImplementer.forEach(element => {
-        listImplementerList.push(element.userId)
-      })
-      department = listImplementerList.toString()
-      // console.log(department)
-      data.department = department
-
       let knowUser = ''
       let listKnowUser = data.listKnowUser
       let listKnowUserList = []
@@ -1153,6 +1147,17 @@ export default {
       } else if (data.department != null) {
         this.radio2 = '2'
         this.disabled1 = true
+
+        // let department = ''
+        let listImplementer = data.listImplementer
+        let listImplementerList = []
+        listImplementer.forEach(element => {
+          listImplementerList.push(element.userId)
+        })
+        department = listImplementerList.toString()
+        // console.log(department)
+        data.department = listImplementerList.toString()
+
         let department = data.department.split(',')
         let doUserList = []
         for (let i = 0; i < department.length; i++) {
@@ -1168,7 +1173,10 @@ export default {
           for (let j = 0; j < userList.length; j++) {
             let element_ = userList[j]
             if (element == element_.value) {
-              doUserListData = element_.label
+              doUserListData = {
+                id: element_.value,
+                name: element_.label
+              }
             }
           }
           doUserNamelist.push(doUserListData)
@@ -1400,8 +1408,8 @@ export default {
       // 用户列表
       let userList = this.userList
       // 执行部门ID数组转为字符串
-      let checkList = this.new_project.checkList
-      let department = checkList.join(',')
+      // let checkList = this.new_project.checkList
+      let department = ''
       // 知晓人名称列表
       let dynamicTags = this.new_project.dynamicTags
       let dynamicTags0 = this.dynamicTags0
@@ -1452,25 +1460,16 @@ export default {
       if (this.initUserId != '') {
         data.initUserId = this.initUserId
       }
-      console.log(data.expertTime)
+      // console.log(data.expertTime)
       let changeId = ''
       if (radio2 == 1) {
         changeId = this.new_project.managerId
         data.manager = changeId // '项目经理id',
       } else if (radio2 == 2) {
         let knowUserList0 = []
-        for (let i = 0; i < dynamicTags0.length; i++) {
-          let element = dynamicTags0[i]
-          let knowUserListData = ''
-          for (let j = 0; j < userList.length; j++) {
-            let element_ = userList[j]
-            if (element == element_.label) {
-              knowUserListData = element_.value
-            }
-          }
-          knowUserList0.push(knowUserListData)
-        }
-        // console.log(knowUserList0)
+        dynamicTags0.forEach(element => {
+          knowUserList0.push(element.id)
+        })
         changeId = knowUserList0.join(',')
         data.department = changeId // '参与部门ID',
       }
@@ -1487,10 +1486,14 @@ export default {
       ) {
         this.messageError('带*信息不能为空')
       } else {
-        this.drawer = false
-        this.$axios
-          .post('/pmbs/api/project/save', data)
-          .then(this.addProjectSuss)
+        if (reasonShow == true && data.operationDetail == '') {
+          this.messageError('修改任务时间原因不能为空')
+        } else {
+          this.drawer = false
+          this.$axios
+            .post('/pmbs/api/project/save', data)
+            .then(this.addProjectSuss)
+        }
       }
     },
     // 新增项目回调
@@ -1963,6 +1966,7 @@ export default {
   margin: 0 0 13px;
 }
 .home .problemFeedback .title {
+  height: 20px;
   text-align: justify;
   box-sizing: border-box;
   padding: 0 13px 0 9px;

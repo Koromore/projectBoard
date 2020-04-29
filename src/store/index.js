@@ -44,10 +44,12 @@ export default new Vuex.Store({
     // user: { userId: 103, deptId:90, realName: '张旗' }, //员工信息
     // user: { userId: 946, deptId:91, realName: '陈磊' }, //员工信息
     // user: { userId: 877, deptId:150, realName: '肖坤' }, //员工信息
+    // user: { userId: 3775, deptId:45, realName: '马寅波' }, //员工信息
+    // user: { userId: 783, deptId:91, realName: '郭树钢' }, //员工信息
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
-    isLogin: 'error', //error/success, // 是否登陆
-    // isLogin: 'success', //error/success, // 是否登陆
+    // isLogin: 'error', //error/success, // 是否登陆
+    isLogin: 'success', //error/success, // 是否登陆
     isRouterAlive: true, // 控制页面刷新
     projectListNum: 1,
     proExpertTime: '',
@@ -59,16 +61,16 @@ export default new Vuex.Store({
   },
   mutations: {
     // 项目列表我参与/我发起显示
-    projectListShow(state, data){
+    projectListShow(state, data) {
       state.projectListNum = data
     },
     // 项目列表我发起分页记录
-    projectPageNumRecord(state, data){
+    projectPageNumRecord(state, data) {
       state.projectPageNum = data
       // console.log('我发起'+state.projectPageNum)
     },
     // 项目列表我参与分页记录
-    projectPageNumRecord_(state, data){
+    projectPageNumRecord_(state, data) {
       state.projectPageNum_ = data
       // console.log('我参与'+state.projectPageNum_)
     },
@@ -94,7 +96,7 @@ export default new Vuex.Store({
       state.user = data.user;
       state.token = data.token;
       state.userSign = data.userSign;
-      state.isLogin = window.sessionStorage.getItem('isLogin') || 'error';
+      // state.isLogin = window.sessionStorage.getItem('isLogin') || 'error';
       localStorage.user = JSON.stringify(data.user);
       localStorage.token = data.token;
       localStorage.userSign = data.userSign;
@@ -105,8 +107,10 @@ export default new Vuex.Store({
      */
     clearToken(state, data) {
       console.log('拦截错误信息,应该跳登录了');
-      window.sessionStorage.setItem('isLogin','error');
-      state.isLogin = 'error';
+      // window.sessionStorage.setItem('isLogin','error');
+      // state.isLogin = 'error';
+
+      //清空 localStorage 的值 并跳转扫码页
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       localStorage.removeItem('userSign');

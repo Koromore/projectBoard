@@ -37,9 +37,9 @@
           <el-tooltip class="item" effect="dark" content="甘特图" placement="bottom">
             <i @click="gantt(1)" class="el-icon-tickets"></i>
           </el-tooltip>
-          <!-- <el-tooltip class="item" effect="dark" content="历史记录" placement="bottom">
+          <el-tooltip class="item" effect="dark" content="历史记录" placement="bottom">
             <i @click="records" class="el-icon-time"></i>
-          </el-tooltip> -->
+          </el-tooltip>
           <el-tooltip class="item" effect="dark" content="任务查询" placement="bottom">
             <i @click.stop="sousuoShow" class="el-icon-search"></i>
           </el-tooltip>
@@ -286,6 +286,7 @@
             v-if="projectShowDetail.delayReason != null"
           >{{projectShowDetail.delayReason}}</el-col>
         </el-col>
+        <!--------- 分割 --------->
         <el-col :span="10" class="approval need">
           <el-col :span="24" class="span">立项背景</el-col>
           <el-col :span="24" class="content">
@@ -297,29 +298,21 @@
             <span v-else-if="pasProjectapiDetai.proCategory == 2">:&nbsp;&nbsp;特殊</span>
             <span v-else-if="pasProjectapiDetai.proCategory == 3">:&nbsp;&nbsp;自有</span>
             <span v-else-if="pasProjectapiDetai.proCategory == 4">:&nbsp;&nbsp;行政</span>
-            <br />
             <div class="title">合同归属地</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.companyName}}</span>
-            <br />
             <div class="title">客户名称</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.clientName}}</span>
-            <br />
             <div class="title">品牌</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.brandName}}</span>
-            <br />
             <div class="title">立项日期</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.establishTime}}</span>
-            <br />
             <div class="title">项目编号</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.projectNumber}}</span>
-            <br />
             <div class="title">项目类型</div>
             <span v-if="pasProjectapiDetai.protype == 1">:&nbsp;&nbsp;日常</span>
             <span v-else-if="pasProjectapiDetai.protype == 2">:&nbsp;&nbsp;专项</span>
-            <br />
             <div class="title">项目执行周期</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.startTime}}--- {{pasProjectapiDetai.endTime}}</span>
-            <br />
             <div class="title">客户部服务人员</div>
             <span>:&nbsp;&nbsp;{{pasProjectapiDetai.customerServiceName}}</span>
           </el-col>
@@ -461,7 +454,7 @@
                 >
                   <el-card>
                     <el-row class="content">
-                      <el-col :span="16" class="title">标题</el-col>
+                      <el-col :span="16" class="title">{{item.title}}</el-col>
                       <el-col :span="8" class="operator">操作人:{{item.realName}}</el-col>
                       <el-col :span="24" calss="result">{{item.remark}}</el-col>
                       <el-col :span="24" class="reason">{{item.reason}}</el-col>
@@ -1655,6 +1648,7 @@ export default {
 .project_details .table2 .title {
   display: inline-block;
   width: 113px;
+  height: 36px;
   text-align: justify;
 }
 .project_details .table2 .title:after {
@@ -1681,6 +1675,7 @@ export default {
 }
 .project_details .approval span {
   color: #000;
+  width: calc(100% - 132px);
 }
 /* .project_details .approval > div {
   margin-bottom: 6px;
@@ -1716,6 +1711,11 @@ export default {
 }
 .project_details .table2 .need .content {
   margin-bottom: 49px;
+}
+.project_details .table2 .need.approval .content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 .project_details .table2 .need .fileList {
   width: 100%;

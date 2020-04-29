@@ -23,7 +23,8 @@
           </el-col>
           <el-col :span="24" class="paneBox">
             <el-col :span="24" class="pane" v-show="tabs_activity == 1">
-              <el-col :span="5" class="title">任务名称</el-col>:
+              <el-col :span="5" class="title">任务名称</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -32,9 +33,11 @@
                 </template>
                 <template v-else>{{taskData.taskName}}</template>
               </el-col>
-              <el-col :span="5" class="title">执行部门</el-col>:
+              <el-col :span="5" class="title">执行部门</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">{{taskData.deptName}}</el-col>
-              <el-col :span="5" class="title">任务类型</el-col>:
+              <el-col :span="5" class="title">任务类型</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -50,7 +53,8 @@
                 </template>
                 <template v-else>{{taskData.typeName}}</template>
               </el-col>
-              <el-col :span="5" class="title">执行人</el-col>:
+              <el-col :span="5" class="title">执行人</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">
                 <span v-if="!changeNameShow">{{taskData.doUserName}}</span>
                 <el-select
@@ -77,7 +81,8 @@
                   <img src="static/images/task/change.png" width="18" alt srcset />
                 </el-link>
               </el-col>
-              <el-col :span="5" class="title">状态</el-col>:
+              <el-col :span="5" class="title">状态</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">
                 <span v-if="taskData.status==1" class="state_color1">执行中</span>
                 <span v-if="taskData.status==2" class="state_color2">审核中</span>
@@ -85,7 +90,8 @@
                 <span v-else-if="taskData.status==4" class="state_color4">延期</span>
                 <span v-else-if="taskData.status==5" class="state_color3">延期完成</span>
               </el-col>
-              <el-col :span="5" class="title">预计时间</el-col>:
+              <el-col :span="5" class="title">预计时间</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -103,7 +109,7 @@
                 <template v-else>{{$date(taskData.expertTime)}}</template>
               </el-col>
 
-              <!-- <el-col :span="18" :offset="6" v-if="reasonShow">
+              <el-col :span="18" :offset="6" v-if="reasonShow">
                 <el-input
                   type="textarea"
                   :autosize="{ minRows: 3, maxRows: 9}"
@@ -112,11 +118,13 @@
                   maxlength="300"
                   show-word-limit
                 ></el-input>
-              </el-col> -->
+              </el-col>
 
-              <el-col :span="5" class="title">完成时间</el-col>:
+              <el-col :span="5" class="title">完成时间</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">{{$time(taskData.overTime)}}</el-col>
-              <el-col :span="5" class="title">需求</el-col>:
+              <el-col :span="5" class="title">需求</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -132,7 +140,8 @@
                 </template>
                 <template v-else>{{taskData.remark}}</template>
               </el-col>
-              <el-col :span="5" class="title">附件</el-col>:
+              <el-col :span="5" class="title">附件</el-col>
+              <el-col :span="1">:</el-col>
               <el-col :span="18" class="proFileList">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
@@ -187,10 +196,11 @@
             </el-col>
             <el-col :span="24" class="pane" v-show="tabs_activity == 2">
               <el-col
-                :span="6"
+                :span="5"
                 :class="[taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5 ? 'snow' : '', 'title']"
-              >完成结果</el-col>:
-              <el-col :span="17" class="overDesc">
+              >完成结果</el-col>
+              <el-col :span="1">:</el-col>
+              <el-col :span="18" class="overDesc">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5"
                 >
@@ -206,8 +216,9 @@
                 </template>
                 <template v-else>{{taskData.overDesc}}</template>
               </el-col>
-              <el-col :span="6" class="title center">附件</el-col>:
-              <el-col :span="17" class="proFileList">
+              <el-col :span="5" class="title center">附件</el-col>
+              <el-col :span="1">:</el-col>
+              <el-col :span="18" class="proFileList">
                 <template
                   v-if="taskData.doUserId == userId && taskData.status != 3 && taskData.status != 5"
                 >
@@ -580,8 +591,8 @@ export default {
         this.proId = data.proId
         this.oldExpertTime = data.expertTime
         data.expertTime = new Date(data.expertTime.replace(/-/g, '/'))
-        console.log(data.expertTime)
-        console.log(this.oldExpertTime)
+        // console.log(data.expertTime)
+        // console.log(this.oldExpertTime)
         // console.log(new Date(data.expertTime))
         this.taskData = data
         this.doUserId = data.doUserId
@@ -923,6 +934,7 @@ export default {
 .taskDetail .task_details .title {
   text-align: justify;
   box-sizing: border-box;
+  height: 20px;
 }
 .taskDetail .task_details .title:after {
   display: inline-block;
@@ -988,7 +1000,7 @@ export default {
 .taskDetail .task_details .paneBox .pane > div {
   margin-bottom: 24px;
 }
-.taskDetail .task_details .paneBox .pane:nth-of-type(2) > div {
+.taskDetail .task_details .paneBox .pane:nth-of-type(2) > .title {
   padding-left: 9px;
 }
 .taskDetail .task_details .nobgimg {

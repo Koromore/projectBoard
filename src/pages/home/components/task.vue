@@ -2,7 +2,7 @@
   <div id="task">
     <el-row class="task">
       <el-col :span="24" class="top">
-        <el-col :span="5" class="">
+        <el-col :span="5" class>
           <el-col :span="4" class="title">客户</el-col>
           <el-col :span="20">
             <el-select
@@ -138,11 +138,11 @@
                 <img
                   src="static/images/task/change.png"
                   width="18"
-                  alt=""
-                  srcset=""
+                  alt
+                  srcset
                   @click.stop="changeDoUserName(scope.$index,scope.row.listOaUser)"
                   v-show="scope.row.isIgnore != true && scope.row.listOaUser.length > 1 && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5"
-                >
+                />
                 <!-- </el-link> -->
               </div>
               <div v-show="changeDoUserNameShow == scope.$index">
@@ -188,24 +188,24 @@
                 v-if="scope.row.taskfileList[0].suffix == 'doc' || scope.row.taskfileList[0].suffix == 'docx'"
                 src="static/images/document/word.png"
                 width="16"
-                alt=""
-                srcset=""
-              >
+                alt
+                srcset
+              />
               <img
                 v-else-if="scope.row.taskfileList[0].suffix == 'xls' || scope.row.taskfileList[0].suffix == 'xlsx'"
                 src="static/images/document/excle.png"
                 width="16"
-                alt=""
-                srcset=""
-              >
+                alt
+                srcset
+              />
               <img
                 v-else-if="scope.row.taskfileList[0].suffix == 'ppt' || scope.row.taskfileList[0].suffix == 'pptx'"
                 src="static/images/document/ppt.png"
                 width="16"
-                alt=""
-                srcset=""
-              >
-              <img v-else src="static/images/document/other.png" width="16" alt="" srcset="">
+                alt
+                srcset
+              />
+              <img v-else src="static/images/document/other.png" width="16" alt srcset />
               <el-link type="primary" class="filenametext">{{scope.row.taskfileList[0].fileName}}</el-link>
             </div>
           </el-table-column>
@@ -216,7 +216,10 @@
             filter-placement="bottom-end"
             v-if="userId!=152"
           >
-            <template slot-scope="scope" v-if="scope.row.isIgnore!=true&&scope.row.isIgnore!=1&&scope.row.doUserId==userId && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5">
+            <template
+              slot-scope="scope"
+              v-if="scope.row.isIgnore!=true&&scope.row.isIgnore!=1&&scope.row.doUserId==userId && scope.row.status != 2 && scope.row.status != 3 && scope.row.status != 5"
+            >
               <el-button
                 size="mini"
                 type="info"
@@ -235,7 +238,7 @@
         <!-- 分页 -->
         <el-col :span="24" class="page">
           <el-pagination
-            background=""
+            background
             layout="total, prev, pager, next"
             :page-size="30"
             :total="participateTaskListTota"
@@ -316,7 +319,7 @@
         <!-- 分页 -->
         <el-col :span="24" class="page">
           <el-pagination
-            background=""
+            background
             layout="total, prev, pager, next"
             :page-size="30"
             :total="initiateTaskListTota"
@@ -457,8 +460,14 @@ export default {
       tab2_act: '',
       suggest_list: [],
       // 状态列表
-      statusList: [{ value: 1, label: '执行中' }, { value: 2, label: '完成' }],
-      statusList_: [{ value: 2, label: '完成' }, { value: 4, label: '延期' }],
+      statusList: [
+        { value: 1, label: '执行中' },
+        { value: 2, label: '完成' }
+      ],
+      statusList_: [
+        { value: 2, label: '完成' },
+        { value: 4, label: '延期' }
+      ],
       statusListValue: '',
       // 任务详情
       taskData: {},
@@ -516,8 +525,10 @@ export default {
       this.findTaskList(id)
     },
     tabs_activity: function(newQuestion, oldQuestion) {
-      let id = this.tabs_activity
-      this.findTaskList(id)
+      if (this.userId != 152) {
+        let id = this.tabs_activity
+        this.findTaskList(id)
+      }
     },
     clickCloseNum: function(newQuestion, oldQuestion) {
       this.moreShow = false
@@ -525,11 +536,11 @@ export default {
       // console.log(this.clickCloseNum)
     },
     // 搜索关键字
-    searchWordData: function(newQuestion, oldQuestion){
+    searchWordData: function(newQuestion, oldQuestion) {
       console.log(newQuestion)
       let searchWord = newQuestion.value
       let id = this.tabs_activity
-      this.getTasklist(id,searchWord)
+      this.getTasklist(id, searchWord)
       // console.log(oldQuestion)
     }
   },
@@ -776,7 +787,7 @@ export default {
       return Array.from(new Set(arr))
     },
     // 获取任务列表
-    getTasklist(id,searchWord) {
+    getTasklist(id, searchWord) {
       // console.log("123")
       let data0 = {
         type: 0,
@@ -794,7 +805,7 @@ export default {
         pageNum: 1,
         pageSize: 30
       }
-      if (searchWord!=undefined && searchWord!='') {
+      if (searchWord != undefined && searchWord != '') {
         data0.task.taskName = searchWord
         data1.task.taskName = searchWord
       }
@@ -968,7 +979,8 @@ export default {
         isUsual: this.isUsual,
         task: {
           initUserId: this.userId,
-          status: this.status
+          status: this.status,
+          taskName: this.searchWordData.value
         },
         pageNum: page,
         pageSize: 30
@@ -988,7 +1000,8 @@ export default {
         isUsual: this.isUsual,
         task: {
           initUserId: this.userId,
-          status: this.status
+          status: this.status,
+          taskName: this.searchWordData.value
         },
         pageNum: page,
         pageSize: 30
@@ -1005,7 +1018,10 @@ export default {
       let a = document.createElement('a')
       // a.download = `${row.fileName}.${row.suffix}`
       // a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/' + localPath)
-      a.setAttribute('href', 'http://218.106.254.122:8084/pmbs/file/' + localPath+'/download')
+      a.setAttribute(
+        'href',
+        'http://218.106.254.122:8084/pmbs/file/' + localPath + '/download'
+      )
       a.click()
     },
     // 抽屉取消按钮
@@ -1079,7 +1095,8 @@ export default {
       this.tabs_activity = 0
       // console.log(this.tabs_activity)
     }
-    this.getTasklist(this.tabs_activity) // 获取任务列表
+    let searchWord = this.searchWordData.value
+    this.getTasklist(this.tabs_activity, searchWord) // 获取任务列表
     // this.upload() // 上传附件地址
     // this.getBusinessListAjax() // 获取业务类型
   }
@@ -1207,8 +1224,8 @@ export default {
   border-bottom: 2px solid black;
   color: black;
 }
-.task .table{
-  height:calc(100% - 150px);
+.task .table {
+  height: calc(100% - 150px);
 }
 .task .table .title,
 .task .table .list {

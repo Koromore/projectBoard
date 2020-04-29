@@ -6,6 +6,7 @@ import Login from '@/pages/login/login'
 import Home from '@/pages/home/home'
 import Gantti from '@/pages/gantti/gantti'
 import Problem from '@/pages/problem/problem'
+import Test from '@/pages/test'
 
 Vue.prototype.$axios = axios;
 Vue.use(Router)
@@ -158,18 +159,25 @@ const router = new Router({
     path: '/problem',
     name: "problem",
     component: Problem
+  },
+  {
+    path: '/test',
+    name: "test",
+    component: Test
   }
-  ]
+  ]//Test
 })
 // TaskDetail
 // 页面刷新时，重新赋值 更新vuex内部值
 try {
-  if (window.sessionStorage.getItem('isLogin') == 'success') {
+  // if (window.sessionStorage.getItem('isLogin') == 'success') {
+  // }
+
     var user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
     let userSign = localStorage.getItem('userSign');
     store.commit('login', { token, user, userSign });
-  }
+
 } catch (e) {
 
 }
