@@ -635,7 +635,12 @@ export default {
             proId: taskData.proId,
             taskId: taskData.taskId,
             expertTime: taskData.expertTime,
-            status: 3
+            status: 3,
+
+            // 操作标识
+            operationDetail: '',
+            operationType: 14,
+            operationUserId: this.userId
           }
           if (expertTime < newTime) {
             data.status = 5
@@ -1183,6 +1188,9 @@ export default {
 .task .top .tab2 >>> .el-button {
   background: #fff;
   color: black;
+}
+.task .top .tab1 >>> .el-button:nth-of-type(4) {
+  border-left: none;
 }
 .task .top .tab1 >>> .el-button:hover,
 .task .top .tab2 >>> .el-button:hover {

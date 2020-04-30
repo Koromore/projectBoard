@@ -994,6 +994,7 @@ export default {
       this.checkListBan = false
       this.reasonShow = false
       this.operationType = ''
+      this.new_project.oldPresetTime = ''
     },
     ///////// 接受子组件数据 start /////////
     getMsgFormSon(data) {
@@ -1405,6 +1406,9 @@ export default {
       let userId = this.$store.state.user.userId
       // 创建时间
       let createTime = new Date()
+      if (this.operationType == 2) {
+        createTime = ''
+      }
       // 用户列表
       let userList = this.userList
       // 执行部门ID数组转为字符串
@@ -1439,7 +1443,7 @@ export default {
         serviceId: this.businessId, // '所属业务ID'
         pasprojectId: this.pasprojectId, // 立项ID
         pasproName: this.pasprojectName, // 立项名称
-        isUsual: this.new_project.isUsual, // '专项日常（0-日常，1-专项）',
+        isUsual: this.new_project.isUsual, // 专项日常（0-日常，1-专项）
         expertTime: new Date(this.new_project.presetTime), // '预计完成时间',
         remark: this.new_project.remark, // '需求',
         knowUser: knowUser, // '知晓人id，多个用逗号隔开',
@@ -1451,12 +1455,15 @@ export default {
         operationUserId: userId
       }
       let reasonShow = this.reasonShow
-      if (reasonShow == true) {
-        data.operationType = 17
-      } else if (reasonShow == false) {
-        data.operationType = 2
-        data.operationDetail = ''
+      if (this.operationType == 2) {
+        if (reasonShow == true) {
+          data.operationType = 17
+        } else if (reasonShow == false) {
+          data.operationType = 2
+          data.operationDetail = ''
+        }
       }
+
       if (this.initUserId != '') {
         data.initUserId = this.initUserId
       }

@@ -90,6 +90,7 @@ export default {
       // console.log(res)
       if (res.status == 200) {
         this.projectShowDetail = res.data.data
+        this.gantt()
       }
     },
     // 获取项目详情-我发起
@@ -143,15 +144,17 @@ export default {
             execute_pop: element.doUserName,
             state_text: '',
             state: element.status,
-            start_time: element.updateTime,
+            start_time: element.createTime,
             end_time: ''
           },
-          start_time: new Date(element.updateTime).getTime(),
+          start_time: new Date(element.createTime).getTime(),
           end_time: '',
           bg_color: '',
           level: 1
         }
         ganttListData.params.start_time = that.$date0(element.createTime)
+        // console.log(element.createTime)
+        // console.log(ganttListData)
         // for (let i = 0; i < data.length; i++) {
         //   const element = data[i]
         //   if (element.params.state == 1) {
@@ -186,8 +189,9 @@ export default {
         } else {
           ganttListData.params.end_time = that.$date0(element.overTime)
           ganttListData.end_time = new Date(
-            element.expertTime.replace(/-/g, '/')
+            element.overTime.replace(/-/g, '/')
           ).getTime()
+          // console.log(ganttListData.params.end_time)
         }
         ganttList.push(ganttListData)
       }
@@ -314,13 +318,26 @@ export default {
       let height = num + 'px'
       let projectShowDetail = this.projectShowDetail
       let start_time = new Date(projectShowDetail.createTime).getTime()
+      console.log(ganttList)
+      let startTimeList = []
+      if (ganttList.length!=0) {
+        ganttList.forEach(element => {
+          startTimeList.push(element.start_time)
+        });
+      }
+      // console.log(startTimeList)
+      // let maxValue=this.array_max(startTimeList)
+      var minValue=Math.min.apply(Math,startTimeList);
+      // console.log(maxValue)
+      start_time = minValue
+      // let start_time = new Date('2020-04-01').getTime()
       let end_time = ''
       if (projectShowDetail.overTime == null) {
         end_time = new Date().getTime()
       } else {
         end_time = new Date(projectShowDetail.overTime).getTime()
       }
-
+      // console.log(start_time)
       this.$gante({
         container: '.gantt_time',
         ganteData: data,
@@ -342,6 +359,15 @@ export default {
       })
       // console.log('gantt')
     },
+    array_max(arr){
+      var max=arr[0];
+      for(var i in arr){
+      if(arr[i]>max){max=arr[i];}
+      }
+      return max;
+    },
+// var data=[3,34,545,12,167,885,3.2];
+// console.log(array_max(data));
     // 返回上一页
     return_() {
       this.$router.go(-1)

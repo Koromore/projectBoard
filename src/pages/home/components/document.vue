@@ -398,6 +398,7 @@ export default {
   // 钩子函数
   beforeMount() {},
   mounted() {
+    this.name = this.searchWordData.value
     this.getTaskfilePageList()
     let upType = 0
     let demandType = 0
@@ -878,6 +879,9 @@ export default {
 .document .top .tab2 >>> .el-button {
   background: #fff;
   color: black;
+}
+.document .top .tab1 >>> .el-button:nth-of-type(4) {
+  border-left: none;
 }
 .document .top .tab1 >>> .el-button:hover,
 .document .top .tab2 >>> .el-button:hover {

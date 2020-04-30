@@ -40,7 +40,7 @@ axios.interceptors.request.use(
 // 响应拦截器
 axios.interceptors.response.use(
   response => {
-    // console.log(response)  
+    // console.log(response)
     // console.log(response.headers.status)   
 
     if (response.status === 200) {
@@ -177,6 +177,15 @@ try {
     let token = localStorage.getItem('token');
     let userSign = localStorage.getItem('userSign');
     store.commit('login', { token, user, userSign });
+
+  // var user = JSON.parse(localStorage.getItem('user'));
+  // let token = localStorage.getItem('token');
+  // let userSign = localStorage.getItem('userSign');
+  // if (user&&token&&userSign) {
+  //   store.commit('login', { token, user, userSign });
+  // }else{
+  //   store.commit('clearToken')
+  // }
 
 } catch (e) {
 

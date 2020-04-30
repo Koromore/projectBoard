@@ -46,6 +46,9 @@ export default new Vuex.Store({
     // user: { userId: 877, deptId:150, realName: '肖坤' }, //员工信息
     // user: { userId: 3775, deptId:45, realName: '马寅波' }, //员工信息
     // user: { userId: 783, deptId:91, realName: '郭树钢' }, //员工信息
+    // user: { userId: 415, deptId:153, realName: '褚艳珍' }, //员工信息
+    // user: { userId: 3713, deptId:91, realName: '方兵' }, //员工信息
+    // user: { userId: 539, deptId:121, realName: '刘定寰' }, //员工信息
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
     // isLogin: 'error', //error/success, // 是否登陆
@@ -93,10 +96,12 @@ export default new Vuex.Store({
     },
     //登录
     login(state, data) {
+      // 将获取到的user，token和微信标识存在vuex内
       state.user = data.user;
       state.token = data.token;
       state.userSign = data.userSign;
       // state.isLogin = window.sessionStorage.getItem('isLogin') || 'error';
+      // 将获取到的user，token和微信标识存在缓存内
       localStorage.user = JSON.stringify(data.user);
       localStorage.token = data.token;
       localStorage.userSign = data.userSign;

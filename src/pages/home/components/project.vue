@@ -753,7 +753,7 @@ export default {
     this.findProjectList(id)
     this.getParams(id)
     this.getListAjax()
-    // this.getProjectList(0) // 获取项目列表
+    // this.getProjectList(id, this.searchWordData.value) // 获取项目列表
 
     // console.log(this.businessList)
   },
@@ -1191,11 +1191,13 @@ export default {
       let serviceId = this.serviceId
       let isUsual = this.isUsual
       let status = this.status
+      let search = this.searchWordData.value
 
       let clientIdData = `&clientId=${clientId}`
       let serviceIdData = `&serviceId=${serviceId}`
       let isUsualData = `&isUsual=${isUsual}`
       let statusData = `&status=${status}`
+      let proNameData = `&proName=${search}`
       if (clientId == '') {
         clientIdData = ''
       }
@@ -1208,7 +1210,10 @@ export default {
       if (status == '') {
         statusData = ''
       }
-      let data = `?inituserid=${userId}${clientIdData}${serviceIdData}${isUsualData}${statusData}`
+      if (search == '') {
+        proNameData = ''
+      }
+      let data = `?inituserid=${userId}${clientIdData}${serviceIdData}${isUsualData}${statusData}${proNameData}`
       if (id == 0) {
         // this.pageNum = this.$store.state.projectPageNum
         this.getProjectListAjax(data)
@@ -1417,6 +1422,7 @@ export default {
           this.clientId = element.value
         }
       })
+      // console.log(clientIdList)
     },
     ///////// 用户列表获取 start /////////
     getListAjax(res) {
@@ -1786,6 +1792,9 @@ export default {
 .project .top .tab2 >>> .el-button {
   background: #fff;
   color: black;
+}
+.project .top .tab1 >>> .el-button:nth-of-type(4) {
+  border-left: none;
 }
 .project .top .tab1 >>> .el-button:hover,
 .project .top .tab2 >>> .el-button:hover {

@@ -30,7 +30,7 @@
           <el-tooltip class="item" effect="dark" content="新增任务" placement="bottom">
             <i
               @click="addtask"
-              v-if="projectShowDetail.status != 3 && knowUserShow == true"
+              v-if="projectShowDetail.status != 3 && knowUserShow"
               class="el-icon-circle-plus-outline"
             ></i>
           </el-tooltip>
@@ -429,23 +429,23 @@
       <el-drawer title="历史记录" :visible.sync="drawer2" @open="openRecords" @close="closeRecords">
         <el-row class="records">
           <el-col :span="23" :offset="1" class="records_list" :style="style1">
-            <el-scrollbar>
-              <el-row class="content">
-                <el-col :span="24" class="tabsBox">
-                  <el-col
-                    :span="12"
-                    :class="[recordsTabsact == 0 ? 'act' : '', 'tabs']"
-                    @click.native="changeTabs(0)"
-                  >项目</el-col>
-                  <el-col
-                    :span="12"
-                    :class="[recordsTabsact == 1 ? 'act' : '', 'tabs']"
-                    @click.native="changeTabs(1)"
-                  >任务</el-col>
-                </el-col>
-                <el-col :span="24" v-if="recordsOnShow" class="recordsOnShow">暂无记录...</el-col>
-              </el-row>
-              <el-timeline class="timeline123" v-loading="timelineLoading">
+            <el-row class="content">
+              <el-col :span="24" class="tabsBox">
+                <el-col
+                  :span="12"
+                  :class="[recordsTabsact == 0 ? 'act' : '', 'tabs']"
+                  @click.native="changeTabs(0)"
+                >项目</el-col>
+                <el-col
+                  :span="12"
+                  :class="[recordsTabsact == 1 ? 'act' : '', 'tabs']"
+                  @click.native="changeTabs(1)"
+                >任务</el-col>
+              </el-col>
+              <el-col :span="24" v-if="recordsOnShow" class="recordsOnShow">暂无记录...</el-col>
+            </el-row>
+            <el-scrollbar class="recordsListScrollbar">
+              <el-timeline class="timelineRecord" v-loading="timelineLoading">
                 <el-timeline-item
                   v-for="item in recordsList"
                   :key="item.index"
@@ -894,6 +894,7 @@ export default {
       // console.log(res)
       if (res.status == 200) {
         let data = res.data.data
+        let projectShowDetail = data
         // data.remark = data.remark.replace(/↵/g,"\n")
         this.projectShowDetail = data
         this.proName = data.proName
@@ -910,6 +911,7 @@ export default {
           if (element == userId) {
             knowUserShow = false
           }
+          console.log(element)
         })
         if (
           data.listTask != '' ||
@@ -923,7 +925,9 @@ export default {
             }
           })
         }
-
+        if (data.manager==userId) {
+          knowUserShow = true
+        }
         this.knowUserShow = knowUserShow
         // console.log(knowUserShow)
         let pasprojectId = this.projectShowDetail.pasprojectId
@@ -1382,6 +1386,7 @@ export default {
           )
           let newTime = new Date()
           let data = {
+            proId: taskData.proId,
             taskId: taskData.taskId,
             expertTime: taskData.expertTime,
             status: 3,
@@ -1423,13 +1428,13 @@ export default {
       this.drawer2 = true
     },
     openRecords() {
-      console.log('打开历史')
+      // console.log('打开历史')
       let modularId = this.proId
       let data = `?modularId=${modularId}&optype=0`
       this.operationList(data)
     },
     closeRecords() {
-      console.log('关闭历史')
+      // console.log('关闭历史')
       this.recordsTabsact = 0
       this.recordsList = []
     },
@@ -1834,7 +1839,10 @@ export default {
 }
 .project_details .records {
   height: 100%;
-  padding: 24px;
+  padding: 0 24px 24px;
+}
+.project_details .records .records_list{
+  height: 100%;
 }
 .project_details .records .tabsBox {
   height: 40px;
@@ -1854,14 +1862,17 @@ export default {
   color: rgb(56, 148, 255);
 }
 .project_details .records .tabs.act {
-  height: 40px;
-  line-height: 40px;
   color: rgb(56, 148, 255);
+  border-bottom: none;
+}
+.project_details .records .recordsListScrollbar{
+  height: calc(100% - 68px);
+  margin-top: 32px;
 }
 .project_details .records .title {
   font-weight: bold;
 }
-.project_details .timeline123 {
+.project_details .timelineRecord {
   min-height: 360px;
 }
 .project_details .recordsOnShow {
@@ -1874,9 +1885,9 @@ export default {
 .project_details .records .el-card:hover {
   background: #eee;
 }
-.project_details .records .content div {
+/* .project_details .records .content div {
   margin-bottom: 6px;
-}
+} */
 .project_details .records .content .reason {
   color: red;
 }

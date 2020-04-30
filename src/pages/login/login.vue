@@ -18,12 +18,24 @@ export default {
       // let token = localStorage.getItem('token')
       // let userSign = localStorage.getItem('userSign')
 
-      let url = window.location.href
-      let aesStr = url.substring(url.lastIndexOf('?') + 1)
+      let url = window.location.href // let url = 'http://218.106.254.122:8084/dist/index.html#/login?NDAyMyxsaXV0ZSwyMDIwLTA0LTMw'
+      let aesStr = ''
 
-      if (!aesStr) {
+      if (url.indexOf('?') != -1) {
+        // console.log(1)
+        aesStr = url.substring(url.lastIndexOf('?') + 1)
+      } else {
+        // console.log(2)
         aesStr = localStorage.getItem('userSign')
-      }
+      } // if (!aesStr) { //   console.log(aesStr) //   aesStr = localStorage.getItem('userSign') // } // console.log(aesStr)
+
+    
+      // let url = window.location.href
+      // let aesStr = url.substring(url.lastIndexOf('?') + 1)
+
+      // if (!aesStr) {
+      //   aesStr = localStorage.getItem('userSign')
+      // }
 
       this.$axios
         .post('/pmbs/api/login', {
