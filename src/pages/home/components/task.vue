@@ -113,7 +113,12 @@
               @click="task_detail(scope.row,1)"
             >{{scope.row.taskName}}</el-link>
           </el-table-column>
-          <el-table-column prop="proName" label="所属项目" show-overflow-tooltip min-width="115"></el-table-column>
+          <el-table-column prop="proName" label="所属项目" show-overflow-tooltip min-width="115">
+            <el-link
+              slot-scope="scope"
+              @click.native="pathPrpjectDetails(scope.row.proId,0)"
+            >{{scope.row.proName}}</el-link>
+          </el-table-column>
           <el-table-column prop="status" label="状态" min-width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isIgnore == true" class="state_color3">忽略</span>
@@ -277,8 +282,10 @@
             show-overflow-tooltip
             min-width="210"
           >
-            <!-- :filters="filtratePro"
-            :filter-method="filterName"-->
+            <el-link
+              slot-scope="scope"
+              @click.native="pathPrpjectDetails(scope.row.proId,0)"
+            >{{scope.row.proName}}</el-link>
           </el-table-column>
           <el-table-column prop="deptName" label="部门" min-width="120">
             <!-- :filters="filtrateDep"
@@ -1071,6 +1078,13 @@ export default {
           this.getTasklistAjax_(data1)
         }
       }
+    },
+    // 跳转项目详情页面
+    pathPrpjectDetails(id, type) {
+      this.$router.push({
+        path: '/home/components/project_details',
+        query: { id: id, type: type }
+      })
     },
     // 消息提示
     messageWin(message) {

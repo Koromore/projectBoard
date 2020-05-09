@@ -90,6 +90,9 @@
                 <span v-else-if="taskData.status==4" class="state_color4">延期</span>
                 <span v-else-if="taskData.status==5" class="state_color3">延期完成</span>
               </el-col>
+              <el-col :span="5" class="title">发起时间</el-col>
+              <el-col :span="1">:</el-col>
+              <el-col :span="18">{{$date(taskData.createTime)}}</el-col>
               <el-col :span="5" class="title">预计时间</el-col>
               <el-col :span="1">:</el-col>
               <el-col :span="18">
@@ -559,13 +562,13 @@ export default {
       // console.log(data)
       let newExpertTime = this.$date0(data)
       let oldExpertTime = this.oldExpertTime
-      console.log(newExpertTime)
+      // console.log(newExpertTime)
       let oldDate
       if (newExpertTime == oldExpertTime) {
-        console.log(1)
+        // console.log(1)
         this.reasonShow = false
       } else {
-        console.log(2)
+        // console.log(2)
         this.reasonShow = true
       }
     },
@@ -581,6 +584,7 @@ export default {
       // console.log(res)
       if (res.status == 200) {
         let data = res.data.data
+        // console.log(data)
         // let userId = this.userId
         // console.log(userId)
         // if (data.doUserId == userId) {
@@ -590,7 +594,7 @@ export default {
         // }
         this.proId = data.proId
         this.oldExpertTime = data.expertTime
-        data.expertTime = new Date(data.expertTime.replace(/-/g, '/'))
+        data.expertTime = new Date(data.expertTime)
         // console.log(data.expertTime)
         // console.log(this.oldExpertTime)
         // console.log(new Date(data.expertTime))
@@ -667,7 +671,7 @@ export default {
         listProFile.push(listProFileData)
         // let data = $.extend(listProFileData,listProFile[0])
         this.listProFile = listProFile
-        console.log(this.listProFile)
+        // console.log(this.listProFile)
       }
     },
     // 删除

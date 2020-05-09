@@ -376,6 +376,7 @@
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
+                        :disabled="item.disabled"
                       ></el-option>
                     </el-select>
                     <el-button
@@ -419,6 +420,7 @@
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
+                        :disabled="item.disabled"
                       ></el-option>
                     </el-select>
                     <el-button type="primary" size="mini" @click="addPrincipal()">确认</el-button>
@@ -445,6 +447,7 @@
                     :key="item.index"
                     :label="item.label"
                     :value="item.value"
+                    :disabled="item.disabled"
                   ></el-option>
                 </el-select>
                 <!-- {{add_list}} -->
@@ -1437,12 +1440,16 @@ export default {
       // console.log(res)
       if (res.status == 200) {
         let data = res.data.data
+        let userId = this.userId
         let userList = []
         for (let i = 0; i < data.length; i++) {
           let userListData = {}
           let element = data[i]
           userListData.value = element.userId
           userListData.label = `${element.deptName}-${element.realName}`
+          if (element.userId == userId) {
+            userListData.disabled = true
+          }
           userList.push(userListData)
         }
         this.userList = userList
@@ -1502,8 +1509,12 @@ export default {
               value: element.userId,
               label: element.realName
             }
+            if (element.userId == userId) {
+              listUserData.disabled = true
+            }
             principalList.push(listUserData)
           })
+          console.log(principalList)
           this.principalList = principalList
           // console.log(this.principalData)
           let knowUser = []

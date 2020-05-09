@@ -8,6 +8,7 @@
         style="background-color: rgb(238, 241, 246);position: relative;"
         class="leftNav"
       >
+        <!--------- 导航 start --------->
         <div class="navList">
           <div
             :class="[show_acti=='2' || show_acti=='6'?'title act':'title']"
@@ -41,6 +42,9 @@
             设置
           </div>
         </div>
+        <!--------- 导航 end --------->
+
+        <!--------- 底部文档 start --------->
         <div class="bottom">
           <el-tooltip
             class="item"
@@ -95,12 +99,12 @@
     </el-container>
     <!--------- 抽屉添加项目 start --------->
     <el-drawer
-      title="添加项目"
+      :title="typeName"
       :visible.sync="drawer"
       @open="openSaveProject"
       @close="closeSaveProject"
     >
-      <el-scrollbar style="height: 100%">
+      <el-scrollbar style="height: 100%" v-loading="drawerLoading">
         <el-row class="add_box">
           <el-col :span="6" class="title">项目名称</el-col>
           <el-col :span="17">
@@ -218,6 +222,7 @@
                   :key="item.index"
                   :label="item.label"
                   :value="item.value"
+                  :disabled="item.disabled"
                 ></el-option>
               </el-select>
             </el-col>
@@ -261,6 +266,7 @@
                 :key="item.index"
                 :label="item.label"
                 :value="item.value"
+                :disabled="item.disabled"
               ></el-option>
             </el-select>
           </el-col>
@@ -325,7 +331,11 @@
               >
                 <el-col :span="8" class="time">{{$time(items.createTime)}}</el-col>
                 <el-col :span="16" class="title">{{items.typeName}}&nbsp;&nbsp;</el-col>
-                <el-col :span="16" class="content" :offset="8">{{items.contents}}</el-col>
+                <el-col :span="16" class="content" :offset="8">
+                  <span>{{items.contents[0]}}</span>
+                  <el-link type="primary" @click.native="pathPrpjectDetails(items.proId,1)">{{items.contents[1]}}</el-link>
+                  <span>{{items.contents[2]}}</span>
+                </el-col>
               </el-col>
               <el-col :span="24" class="noData" v-if="messageData.length == 0">暂无数据</el-col>
             </el-col>
@@ -346,7 +356,11 @@
               >
                 <el-col :span="8" class="time">{{$time(items.createTime)}}</el-col>
                 <el-col :span="16" class="title">{{items.typeName}}&nbsp;&nbsp;</el-col>
-                <el-col :span="16" class="content" :offset="8">{{items.contents}}</el-col>
+                <el-col :span="16" class="content" :offset="8">
+                  <span>{{items.contents[0]}}</span>
+                  <el-link type="primary" @click.native="pathPrpjectDetails(items.proId,1)">{{items.contents[1]}}</el-link>
+                  <span>{{items.contents[2]}}</span>
+                </el-col>
               </el-col>
               <el-col :span="24" class="noData" v-if="messageData.length == 0">暂无数据</el-col>
             </el-col>
@@ -367,7 +381,11 @@
               >
                 <el-col :span="8" class="time">{{$time(items.createTime)}}</el-col>
                 <el-col :span="16" class="title">{{items.typeName}}&nbsp;&nbsp;</el-col>
-                <el-col :span="16" class="content" :offset="8">{{items.contents}}</el-col>
+                <el-col :span="16" class="content" :offset="8">
+                  <span>{{items.contents[0]}}</span>
+                  <el-link type="primary" @click.native="pathPrpjectDetails(items.proId,1)">{{items.contents[1]}}</el-link>
+                  <span>{{items.contents[2]}}</span>
+                </el-col>
               </el-col>
               <el-col :span="24" class="noData" v-if="messageData.length == 0">暂无数据</el-col>
             </el-col>
@@ -432,7 +450,7 @@
 </template>
 <script>
 import Header from '@/pages/header'
-import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
+// import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 
 export default {
   name: 'home',
@@ -559,7 +577,9 @@ export default {
       searchWordData: {
         key: 0,
         value: ''
-      }
+      },
+      // loading动画
+      drawerLoading: false
     }
   },
   // 侦听器
@@ -800,20 +820,29 @@ export default {
         } else {
           this.scrollDisabled = false
         }
-        // console.log(this.scrollDisabled)
-        let messageData = this.messageData
-        this.messageData = messageData.concat(data)
         // 页码加一
         let messagePage = this.messagePage + 1
         this.messagePage = messagePage
         let unread = this.unread
         this.unread = unread + 1
         let messageLRead = []
-        data.forEach(element => {
+        data.forEach((element, i) => {
           let messageId = element.messageId
           messageLRead.push(messageId)
+          // console.log(element.contents)
+          let content = element.contents.split('"')
+          data[i].contents = content
+          // data[i].herf = '/#/home/components/project_details?id='+element.proId+'&type=1'
+          // console.log(data[i].contents)
+
         })
+        // console.log(data)
         let messageLReadStr = messageLRead.toString()
+
+        let messageData = this.messageData
+        // console.log(data[0].contents.split('"'))
+        
+        this.messageData = messageData.concat(data)
         // /api/message/updateIsRead
         // console.log(messageLReadStr)
         let data0 = {
@@ -847,7 +876,7 @@ export default {
     },
     ///////// 消息面板选项卡 end /////////
 
-    matchType, // 文件格式判断
+    // matchType, // 文件格式判断
     // 分类二级联动
     handleChange(value) {
       // console.log(value)
@@ -1010,7 +1039,7 @@ export default {
     getData(data) {
       this.drawer = true
       // 获取项目详情
-      this.getProjectShowDetail(data)
+      this.getProjectShowDetail(data.proId)
       // 编辑项目
       this.typeName = '编辑项目'
       this.operationType = 2 // 操作标识
@@ -1108,126 +1137,121 @@ export default {
     },
     ///////// 立项列表获取 end /////////
     // 获取项目详情
-    getProjectShowDetail(data) {
-      console.log(data)
-      let knowUser = ''
-      let listKnowUser = data.listKnowUser
-      let listKnowUserList = []
-      listKnowUser.forEach(element => {
-        listKnowUserList.push(element.userId)
-      })
-      knowUser = listKnowUserList.toString()
-      // console.log(department)
-      data.knowUser = knowUser
-      // 用户列表
-      let userList = this.userList
-      this.initUserId = data.initUserId
-      this.proId = data.proId
-      this.status = data.status
-      this.new_project.new_name = data.proName
-      this.clientId = data.clientId
-      this.businessId = data.serviceId
-      this.pasprojectId = data.pasprojectId
-      this.pasprojectName = data.pasproName
-      // this.new_project.business_type = [data.clientId, data.serviceId]
-      // if (data.isUsual == false) {
-      //   this.new_project.radio1 = '0'
-      // } else {
-      //   this.new_project.radio1 = '1'
-      // }
-      this.new_project.presetTime = data.expertTime.replace(/-/g, '/')
-      this.new_project.oldPresetTime = new Date(
-        data.expertTime.replace(/-/g, '/')
-      )
-      // console.log(this.new_project.oldPresetTime)
-      this.new_project.remark = data.remark
-      if (data.manager != null) {
-        this.radio2 = '1'
-        this.disabled2 = true
-        this.new_project.managerId = data.manager
-      } else if (data.department != null) {
-        this.radio2 = '2'
-        this.disabled1 = true
-
-        // let department = ''
-        let listImplementer = data.listImplementer
-        let listImplementerList = []
-        listImplementer.forEach(element => {
-          listImplementerList.push(element.userId)
+    getProjectShowDetail(proId) {
+      this.drawerLoading = true
+      let data0 = `?proId=${proId}`
+      this.$axios.post('/pmbs/api/project/showDetail' + data0).then(res => {
+        this.drawerLoading = false
+        // console.log(res)
+        let data = res.data.data
+        let knowUser = ''
+        let listKnowUser = data.listKnowUser
+        let listKnowUserList = []
+        listKnowUser.forEach(element => {
+          listKnowUserList.push(element.userId)
         })
-        department = listImplementerList.toString()
+        knowUser = listKnowUserList.toString()
         // console.log(department)
-        data.department = listImplementerList.toString()
-
-        let department = data.department.split(',')
-        let doUserList = []
-        for (let i = 0; i < department.length; i++) {
-          let element = department[i]
-          let deparData = parseInt(element)
-          doUserList.push(deparData)
-        }
-        // this.new_project.checkList = checkList
-        let doUserNamelist = []
-        for (let i = 0; i < doUserList.length; i++) {
-          let element = doUserList[i]
-          let doUserListData = ''
-          for (let j = 0; j < userList.length; j++) {
-            let element_ = userList[j]
-            if (element == element_.value) {
-              doUserListData = {
-                id: element_.value,
-                name: element_.label
+        data.knowUser = knowUser
+        // 用户列表
+        let userList = this.userList
+        this.initUserId = data.initUserId
+        this.proId = data.proId
+        this.status = data.status
+        this.new_project.new_name = data.proName
+        this.clientId = data.clientId
+        this.businessId = data.serviceId
+        this.pasprojectId = data.pasprojectId
+        this.pasprojectName = data.pasproName
+        this.new_project.presetTime = data.expertTime
+        this.new_project.oldPresetTime = new Date(data.expertTime)
+        this.new_project.remark = data.remark
+        if (data.manager != null) {
+          this.radio2 = '1'
+          this.disabled2 = true
+          this.new_project.managerId = data.manager
+        } else if (data.department != null) {
+          this.radio2 = '2'
+          this.disabled1 = true
+          // let department = ''
+          let listImplementer = data.listImplementer
+          let listImplementerList = []
+          listImplementer.forEach(element => {
+            listImplementerList.push(element.userId)
+          })
+          department = listImplementerList.toString()
+          // console.log(department)
+          data.department = listImplementerList.toString()
+          let department = data.department.split(',')
+          let doUserList = []
+          for (let i = 0; i < department.length; i++) {
+            let element = department[i]
+            let deparData = parseInt(element)
+            doUserList.push(deparData)
+          }
+          // this.new_project.checkList = checkList
+          let doUserNamelist = []
+          for (let i = 0; i < doUserList.length; i++) {
+            let element = doUserList[i]
+            let doUserListData = ''
+            for (let j = 0; j < userList.length; j++) {
+              let element_ = userList[j]
+              if (element == element_.value) {
+                doUserListData = {
+                  id: element_.value,
+                  name: element_.label
+                }
               }
             }
+            doUserNamelist.push(doUserListData)
+            // console.log(knowUserListName)
           }
-          doUserNamelist.push(doUserListData)
-          // console.log(knowUserListName)
+          this.dynamicTags0 = doUserNamelist
         }
-        this.dynamicTags0 = doUserNamelist
-      }
-      this.checkListBan = true
-
-      if (data.knowUser != '') {
-        let knowUserListS = data.knowUser.split(',')
-        let knowUserList = []
-        // console.log(knowUserListS)
-        for (let i = 0; i < knowUserListS.length; i++) {
-          let element = knowUserListS[i]
-          let knowUserListData = parseInt(element)
-          knowUserList.push(knowUserListData)
-        }
-        // console.log(knowUserList)
-
-        // console.log(userList)
-        let knowUserListName = []
-        for (let i = 0; i < knowUserList.length; i++) {
-          let element = knowUserList[i]
-          let knowUserListData = ''
-          for (let j = 0; j < userList.length; j++) {
-            let element_ = userList[j]
-            if (element == element_.value) {
-              knowUserListData = element_.label
+        this.checkListBan = true
+        if (data.knowUser != '') {
+          let knowUserListS = data.knowUser.split(',')
+          let knowUserList = []
+          // console.log(knowUserListS)
+          for (let i = 0; i < knowUserListS.length; i++) {
+            let element = knowUserListS[i]
+            let knowUserListData = parseInt(element)
+            knowUserList.push(knowUserListData)
+          }
+          // console.log(knowUserList)
+          // console.log(userList)
+          let knowUserListName = []
+          for (let i = 0; i < knowUserList.length; i++) {
+            let element = knowUserList[i]
+            let knowUserListData = ''
+            for (let j = 0; j < userList.length; j++) {
+              let element_ = userList[j]
+              if (element == element_.value) {
+                knowUserListData = element_.label
+              }
             }
+            knowUserListName.push(knowUserListData)
+            // console.log(knowUserListName)
           }
-          knowUserListName.push(knowUserListData)
-          // console.log(knowUserListName)
-        }
-        this.new_project.dynamicTags = knowUserListName
-        let listProFile = data.listProFile
-        this.listProFile = listProFile
-        let fileList = []
-        for (let i = 0; i < listProFile.length; i++) {
-          let element = listProFile[i]
-          let data_ = {
-            fileId: element.fileId,
-            name: element.fileName
+          this.new_project.dynamicTags = knowUserListName
+          let listProFile = data.listProFile
+          this.listProFile = listProFile
+          let fileList = []
+          for (let i = 0; i < listProFile.length; i++) {
+            let element = listProFile[i]
+            let data_ = {
+              fileId: element.fileId,
+              name: element.fileName
+            }
+            fileList.push(data_)
           }
-          fileList.push(data_)
+          this.fileList = fileList
+          this.listProFile = data.listProFile
+          // console.log(this.new_project.dynamicTags)
         }
-        this.fileList = fileList
-        this.listProFile = data.listProFile
-        // console.log(this.new_project.dynamicTags)
-      }
+      })
+      // console.log(data)
+
       // }
     },
     // 获取判断路由地址
@@ -1315,6 +1339,7 @@ export default {
         let data = res.data.data
         let deptId = this.deptId
         let deptList = []
+        let userId = this.userId
         data.forEach((element, i) => {
           let deptListData = {
             value: element.deptId,
@@ -1328,6 +1353,9 @@ export default {
               let childrenData = {
                 value: element0.userId,
                 label: element0.realName
+              }
+              if (element0.userId == userId) {
+                childrenData.disabled = true
               }
               deptListData.children.push(childrenData)
             })
@@ -1355,11 +1383,15 @@ export default {
       if (res.status == 200) {
         let data = res.data.data
         let userList = []
+        let userId = this.userId
         for (let i = 0; i < data.length; i++) {
           let userListData = {}
           let element = data[i]
           userListData.value = element.userId
           userListData.label = `${element.deptName}-${element.realName}`
+          if (element.userId == userId) {
+            userListData.disabled = true
+          }
           userList.push(userListData)
         }
         this.userList = userList
@@ -1667,6 +1699,14 @@ export default {
       this.searchWordData = data
       // console.log(this.searchWordData)
     },
+    // 跳转项目详情页面
+    pathPrpjectDetails(id, type) {
+      this.$router.push({
+        path: '/home/components/project_details',
+        query: { id: id, type: type }
+      })
+      this.drawer2 = false
+    },
     // 消息提示
     messageWin(message) {
       // 成功提示
@@ -1957,6 +1997,9 @@ export default {
 } */
 .home .paneBox .infinite-list .infinite-list-item .content {
   margin-top: 9px;
+}
+.home .paneBox .infinite-list .infinite-list-item .content .el-link {
+  display: inline;
 }
 .home .problemFeedback {
   height: 100%;

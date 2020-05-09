@@ -74,7 +74,27 @@ export default {
   // 侦听器
   watch: {},
   // 钩子函数
-  mounted() {},
+  mounted() {
+    // test(){
+      let data = {
+        id: 1,
+        name: "解雨臣"
+      }
+      // rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY
+      // let datatst = this.$Encrypt(JSON.stringify(data))
+      console.log(JSON.parse(this.$Decrypt("rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY")))
+      // this.$axios
+      //   .post('/pmbs/save', data)
+      //   .then(res => {
+      //     console.log(res)
+      //     let data = this.$Decrypt(res.data)
+      //     console.log(data)
+      //   })
+      // create(data).then(res=>{
+      //     console.log(res)
+      //   })
+    // },
+  },
   // 方法
   methods: {
     resetDateFilter() {

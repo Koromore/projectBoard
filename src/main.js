@@ -13,6 +13,7 @@ import echarts from 'echarts'
 import gunter from './components/gante_test/gante'
 import {date,date_,time} from '@/utils/date'
 import {date0,time0} from '@/utils/time'
+import {Decrypt,Encrypt} from '@/utils/cryptoJS'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -26,6 +27,8 @@ Vue.prototype.$time = time
 Vue.prototype.$date0 = date0
 Vue.prototype.$time0 = time0
 
+Vue.prototype.$Decrypt = Decrypt
+Vue.prototype.$Encrypt = Encrypt
 
 
 /* eslint-disable no-new */

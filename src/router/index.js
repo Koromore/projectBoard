@@ -7,6 +7,8 @@ import Home from '@/pages/home/home'
 import Gantti from '@/pages/gantti/gantti'
 import Problem from '@/pages/problem/problem'
 import Test from '@/pages/test'
+import {Decrypt,Encrypt} from '@/utils/cryptoJS'
+import { MessageBox  } from 'element-ui';
 
 Vue.prototype.$axios = axios;
 Vue.use(Router)
@@ -16,7 +18,7 @@ axios.defaults.timeout = 10000;
 
 // axios.defaults.baseURL = process.env.API_ROOT;
 // post请求头
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 请求拦截器
 axios.interceptors.request.use(
@@ -28,9 +30,14 @@ axios.interceptors.request.use(
       const userSign = store.state.userSign;
       token && (config.headers.token = token);
       userSign && (config.headers.userSign = userSign);
+      config.data = Encrypt(JSON.stringify(config.data))
     }
     // console.log(config)
-
+    // if (config.url === '/pmbs/save') {
+      
+      // config.headers['Content-Type'] = "application/json;charset=UTF-8";
+    // }
+    // console.log(config)
     return config;
   },
   error => {
@@ -41,12 +48,28 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // console.log(response)
+    // if (response.config.url.indexOf('http://pms.guoxinad.com.cn') == -1) {
+    //   // console.log(response)
+    //   response.data = JSON.parse(Decrypt(response.data));
+    // }
+    if (typeof response.data == "string") {
+      response.data = JSON.parse(Decrypt(response.data));
+    }
+    // console.log(response)
     // console.log(response.headers.status)   
-
+    // response.data = JSON.parse(Decrypt(response.data));
+    // console.log(response)
     if (response.status === 200) {
       if (response.data.errcode == 401 || response.data.errcode == 402) {
         console.log('错误')
-        store.commit('clearToken', null)
+        MessageBox.alert('您好，您的登录时间已过期，请重新扫码登录！', '提示', {
+          confirmButtonText: '确定',
+          // cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          store.commit('clearToken', null)
+        }).catch(() => {        
+        });
       } else {
         return Promise.resolve(response);
       }
@@ -60,8 +83,14 @@ axios.interceptors.response.use(
     if (error.response.status) {
       switch (error.response.status) {
         case 401:
-          // // 清除token                  
-          store.commit('clearToken', null)
+          MessageBox.alert('您好，您的登录时间已过期，请重新扫码登录！', '提示', {
+            confirmButtonText: '确定',
+            // cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            store.commit('clearToken', null)
+          }).catch(() => {        
+          });
           console.log('401token过期清除token')
           break;
         default:

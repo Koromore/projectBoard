@@ -49,6 +49,10 @@ export default new Vuex.Store({
     // user: { userId: 415, deptId:153, realName: '褚艳珍' }, //员工信息
     // user: { userId: 3713, deptId:91, realName: '方兵' }, //员工信息
     // user: { userId: 539, deptId:121, realName: '刘定寰' }, //员工信息
+    // user: { userId: 54, deptId:125, realName: '胡婷' }, //员工信息
+    // user: { userId: 548, deptId:119, realName: '韩攀' }, //员工信息
+    // user: { userId: 764, deptId:91, realName: '刘婵' }, //员工信息
+    // user: { userId: 3985, deptId:102, realName: '朱俊' }, //员工信息
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
     // isLogin: 'error', //error/success, // 是否登陆

@@ -172,7 +172,7 @@
             <template slot-scope="scope" v-if="scope.row.isIgnore != true">
               <div class="linblo" v-if="userId == scope.row.initUserId">
                 <el-button
-                  size="small"
+                  size="mini"
                   v-if="scope.row.isIgnore != true && scope.row.status != 3 && scope.row.status != 5"
                   type="info"
                   @click="feedback(scope.row.proId,scope.row.taskId,scope.row.proName,scope.row.taskName)"
@@ -666,12 +666,23 @@ export default {
       this.changeDoUserNameShow = 'true'
       this.sousuo_show = false
       // console.log(this.clickCloseNum)
+    }, //proId
+    // proId: function(newQuestion, oldQuestion) {
+    //   // this.moreShow = false
+    //   cos
+    //   if (oldQuestion != '') {
+    //     this.getParams()
+    //   }
+    //   // console.log(this.clickCloseNum)
+    // },
+    $route(to, from) {
+      this.getParams()
     }
   },
   // 方法
   methods: {
     pickerOptionsTime() {
-      let expertTime = this.proExpertTime.replace(/-/g, '/')
+      let expertTime = this.proExpertTime
       this.pickerOptions = {
         disabledDate(time) {
           return (
@@ -895,7 +906,6 @@ export default {
       if (res.status == 200) {
         let data = res.data.data
         let projectShowDetail = data
-        // data.remark = data.remark.replace(/↵/g,"\n")
         this.projectShowDetail = data
         this.proName = data.proName
         this.proExpertTime = data.expertTime
@@ -911,7 +921,7 @@ export default {
           if (element == userId) {
             knowUserShow = false
           }
-          console.log(element)
+          // console.log(element)
         })
         if (
           data.listTask != '' ||
@@ -925,7 +935,7 @@ export default {
             }
           })
         }
-        if (data.manager==userId) {
+        if (data.manager == userId) {
           knowUserShow = true
         }
         this.knowUserShow = knowUserShow
@@ -974,7 +984,7 @@ export default {
       if (res.status == 200) {
         let data = res.data.data
         let deptId = this.deptId
-
+        let userId = this.userId
         // for (let i = 0; i < data.length; i++) {
         //   let element = data[i]
         //   if (element.deptId != deptId) {
@@ -998,6 +1008,9 @@ export default {
               let childrenData = {
                 value: element0.userId,
                 label: element0.realName
+              }
+              if (element0.userId == userId) {
+                childrenData.disabled = true
               }
               deptListData.children.push(childrenData)
             })
@@ -1244,7 +1257,7 @@ export default {
     taskFeedback() {
       // console.log(this.new_task.presetTime)
       // console.log(expertTime)
-      let updateTime = new Date()
+      let updateTime = this.$time0(new Date())
       let taskId = this.taskFeedbackId
       let feedbackFileList = this.feedbackFileList
       for (let i = 0; i < feedbackFileList.length; i++) {
@@ -1680,7 +1693,7 @@ export default {
 }
 .project_details .approval span {
   color: #000;
-  width: calc(100% - 132px);
+  width: calc(100% - 113px);
 }
 /* .project_details .approval > div {
   margin-bottom: 6px;
@@ -1841,7 +1854,7 @@ export default {
   height: 100%;
   padding: 0 24px 24px;
 }
-.project_details .records .records_list{
+.project_details .records .records_list {
   height: 100%;
 }
 .project_details .records .tabsBox {
@@ -1865,7 +1878,7 @@ export default {
   color: rgb(56, 148, 255);
   border-bottom: none;
 }
-.project_details .records .recordsListScrollbar{
+.project_details .records .recordsListScrollbar {
   height: calc(100% - 68px);
   margin-top: 32px;
 }
