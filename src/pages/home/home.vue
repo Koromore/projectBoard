@@ -47,7 +47,6 @@
         <!--------- 底部文档 start --------->
         <div class="bottom">
           <el-tooltip
-            class="item"
             effect="dark"
             content="点击查看操作文档"
             placement="top"
@@ -80,7 +79,7 @@
       </el-aside>
       <!--------- 左菜单栏 end --------->
       <el-container>
-        <!--------- 内容 start --------->
+        <!--------- 内容路由 start --------->
         <el-main>
           <router-view
             @getData="getData"
@@ -94,7 +93,7 @@
             :searchWordData="searchWordData"
           ></router-view>
         </el-main>
-        <!---------- 内容 end --------->
+        <!---------- 内容路由 end --------->
       </el-container>
     </el-container>
     <!--------- 抽屉添加项目 start --------->
@@ -106,10 +105,12 @@
     >
       <el-scrollbar style="height: 100%" v-loading="drawerLoading">
         <el-row class="add_box">
+          <!-- 项目名称 -->
           <el-col :span="6" class="title">项目名称</el-col>
           <el-col :span="17">
             <el-input placeholder="请输入内容" v-model="new_project.new_name" clearable></el-input>
           </el-col>
+          <!-- 客户选择 -->
           <el-col :span="6" class="title">客户</el-col>
           <el-col :span="17">
             <el-select v-model="clientId" filterable clearable placeholder="请选择" class="pasproject">
@@ -121,6 +122,7 @@
               ></el-option>
             </el-select>
           </el-col>
+          <!-- 业务类型 -->
           <el-col :span="6" class="title">业务类型</el-col>
           <el-col :span="17">
             <el-select
@@ -138,6 +140,7 @@
               ></el-option>
             </el-select>
           </el-col>
+          <!-- 所属立项 -->
           <el-col :span="6" class="title">所属立项</el-col>
           <el-col :span="17">
             <el-select
@@ -156,6 +159,7 @@
               ></el-option>
             </el-select>
           </el-col>
+          <!-- 预计时间 -->
           <el-col :span="6" class="title">预计时间</el-col>
           <el-col :span="17" class="presetTime">
             <el-date-picker
@@ -166,7 +170,7 @@
               @change="presetTimeChange"
             ></el-date-picker>
           </el-col>
-
+          <!-- 变更原因 -->
           <el-col :span="6" class="title title0" v-if="reasonShow"></el-col>
           <el-col :span="17" v-if="reasonShow">
             <el-input
@@ -178,7 +182,7 @@
               show-word-limit
             ></el-input>
           </el-col>
-
+          <!-- 需求 -->
           <el-col :span="6" class="title center">需求</el-col>
           <el-col :span="17">
             <el-input
@@ -190,6 +194,7 @@
               show-word-limit
             ></el-input>
           </el-col>
+          <!-- 附件 -->
           <el-col :span="6" class="title nobgimg">附件</el-col>
           <!-- 上传 -->
           <el-col :span="17" class="upload">
@@ -202,6 +207,7 @@
               <el-button size="mini" type="primary" v-show="disabled0">点击上传附件</el-button>
             </el-upload>
           </el-col>
+          <!-- 执行选择 -->
           <el-col :span="6" class="title">执行选择</el-col>
           <el-col :span="17">
             <el-radio v-model="radio2" label="1" :disabled="disabled1">项目经理</el-radio>
@@ -257,8 +263,8 @@
               >{{tag.name}}</el-tag>
             </el-col>
           </el-col>
-          <el-col :span="6" class="title nobgimg">知晓人</el-col>
           <!-- 知晓人编辑 start -->
+          <el-col :span="6" class="title nobgimg">知晓人</el-col>
           <el-col :span="12" class="knowAdd">
             <el-select v-model="add_list" filterable clearable placeholder="请选择">
               <el-option
@@ -297,6 +303,7 @@
     <!--------- 抽屉消息面板 start --------->
     <el-drawer title="消息列表" :visible.sync="drawer2">
       <el-row class="messageBox">
+        <!-- 标题 start -->
         <el-col :span="24" class="tabsBox">
           <el-col
             :span="8"
@@ -314,7 +321,11 @@
             @click.native="changeTabs(3)"
           >审核</el-col>
         </el-col>
+        <!-- 标题 end -->
+
+        <!-- 内容 start -->
         <el-col :span="24" class="paneBox">
+          <!-- 项目 start -->
           <el-col :span="24" class="pane" v-if="tabs == 1" v-loading="loading">
             <el-col
               :span="24"
@@ -333,13 +344,19 @@
                 <el-col :span="16" class="title">{{items.typeName}}&nbsp;&nbsp;</el-col>
                 <el-col :span="16" class="content" :offset="8">
                   <span>{{items.contents[0]}}</span>
-                  <el-link type="primary" @click.native="pathPrpjectDetails(items.proId,1)">{{items.contents[1]}}</el-link>
+                  <el-link
+                    type="primary"
+                    @click.native="pathPrpjectDetails(items.proId,1)"
+                  >{{items.contents[1]}}</el-link>
                   <span>{{items.contents[2]}}</span>
                 </el-col>
               </el-col>
               <el-col :span="24" class="noData" v-if="messageData.length == 0">暂无数据</el-col>
             </el-col>
           </el-col>
+          <!-- 项目 end -->
+
+          <!-- 任务 start -->
           <el-col :span="24" class="pane" v-else-if="tabs == 2" v-loading="loading">
             <el-col
               :span="24"
@@ -358,13 +375,19 @@
                 <el-col :span="16" class="title">{{items.typeName}}&nbsp;&nbsp;</el-col>
                 <el-col :span="16" class="content" :offset="8">
                   <span>{{items.contents[0]}}</span>
-                  <el-link type="primary" @click.native="pathPrpjectDetails(items.proId,1)">{{items.contents[1]}}</el-link>
+                  <el-link
+                    type="primary"
+                    @click.native="pathPrpjectDetails(items.proId,1)"
+                  >{{items.contents[1]}}</el-link>
                   <span>{{items.contents[2]}}</span>
                 </el-col>
               </el-col>
               <el-col :span="24" class="noData" v-if="messageData.length == 0">暂无数据</el-col>
             </el-col>
           </el-col>
+          <!-- 任务 end -->
+
+          <!-- 审核 start -->
           <el-col :span="24" class="pane" v-else-if="tabs == 3" v-loading="loading">
             <el-col
               :span="24"
@@ -383,14 +406,19 @@
                 <el-col :span="16" class="title">{{items.typeName}}&nbsp;&nbsp;</el-col>
                 <el-col :span="16" class="content" :offset="8">
                   <span>{{items.contents[0]}}</span>
-                  <el-link type="primary" @click.native="pathPrpjectDetails(items.proId,1)">{{items.contents[1]}}</el-link>
+                  <el-link
+                    type="primary"
+                    @click.native="pathPrpjectDetails(items.proId,1)"
+                  >{{items.contents[1]}}</el-link>
                   <span>{{items.contents[2]}}</span>
                 </el-col>
               </el-col>
               <el-col :span="24" class="noData" v-if="messageData.length == 0">暂无数据</el-col>
             </el-col>
           </el-col>
+          <!-- 审核 end -->
         </el-col>
+        <!-- 内容 end -->
       </el-row>
     </el-drawer>
     <!--------- 抽屉消息面板 end --------->
@@ -834,14 +862,13 @@ export default {
           data[i].contents = content
           // data[i].herf = '/#/home/components/project_details?id='+element.proId+'&type=1'
           // console.log(data[i].contents)
-
         })
         // console.log(data)
         let messageLReadStr = messageLRead.toString()
 
         let messageData = this.messageData
         // console.log(data[0].contents.split('"'))
-        
+
         this.messageData = messageData.concat(data)
         // /api/message/updateIsRead
         // console.log(messageLReadStr)

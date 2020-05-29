@@ -82,7 +82,7 @@ export default {
       }
       // rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY
       // let datatst = this.$Encrypt(JSON.stringify(data))
-      console.log(JSON.parse(this.$Decrypt("rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY")))
+      console.log(JSON.parse(this.$Decrypt("xTPYEv7HZqB7nMZBoCyMwSB3s1Cn1A1A9dU2yZqY8m3Kqm63ZhzKUOd1SUnS0dTGCQknhHzrOnYSXyCG1Icix4ZyltZdCjepwPPoFS6kATOMMpw5iL7vlgducw7eSWGMTtQxgZcEsgT0JxWmhqInDxMsQrfkP9XGG9679BBgYgg8qoL1hn+w8Z1ApeiGYndkB4MZoDvhyeEnnUVqqVUFWKskUkYwR3hha8C62W7K3WIWOfcOrXmBnRK19ZBKQfd15rhhz9kXu2jNBz6CI9zybGY3AxwA/PEvZm8DeFS8HDuPG0kvd5o6igSuIw8jUkEuwjig7ENLCz49d1NaIXiJKEu35xWmXe/nIhGRC5ro0Wz7pWjUaZ5VUWK49rESS+PI72yCHYVFFhBeWjZoEjEFwoC77ZScQIuE6qOEbOZ3M4c=")))
       // this.$axios
       //   .post('/pmbs/save', data)
       //   .then(res => {

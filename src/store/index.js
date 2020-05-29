@@ -14,6 +14,7 @@ export default new Vuex.Store({
     // user: { userId: 527, deptId: 91, subordinate: 91, realName: '付德全' }, //员工信息
     // user: { userId: 134, deptId: 150, realName: '成志朋' }, //员工信息
     // user: { userId: 6, deptId: 41, subordinate:41, realName: '宋秀' }, //员工信息
+    // user: { userId: 3914, deptId: 155, subordinate:41, realName: '鄢然' }, //员工信息
     // user: { userId: 266, deptId: 134, realName: '冯永强' }, //员工信息
     // user: { userId: 40, deptId: 134, realName: '桂婷' }, //员工信息
     // user: { userId: 403, deptId: 121, realName: '林成伟' }, //员工信息
@@ -53,6 +54,8 @@ export default new Vuex.Store({
     // user: { userId: 548, deptId:119, realName: '韩攀' }, //员工信息
     // user: { userId: 764, deptId:91, realName: '刘婵' }, //员工信息
     // user: { userId: 3985, deptId:102, realName: '朱俊' }, //员工信息
+    // user: { userId: 768, deptId:45, realName: '张航' }, //员工信息
+    // user: { userId: 572, deptId:118, realName: '赵颖慧' }, //员工信息
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
     // isLogin: 'error', //error/success, // 是否登陆

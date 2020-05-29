@@ -119,7 +119,7 @@
               @click.native="pathPrpjectDetails(scope.row.proId,0)"
             >{{scope.row.proName}}</el-link>
           </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="80">
+          <el-table-column prop="status" label="状态" width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isIgnore == true" class="state_color3">忽略</span>
               <span v-else-if="scope.row.status == 1" class="state_color1">执行中</span>
@@ -175,14 +175,14 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="expertTime" label="预计时间" sortable width="110">
+          <el-table-column prop="expertTime" label="预计时间" sortable width="100">
             <template slot-scope="scope">{{$date(scope.row.expertTime)}}</template>
           </el-table-column>
-          <el-table-column prop="overTime" label="完成时间" sortable width="110">
+          <el-table-column prop="overTime" label="完成时间" sortable width="100">
             <template slot-scope="scope">{{$date(scope.row.overTime)}}</template>
           </el-table-column>
-          <el-table-column prop="initUserName" label="下达人" min-width="80"></el-table-column>
-          <el-table-column prop="taskfileList" show-overflow-tooltip label="成果" min-width="90">
+          <el-table-column prop="initUserName" label="下达人" width="80"></el-table-column>
+          <el-table-column prop="taskfileList" show-overflow-tooltip label="成果" width="90">
             <div
               class="taskfile"
               slot-scope="scope"
@@ -937,7 +937,7 @@ export default {
     ///////// 上传附件 end /////////
     // 任务反馈
     taskFeedback() {
-      let updateTime = new Date()
+      let updateTime = new Date().getTime()
       let taskId = this.taskFeedbackId
       let feedbackFileList = this.feedbackFileList
       for (let i = 0; i < feedbackFileList.length; i++) {

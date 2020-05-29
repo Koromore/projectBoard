@@ -851,12 +851,19 @@ export default {
       let data = ''
       let userId = this.userId
       if (sousuo != undefined) {
-        data = `?proId=${proId}&taskName=${sousuo}&userId=${userId}`
+         data = {
+          proId: proId,
+          taskName: sousuo,
+          userId: userId
+        }
       } else {
-        data = `?proId=${proId}&userId=${userId}`
+        data = {
+          proId: proId,
+          userId: userId
+        }
       }
       this.$axios
-        .post('/pmbs/api/project/projectOfTask' + data)
+        .post('/pmbs/api/project/projectOfTask', data)
         .then(this.getProjectOfTaskSuss)
     },
     // 获取项目详情-我发起回调
@@ -874,12 +881,19 @@ export default {
       let data = ''
       let userId = this.userId
       if (sousuo != undefined) {
-        data = `?proId=${proId}&taskName=${sousuo}&userId=${userId}`
+        data = {
+          proId: proId,
+          taskName: sousuo,
+          userId: userId
+        }
       } else {
-        data = `?proId=${proId}&userId=${userId}`
+        data = {
+          proId: proId,
+          userId: userId
+        }
       }
       this.$axios
-        .post('/pmbs/api/project/projectOfUserTask' + data)
+        .post('/pmbs/api/project/projectOfUserTask', data)
         .then(this.getProjectOfUserTaskSuss)
     },
     // 获取项目详情-我参与回调
@@ -894,9 +908,11 @@ export default {
     ///////// 获取项目需求 start /////////
     getProjectShowDetail(proId) {
       this.loading = true
-      let data = `?proId=${proId}`
+      let data = {
+        proId: proId
+      }
       this.$axios
-        .post('/pmbs/api/project/showDetail' + data)
+        .post('/pmbs/api/project/showDetail', data)
         .then(this.getProjectShowDetailSuss)
     },
     // 获取项目需求回调/api/project/projectOfUserTask
@@ -909,8 +925,6 @@ export default {
         this.projectShowDetail = data
         this.proName = data.proName
         this.proExpertTime = data.expertTime
-        // this.transferTask.proExpertTime = data.expertTime
-        // this.$store.commit('proExpertTimeBan', data.expertTime)
         this.manager = data.manager // 项目经理
         this.proInitUserId = data.initUserId // 项目发起人
         this.pickerOptionsTime() // 禁用时间函数
@@ -950,10 +964,13 @@ export default {
     getProjectapiDetai(pasprojectId) {
       this.loading = true
       // let proId = pasprojectId
-      let data = `?projectId=${pasprojectId}`
+      let data = {
+        projectId: pasprojectId
+      }
       this.$axios
         .post(
-          'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax' + data
+          'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax',
+          data
         )
         .then(this.getProjectapiDetaiSuss)
     },
@@ -1027,9 +1044,14 @@ export default {
       let userId = this.userId
       let proId = this.$route.query.id
       let depId = this.$store.state.user.deptId
-      let data = `?userId=${userId}&proId=${proId}&depId=${depId}`
+      // let data = `?userId=${userId}&proId=${proId}&depId=${depId}`
+      let data = {
+        userId: userId,
+        proId: proId,
+        depId: depId
+      }
       this.$axios
-        .post('/pmbs/api/task/findParentTask' + data)
+        .post('/pmbs/api/task/findParentTask', data)
         .then(this.getParentTaskSuss)
     },
     // 父任务列表获取回调
@@ -1257,7 +1279,8 @@ export default {
     taskFeedback() {
       // console.log(this.new_task.presetTime)
       // console.log(expertTime)
-      let updateTime = this.$time0(new Date())
+      // let updateTime = this.$time0(new Date())
+      let updateTime = new Date().getTime()
       let taskId = this.taskFeedbackId
       let feedbackFileList = this.feedbackFileList
       for (let i = 0; i < feedbackFileList.length; i++) {
@@ -1265,7 +1288,6 @@ export default {
         feedbackFileList[i].taskId = taskId
       }
       let data = {
-        // deleteFlag: true,
         feedback: this.feedbackContent, // 反馈内容
         feedbackFileList: feedbackFileList, // 反馈附件
         initUserId: this.userId, // 反馈人ID
@@ -1443,7 +1465,11 @@ export default {
     openRecords() {
       // console.log('打开历史')
       let modularId = this.proId
-      let data = `?modularId=${modularId}&optype=0`
+      // let data = `?modularId=${modularId}&optype=0`
+      let data = {
+        modularId: modularId,
+        optype: 0
+      }
       this.operationList(data)
     },
     closeRecords() {
@@ -1454,12 +1480,16 @@ export default {
     changeTabs(id) {
       this.recordsTabsact = id
       let modularId = this.proId
-      let data = `?modularId=${modularId}&optype=${id}`
+      // let data = `?modularId=${modularId}&optype=${id}`
+      let data = {
+        modularId: modularId,
+        optype: id
+      }
       this.operationList(data)
     },
     operationList(data) {
       this.timelineLoading = true
-      this.$axios.post('/pmbs/operation/list' + data).then(res => {
+      this.$axios.post('/pmbs/operation/list', data).then(res => {
         if (res.status == 200) {
           let data = res.data.data
           // data = ''

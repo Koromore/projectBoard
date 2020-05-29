@@ -965,7 +965,11 @@ export default {
       this.drawer1_name = name
       this.proId = id
       let userId = this.userId
-      let data = `?proId=${id}&userId=${userId}`
+      // let data = `?proId=${id}&userId=${userId}`
+      let data = {
+        proId: id,
+        userId: userId
+      }
       this.getProjectTaskListInit(data)
 
       let feedbackFileList = this.feedbackFileList
@@ -1077,7 +1081,7 @@ export default {
     getProjectTaskListInit(data) {
       // let data = `?proId=${id}`
       this.$axios
-        .post('/pmbs/api/project/projectOfTask' + data)
+        .post('/pmbs/api/project/projectOfTask', data)
         .then(this.getProjectTaskListInitSuss)
         .catch(res => {
           console.log(res)
@@ -1115,7 +1119,7 @@ export default {
     },
     ///////// 项目反馈-任务批量反馈 start /////////
     projectFeedback() {
-      let updateTime = new Date()
+      let updateTime = new Date().getTime()
       let checkListTask = this.checkListTask
       let taskId = checkListTask.join(',')
       let feedbackFileList = this.feedbackFileList
@@ -1156,9 +1160,11 @@ export default {
     // /api/project/delProject?projectId=100
     // 项目删除
     delProject(id) {
-      let data = `?projectId=${id}`
+      let data = {
+        proId: id
+      }
       this.$axios
-        .post('/pmbs/api/project/delProject' + data)
+        .post('/pmbs/api/project/delProject', data)
         .then(this.delProjectSuss)
     },
     // 项目删除
@@ -1216,7 +1222,15 @@ export default {
       if (search == '') {
         proNameData = ''
       }
-      let data = `?inituserid=${userId}${clientIdData}${serviceIdData}${isUsualData}${statusData}${proNameData}`
+      // let data = `?inituserid=${userId}${clientIdData}${serviceIdData}${isUsualData}${statusData}${proNameData}`
+      let data = {
+        inituserid: userId,
+        clientId: clientId,
+        serviceId: serviceId,
+        isUsual: isUsual,
+        status: status,
+        proName: search
+      }
       if (id == 0) {
         // this.pageNum = this.$store.state.projectPageNum
         this.getProjectListAjax(data)
@@ -1251,7 +1265,9 @@ export default {
     getProjectListAjax(data0) {
       this.loading = true
       this.$axios
-        .post('/pmbs/api/project/listAjax' + data0)
+        .post('/pmbs/api/project/listAjax', data0)
+        // .post('/pmbs/api/project/listAjax?XfW+QGrbFZtSmirkImzung==')
+        // XfW+QGrbFZtSmirkImzung==
         .then(this.getProjectListAjaxSuss)
       // .catch(function(err) {
       //   // console.log('failed', err)
@@ -1264,6 +1280,7 @@ export default {
       // console.log(res)
       this.loading = false
       if (res.status == 200) {
+        console.log(res)
         let projectListOriginate = res.data.data.listProject
         for (let i = 0; i < projectListOriginate.length; i++) {
           let element = projectListOriginate[i]
@@ -1314,7 +1331,7 @@ export default {
     getProjectUserjoinproject(data1) {
       this.loading = true
       this.$axios
-        .post('/pmbs/api/project/userjoinproject' + data1)
+        .post('/pmbs/api/project/userjoinproject', data1)
         .then(this.getProjectUserjoinprojectSuss)
     },
     // 项目管理-我参与获取回调
@@ -1475,10 +1492,14 @@ export default {
     getPrincipalList() {
       let proId = this.principalProId
       let userId = this.userId
-      let data = `proId=${proId}&userId=${userId}`
+      // let data = `proId=${proId}&userId=${userId}`
+      let data = {
+        proId: proId,
+        userId: userId
+      }
       // http://nwne722jqh.52http.com/api/project/Implementset
       // /pmbs/api/project/Implementset
-      this.$axios.post('/pmbs/api/project/Implementset?' + data).then(res => {
+      this.$axios.post('/pmbs/api/project/Implementset?', data).then(res => {
         // console.log(res)
         if (res.status == 200) {
           let data = res.data.data
@@ -1514,7 +1535,7 @@ export default {
             }
             principalList.push(listUserData)
           })
-          console.log(principalList)
+          // console.log(principalList)
           this.principalList = principalList
           // console.log(this.principalData)
           let knowUser = []
@@ -1614,18 +1635,22 @@ export default {
       }
       // console.log(data)
       let formData = new FormData()
-      formData.append('proId', data.proId)
-      formData.append('bearUserIds', data.bearUserIds)
-      formData.append('knowUserIds', data.knowUserIds)
+      formData.append('proId', this.principalProId)
+      formData.append('bearUserIds', JSON.stringify(this.principalData))
+      formData.append('knowUser', knowUser)
       // http://nwne722jqh.52http.com/api/project/ImplementsetSave
       // /pmbs/api/project/ImplementsetSave
+      console.log(data)
+      console.log(formData)
       this.drawer4 = false
       this.$axios
-        .post('/pmbs/api/project/ImplementsetSave', formData)
+        .post('/pmbs/api/project/ImplementsetSave', data)
         .then(res => {
-          // console.log(res)
-          if (res.status == 200) {
+          console.log(res)
+          if (res.status == 200 && res.data.code == 0) {
             this.messageWin(res.data.data)
+          }else{
+            this.messageError(res.data.data)
           }
         })
     },
