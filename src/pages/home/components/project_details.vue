@@ -963,13 +963,11 @@ export default {
     ///////// 获取立项背景 start /////////
     getProjectapiDetai(pasprojectId) {
       this.loading = true
-      // let proId = pasprojectId
-      let data = {
-        projectId: pasprojectId
-      }
+      let proId = pasprojectId
+      let data = `?projectId=${proId}`
       this.$axios
         .post(
-          'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax',
+          'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax'+
           data
         )
         .then(this.getProjectapiDetaiSuss)

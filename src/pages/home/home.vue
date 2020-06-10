@@ -1166,8 +1166,10 @@ export default {
     // 获取项目详情
     getProjectShowDetail(proId) {
       this.drawerLoading = true
-      let data0 = `?proId=${proId}`
-      this.$axios.post('/pmbs/api/project/showDetail' + data0).then(res => {
+      let data0 = {
+        proId: proId
+      }
+      this.$axios.post('/pmbs/api/project/showDetail', data0).then(res => {
         this.drawerLoading = false
         // console.log(res)
         let data = res.data.data
