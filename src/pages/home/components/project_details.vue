@@ -1045,7 +1045,7 @@ export default {
       // let data = `?userId=${userId}&proId=${proId}&depId=${depId}`
       let data = {
         userId: userId,
-        proId: proId,
+        proId: proId*1,
         depId: depId
       }
       this.$axios

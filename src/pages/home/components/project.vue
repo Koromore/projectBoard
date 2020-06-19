@@ -372,7 +372,7 @@
                       style="width: 99px;"
                     >
                       <el-option
-                        v-for="item in principalList"
+                        v-for="item in userList"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
@@ -416,7 +416,7 @@
                       ref="prinInput"
                     >
                       <el-option
-                        v-for="item in principalList"
+                        v-for="item in userList"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
@@ -645,7 +645,7 @@ export default {
   // 侦听器
   watch: {
     principalValueChange: function(newQuestion, oldQuestion) {
-      let principalList = this.principalList
+      let principalList = this.userList
       if (newQuestion != '') {
         principalList.forEach(element => {
           if (element.value == newQuestion) {
@@ -655,7 +655,7 @@ export default {
       }
     },
     principalValueAdd: function(newQuestion, oldQuestion) {
-      let principalList = this.principalList
+      let principalList = this.userList
       if (newQuestion != '') {
         principalList.forEach(element => {
           if (element.value == newQuestion) {
@@ -1336,6 +1336,7 @@ export default {
     },
     // 项目管理-我参与获取回调
     getProjectUserjoinprojectSuss(res) {
+      // console.log(res)
       this.loading = false
       if (res.status == 200) {
         let projectListJoin = res.data.data.listProject
@@ -1500,7 +1501,7 @@ export default {
       // http://nwne722jqh.52http.com/api/project/Implementset
       // /pmbs/api/project/Implementset
       this.$axios.post('/pmbs/api/project/Implementset?', data).then(res => {
-        // console.log(res)
+        console.log(res)
         if (res.status == 200) {
           let data = res.data.data
           let listUser = data.listUser
@@ -1524,6 +1525,7 @@ export default {
             this.principalData = []
             this.changeShow = 0
           }
+
           let principalList = []
           listUser.forEach(element => {
             let listUserData = {
@@ -1537,6 +1539,7 @@ export default {
           })
           // console.log(principalList)
           this.principalList = principalList
+
           // console.log(this.principalData)
           let knowUser = []
           listKnowUser.forEach(element => {
@@ -1549,19 +1552,22 @@ export default {
     },
     // 添加项目担当
     addPrincipal() {
-      let principalData = this.principalData
-      let data = {
-        realName: this.principalLabelAdd,
-        userId: this.principalValueAdd,
-        projectId: this.principalProId,
-        deleteFlag: 0,
-        id: 0
+      if (this.principalLabelAdd) {
+        let principalData = this.principalData
+        let data = {
+          realName: this.principalLabelAdd,
+          userId: this.principalValueAdd,
+          projectId: this.principalProId,
+          deleteFlag: 0,
+          id: 0
+        }
+        // console.log(data)
+        principalData.push(data)
+        this.principalData = principalData
+        this.changeShow = ''
+        this.principalValueAdd = ''
+        this.principalLabelAdd = ''
       }
-      principalData.push(data)
-      this.principalData = principalData
-      this.changeShow = ''
-      this.principalValueAdd = ''
-      this.principalLabelAdd = ''
     },
     // 删除项目担当
     deletePrincipal(index, data) {
@@ -1643,16 +1649,14 @@ export default {
       console.log(data)
       console.log(formData)
       this.drawer4 = false
-      this.$axios
-        .post('/pmbs/api/project/ImplementsetSave', data)
-        .then(res => {
-          console.log(res)
-          if (res.status == 200 && res.data.code == 0) {
-            this.messageWin(res.data.data)
-          }else{
-            this.messageError(res.data.data)
-          }
-        })
+      this.$axios.post('/pmbs/api/project/ImplementsetSave', data).then(res => {
+        console.log(res)
+        if (res.status == 200 && res.data.code == 0) {
+          this.messageWin(res.data.data)
+        } else {
+          this.messageError(res.data.data)
+        }
+      })
     },
     closePrincipal() {
       this.principalData = []
@@ -2061,6 +2065,7 @@ export default {
   font-size: 16px;
 }
 .project .batton.pribatton {
+  background: white;
   height: 72px;
   box-sizing: border-box;
   padding: 0 49px;

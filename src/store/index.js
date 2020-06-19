@@ -11,7 +11,7 @@ export default new Vuex.Store({
     user: {}, // 员工信息
     // user: { userId: 152, deptId: 1, realName:'谭运猛'}, //员工信息
     // user: { userId: 28 }, //员工信息
-    // user: { userId: 527, deptId: 91, subordinate: 91, realName: '付德全' }, //员工信息
+    user: { userId: 527, deptId: 91, subordinate: 91, realName: '付德全' }, //员工信息
     // user: { userId: 134, deptId: 150, realName: '成志朋' }, //员工信息
     // user: { userId: 6, deptId: 41, subordinate:41, realName: '宋秀' }, //员工信息
     // user: { userId: 3914, deptId: 155, subordinate:41, realName: '鄢然' }, //员工信息
@@ -56,6 +56,8 @@ export default new Vuex.Store({
     // user: { userId: 3985, deptId:102, realName: '朱俊' }, //员工信息
     // user: { userId: 768, deptId:45, realName: '张航' }, //员工信息
     // user: { userId: 572, deptId:118, realName: '赵颖慧' }, //员工信息
+    // user: { userId: 4075, deptId:118, realName: '陈雪琴' }, //员工信息
+    // user: { userId: 717, deptId:119, realName: '殷丹' }, //员工信息
     token: '', // 登录令牌
     userSign: '', // 用户信息带参
     // isLogin: 'error', //error/success, // 是否登陆
@@ -89,7 +91,6 @@ export default new Vuex.Store({
      */
     beginReload(state) {
       // this.$store.commit('beginReload');
-
       //         this.$nextTick(()=>{
       //             this.$store.commit('endReload');
       //         })

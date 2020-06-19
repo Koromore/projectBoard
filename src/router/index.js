@@ -30,7 +30,7 @@ axios.interceptors.request.use(
       const userSign = store.state.userSign;
       token && (config.headers.token = token);
       userSign && (config.headers.userSign = userSign);
-      config.data = Encrypt(JSON.stringify(config.data))
+      // config.data = Encrypt(JSON.stringify(config.data))
     }
     // console.log(config)
     // if (config.url === '/pmbs/save') {
@@ -202,10 +202,10 @@ try {
   // if (window.sessionStorage.getItem('isLogin') == 'success') {
   // }
 
-    var user = JSON.parse(localStorage.getItem('user'));
-    let token = localStorage.getItem('token');
-    let userSign = localStorage.getItem('userSign');
-    store.commit('login', { token, user, userSign });
+    // var user = JSON.parse(localStorage.getItem('user'));
+    // let token = localStorage.getItem('token');
+    // let userSign = localStorage.getItem('userSign');
+    // store.commit('login', { token, user, userSign });
 
   // var user = JSON.parse(localStorage.getItem('user'));
   // let token = localStorage.getItem('token');
