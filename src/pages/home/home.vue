@@ -10,10 +10,7 @@
       >
         <!--------- 导航 start --------->
         <div class="navList">
-          <div
-            :class="[show_acti=='2' || show_acti=='6'?'title act':'title']"
-            @click="change_show(2,'project')"
-          >
+          <div :class="[show_acti=='2'?'title act':'title']" @click="change_show(2,'project')">
             <i class="el-icon-document-copy"></i>
             项目
           </div>
@@ -25,6 +22,14 @@
             <i class="el-icon-folder-opened"></i>
             文档
           </div>
+          <div :class="[show_acti=='6'?'title act':'title']" @click="change_show(6,'conference')">
+            <i class="el-icon-folder-opened"></i>
+            会议
+          </div>
+          <!-- <div :class="[show_acti=='7'?'title act':'title']" @click="change_show(6,'resource')">
+            <i class="el-icon-folder-opened"></i>
+            资源
+          </div> -->
           <div
             :class="[show_acti=='1'?'title act':'title']"
             @click="change_show(1,'statistics')"
@@ -46,12 +51,7 @@
 
         <!--------- 底部文档 start --------->
         <div class="bottom">
-          <el-tooltip
-            effect="dark"
-            content="点击查看操作文档"
-            placement="top"
-            :hide-after="1000"
-          >
+          <el-tooltip effect="dark" content="点击查看操作文档" placement="top" :hide-after="1000">
             <div @click="operator(1)">
               <i class="el-icon-document-remove"></i>
               <br />
@@ -1952,7 +1952,7 @@ export default {
   width: 39%;
 }
 .home >>> .el-drawer__body {
-  height: calc(100% - 52px);
+  height: calc(100% - 77px);
 }
 .home >>> .el-main .cell {
   text-align: left;
@@ -2112,5 +2112,10 @@ export default {
 }
 .home .knowAdd >>> .el-select {
   width: 100%;
+}
+</style>
+<style lang="scss">
+.el-scrollbar__wrap {
+  overflow-x: inherit;
 }
 </style>

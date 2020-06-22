@@ -76,23 +76,110 @@ export default {
   // 钩子函数
   mounted() {
     // test(){
-      let data = {
-        id: 1,
-        name: "解雨臣"
-      }
-      // rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY
-      // let datatst = this.$Encrypt(JSON.stringify(data))
-      console.log(JSON.parse(this.$Decrypt("xTPYEv7HZqB7nMZBoCyMwSB3s1Cn1A1A9dU2yZqY8m3Kqm63ZhzKUOd1SUnS0dTGCQknhHzrOnYSXyCG1Icix4ZyltZdCjepwPPoFS6kATOMMpw5iL7vlgducw7eSWGMTtQxgZcEsgT0JxWmhqInDxMsQrfkP9XGG9679BBgYgg8qoL1hn+w8Z1ApeiGYndkB4MZoDvhyeEnnUVqqVUFWKskUkYwR3hha8C62W7K3WIWOfcOrXmBnRK19ZBKQfd15rhhz9kXu2jNBz6CI9zybGY3AxwA/PEvZm8DeFS8HDuPG0kvd5o6igSuIw8jUkEuwjig7ENLCz49d1NaIXiJKEu35xWmXe/nIhGRC5ro0Wz7pWjUaZ5VUWK49rESS+PI72yCHYVFFhBeWjZoEjEFwoC77ZScQIuE6qOEbOZ3M4c=")))
-      // this.$axios
-      //   .post('/pmbs/save', data)
-      //   .then(res => {
-      //     console.log(res)
-      //     let data = this.$Decrypt(res.data)
-      //     console.log(data)
-      //   })
-      // create(data).then(res=>{
-      //     console.log(res)
-      //   })
+    let data = {
+      depNeeds: [
+        {
+          createTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          deleteFlag: true,
+          initUserId: 0,
+          isMust: true,
+          needDesc: 'string',
+          needId: 0,
+          needName: 'string',
+          typeId: 0,
+          updateTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          }
+        }
+      ],
+      depType: {
+        createTime: '2020-06-22T01:41:56.186Z',
+        deleteFlag: true,
+        deptId: 0,
+        typeId: 0,
+        typeName: 'string',
+        updateTime: '2020-06-22T01:41:56.186Z'
+      },
+      ids: 'string',
+      limit: 0,
+      offset: 0,
+      orderBys: 'string',
+      pageNum: 0,
+      pageSize: 0,
+      taskToNeeds: [
+        {
+          content: 'string',
+          deleteFlag: true,
+          id: 0,
+          needId: 0,
+          needName: 'string',
+          taskId: 0,
+          updateTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          }
+        }
+      ]
+    }
+    // rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY
+    // let datatst = this.$Encrypt(JSON.stringify(data))
+    console.log(
+      JSON.parse(
+        this.$Decrypt(
+          'xTPYEv7HZqB7nMZBoCyMwSB3s1Cn1A1A9dU2yZqY8m3Kqm63ZhzKUOd1SUnS0dTGCQknhHzrOnYSXyCG1Icix4ZyltZdCjepwPPoFS6kATOMMpw5iL7vlgducw7eSWGMTtQxgZcEsgT0JxWmhqInDxMsQrfkP9XGG9679BBgYgg8qoL1hn+w8Z1ApeiGYndkB4MZoDvhyeEnnUVqqVUFWKskUkYwR3hha8C62W7K3WIWOfcOrXmBnRK19ZBKQfd15rhhz9kXu2jNBz6CI9zybGY3AxwA/PEvZm8DeFS8HDuPG0kvd5o6igSuIw8jUkEuwjig7ENLCz49d1NaIXiJKEu35xWmXe/nIhGRC5ro0Wz7pWjUaZ5VUWK49rESS+PI72yCHYVFFhBeWjZoEjEFwoC77ZScQIuE6qOEbOZ3M4c='
+        )
+      )
+    )
+    // this.$axios
+    //   .post('/pmbs/save', data)
+    //   .then(res => {
+    //     console.log(res)
+    //     let data = this.$Decrypt(res.data)
+    //     console.log(data)
+    //   })
+    // create(data).then(res=>{
+    //     console.log(res)
+    //   })
     // },
   },
   // 方法
@@ -103,7 +190,6 @@ export default {
     clearFilter() {
       this.$refs.filterTable.clearFilter()
     },
-
 
     formatter(row, column) {
       return row.address

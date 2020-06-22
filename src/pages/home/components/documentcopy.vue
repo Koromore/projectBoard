@@ -103,91 +103,103 @@
       <div @click="table_tab(3)" :class="[tabs_activity==3 ? 'act' : '']">其他资料</div>
     </el-col>
     <div class="table-main">
-      <el-scrollbar style="width: 100%;height: 100%">
-        <el-col :span="24" class="tableList">
-          <el-col :span="11" v-for="(item, index) in tableData" :key="index" class="list">
-            <el-col :span="4" class="icon">
-              <img src="static/images/icon/word.png" alt srcset />
-            </el-col>
-            <el-col :span="10" class="text">
-              <el-col :span="24" class="docName">{{item.fileName}}</el-col>
-              <el-col :span="24" class="docMesg">{{item.realName}} 更新于{{item.updateTime}}</el-col>
-            </el-col>
-            <el-col :span="10" class="oper">
-              <i class="el-icon-view"></i>
-              <i
-                class="el-icon-refresh"
-                @click="upload2(index, item)"
-                v-if="item.doUserId == userId && item.status!=3 && item.status!=5"
-              ></i>
-              <i class="el-icon-download" @click="download(item)"></i>
-              <i class="el-icon-time" @click="lookHistory(index,item)"></i>
-              <i class="el-icon-s-promotion" @click="dialogVisibleSend = true"></i>
-            </el-col>
-          </el-col>
-        </el-col>
-      </el-scrollbar>
-      <el-dialog
-        title="发送人员"
-        :visible.sync="dialogVisibleSend"
-        width="30%"
-        @close="closeSend"
+      <el-table
+        v-loading="loading"
+        :data="tableData"
+        style="width: 100%"
+        height="100%"
+        ref="documentTable"
+        :default-sort="{prop: 'date', order: 'descending'}"
+        :row-class-name="tableRowClassName"
+        @row-click="rowClick"
+        :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
       >
-        <!-- 发送人员 start -->
-        <el-col :span="16">
-          <el-select
-            v-model="add_list"
-            filterable
-            clearable
-            placeholder="请选择"
-            size="small"
-            ref="knowInput"
-          >
-            <el-option
-              v-for="item in userList"
-              :key="item.index"
-              :label="item.label"
-              :value="item.value"
-              :disabled="item.disabled"
-            ></el-option>
-          </el-select>
-          <!-- {{add_list}} -->
-        </el-col>
-        <el-col :span="6" :offset="2">
-          <el-button size="small" type="primary" @click="showInput">添加</el-button>
-        </el-col>
-        <el-col :span="24" class="know_pop">
-          <el-tag
-            :key="tag.index"
-            v-for="(tag, index) in dynamicTags0"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag,index)"
-            class="know_pop_list"
-          >{{tag}}</el-tag>
-        </el-col>
-        <!-- 发送人员 end -->
-        <!-- {{dynamicTags0}}
-        {{dynamicTagsId}} -->
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisibleSend = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisibleSend = false">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
-    <el-col class="paging">
-      <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          layout="total, prev, pager, next"
-          :page-size="30"
-          :total="totalnum"
-          background
-        ></el-pagination>
+        <el-table-column label="文档" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <div @click.stop="changeNum(scope.$index,scope.row)">
+              <div v-if="editable[scope.$index]">
+                <el-input v-model="editFileName" size="mini" class="editRemarkInput">
+                  <el-button
+                    @click.stop="cellSave(scope.$index,scope.row)"
+                    slot="append"
+                    type="primary"
+                    size="mini"
+                  >确认</el-button>
+                </el-input>
+              </div>
+              <div v-else>
+                <img
+                  v-if="scope.row.suffix == 'doc' || scope.row.suffix == 'docx'"
+                  src="static/images/document/word.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="scope.row.suffix == 'xls' || scope.row.suffix == 'xlsx'"
+                  src="static/images/document/excle.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img
+                  v-else-if="scope.row.suffix == 'ppt' || scope.row.suffix == 'pptx'"
+                  src="static/images/document/ppt.png"
+                  width="16"
+                  alt
+                  srcset
+                />
+                <img v-else src="static/images/document/other.png" width="16" alt srcset />
+                <span>{{ scope.row.fileName }}</span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="clientName" label="客户" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="proName" label="项目" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="taskName" label="任务" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="updateTime" label="更新时间" sortable width="130"></el-table-column>
+        <el-table-column prop="realName" label="更新人" width="100"></el-table-column>
+        <el-table-column label="操作" width="240">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" content="重新上传" placement="top">
+              <el-button
+                v-if="scope.row.doUserId == userId && scope.row.status!=3 && scope.row.status!=5"
+                @click="upload2(scope.$index, scope.row)"
+                size="mini"
+                icon="el-icon-upload2"
+              ></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="下载文档" placement="top">
+              <el-button @click="download(scope.row)" size="mini" icon="el-icon-download"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="任务详情" placement="top">
+              <el-button @click="enterDetail(scope.row)" size="mini" icon="el-icon-share"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="历史文档" placement="top">
+              <el-button
+                @click="lookHistory(scope.$index,scope.row)"
+                size="mini"
+                icon="el-icon-time"
+              ></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="paging">
+        <div class="block">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            layout="total, prev, pager, next"
+            :page-size="30"
+            :total="totalnum"
+            background
+          ></el-pagination>
+        </div>
       </div>
-    </el-col>
+    </div>
     <el-drawer title="历史文档" :visible.sync="openHistory">
       <el-scrollbar>
         <div class="history-main">
@@ -275,8 +287,7 @@ export default {
     allClientIdList: Array,
     userclientIdList: Array,
     clickCloseNum: Number,
-    searchWordData: Object,
-    userList: Array
+    searchWordData: Object
   },
   components: {
     taskDetail
@@ -360,39 +371,7 @@ export default {
       nextuserValue: '', // 修改后执行人
       // 详情内更换执行人
       changeNameShow: false,
-      userValue: '', // 修改后执行人
-
-      ///////////
-      listtest: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-      gridData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
-      // dialogVisibleSend
-      dialogVisibleSend: false,
-      // 知晓人
-      add_list: '',
-      add_list0: '',
-      dynamicTags0: [], // 知晓人
-      dynamicTagsId: [] // 知晓人
+      userValue: '' // 修改后执行人
     }
   },
   // 侦听器
@@ -656,7 +635,7 @@ export default {
       // console.log(row.doUserId)
       let userId = this.userId
       // console.log(userId)
-      if (row.doUserId == userId) {
+      // if (row.doUserId == userId) {
         //设置是否可以编辑
         this.editable = new Array(this.tableData.length)
         this.editable[index] = true
@@ -669,9 +648,9 @@ export default {
         })
         // 绑定当前点击的文件名
         this.editFileName = row.fileName
-      } else {
-        this.messageWarning('您不是该任务执行人，无法修改文档名称！')
-      }
+      // } else {
+      //   this.messageWarning('您不是该任务执行人，无法修改文档名称！')
+      // }
     },
     /**
      * [upload2 重新上传]
@@ -767,7 +746,7 @@ export default {
           })
         })
         this.tableData = data
-        console.log(data)
+        // console.log(data)
       }
     },
     // 关闭任务详情回调
@@ -777,47 +756,6 @@ export default {
       if (res == 1) {
         this.getParams()
       }
-    },
-    // 添加知晓人标签
-    showInput() {
-      let list = this.dynamicTags0
-      let listId = this.dynamicTagsId
-      let add_list = this.add_list
-      let userList = this.userList
-      let cf = true
-      if (add_list != '') {
-        let add_list_data = ''
-        for (let i = 0; i < userList.length; i++) {
-          const element = userList[i]
-          if (element.value == add_list) {
-            add_list_data = element.label
-          }
-        }
-        for (let i = 0; i < list.length; i++) {
-          const element = list[i]
-          if (element == add_list_data) {
-            this.messageWarning('请勿重复添加')
-            cf = false
-          }
-        }
-        if (cf) {
-          list.push(add_list_data)
-          listId.push(add_list)
-          this.add_list = ''
-        }
-      } else if (add_list == '') {
-        this.messageWarning('信息为空')
-      }
-    },
-    // 删除知晓人标签
-    handleClose(tag, index) {
-      this.dynamicTags0.splice(this.dynamicTags0.indexOf(tag), 1)
-      this.dynamicTagsId.splice(index, 1)
-    },
-    // 关闭弹窗
-    closeSend(){
-      this.dynamicTags0=[]
-      this.dynamicTagsId=[]
     },
     // 消息提示
     messageWin(message) {
@@ -865,43 +803,6 @@ export default {
     .act {
       border-bottom: 2px solid black;
       color: black;
-    }
-  }
-  .table-main {
-    .tableList {
-      // height: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-content: flex-start;
-      .list {
-        border: 1px solid #ddd3d3;
-        margin-bottom: 24px;
-        height: 99px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        .icon {
-          text-align: center;
-        }
-        .text {
-          .docMesg {
-            font-size: 14px;
-            color: #959595;
-          }
-        }
-        .oper {
-          i {
-            font-size: 24px;
-            margin-right: 9px;
-            cursor: pointer;
-          }
-        }
-      }
-      // .list:nth-of-type(2n){
-      //   margin-left: 30px;
-      // }
     }
   }
 }
@@ -1029,13 +930,8 @@ export default {
   font-size: 14px;
 }
 .paging {
-  margin-top: 54px;
+  margin-top: 24px;
   text-align: center;
 }
 /*  */
-</style>
-<style lang="scss">
-.el-select {
-  width: 100%;
-}
 </style>

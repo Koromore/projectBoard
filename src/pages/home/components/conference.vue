@@ -1,5 +1,5 @@
 <template>
-  <div id="document" class="document">
+  <div id="conference" class="conference">
     <div>
       <el-row>
         <el-col :span="24" class="top">
@@ -23,157 +23,48 @@
               </el-select>
             </el-col>
           </el-col>
-          <el-col :span="7" class="tab tab1">
-            <el-button-group>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="tab1_change(item.businessId)"
-                :class="[serviceId==item.businessId ? 'act' : '']"
-                v-for="(item, index) in allBusinessList[0]"
-                :key="index"
-              >{{item.businessName}}</el-button>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                icon="el-icon-more"
-                @click.stop="tab1_more()"
-                :class="[moreShow==true ? 'act more' : 'more']"
-                v-if="allBusinessList[1]"
-                style="border-left: 0;"
-              ></el-button>
-            </el-button-group>
-            <el-card class="box-card" v-show="moreShow">
-              <el-button-group
-                v-for="(items, index) in allBusinessList"
-                :key="index"
-                v-show="index != 0"
-                class="moreBus"
-              >
-                <el-button
-                  type="primary"
-                  plain
-                  size="small"
-                  @click.stop="tab1_change(item.businessId)"
-                  :class="[serviceId==item.businessId ? 'act' : '']"
-                  v-for="(item, index) in items"
-                  :key="index"
-                >{{item.businessName}}</el-button>
-              </el-button-group>
-            </el-card>
-          </el-col>
-          <el-col :span="4" class="tab tab2">
-            <el-button-group>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="tab2_change(1,1)"
-                :class="[tab2_act=='1' ? 'act' : '']"
-              >&nbsp;&nbsp;&nbsp;&nbsp;专项&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-              <el-button
-                type="primary"
-                plain
-                size="small"
-                @click="tab2_change(2,0)"
-                :class="[tab2_act=='2' ? 'act' : '']"
-              >&nbsp;&nbsp;&nbsp;&nbsp;日常&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-            </el-button-group>
-          </el-col>
-          <el-col :span="8" class="tab tab3">
-            <!-- <el-input
-              @keyup.enter.native="searchHandle"
-              placeholder="搜索"
+          <el-col :span="7" class="tab" :offset="1">
+            <el-date-picker
+              v-model="value1"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
               size="small"
-              v-model="name"
-              class="sousuo"
-            >
-              <el-button @click="searchHandle" slot="append" size="small" icon="el-icon-search"></el-button>
-            </el-input>-->
+            ></el-date-picker>
           </el-col>
         </el-col>
       </el-row>
     </div>
     <el-col :span="24" class="tabs" v-if="userId != 152">
-      <div @click="table_tab(0)" :class="[tabs_activity==0 ? 'act' : '']">客户资料</div>
-      <div @click="table_tab(1)" :class="[tabs_activity==1 ? 'act' : '']">策划方案</div>
-      <div @click="table_tab(2)" :class="[tabs_activity==2 ? 'act' : '']">执行方案</div>
-      <div @click="table_tab(3)" :class="[tabs_activity==3 ? 'act' : '']">其他资料</div>
+      <div @click="table_tab(0)" :class="[tabs_activity==0 ? 'act' : '']">例行</div>
+      <div @click="table_tab(1)" :class="[tabs_activity==1 ? 'act' : '']">临时</div>
+      <div @click="table_tab(2)" :class="[tabs_activity==2 ? 'act' : '']">专题</div>
     </el-col>
     <div class="table-main">
-      <el-scrollbar style="width: 100%;height: 100%">
-        <el-col :span="24" class="tableList">
-          <el-col :span="11" v-for="(item, index) in tableData" :key="index" class="list">
-            <el-col :span="4" class="icon">
-              <img src="static/images/icon/word.png" alt srcset />
-            </el-col>
-            <el-col :span="10" class="text">
-              <el-col :span="24" class="docName">{{item.fileName}}</el-col>
-              <el-col :span="24" class="docMesg">{{item.realName}} 更新于{{item.updateTime}}</el-col>
-            </el-col>
-            <el-col :span="10" class="oper">
-              <i class="el-icon-view"></i>
-              <i
-                class="el-icon-refresh"
-                @click="upload2(index, item)"
-                v-if="item.doUserId == userId && item.status!=3 && item.status!=5"
-              ></i>
-              <i class="el-icon-download" @click="download(item)"></i>
-              <i class="el-icon-time" @click="lookHistory(index,item)"></i>
-              <i class="el-icon-s-promotion" @click="dialogVisibleSend = true"></i>
-            </el-col>
-          </el-col>
-        </el-col>
-      </el-scrollbar>
-      <el-dialog
-        title="发送人员"
-        :visible.sync="dialogVisibleSend"
-        width="30%"
-        @close="closeSend"
+      <el-table
+        v-loading="loading"
+        :data="tableData"
+        style="width: 100%"
+        height="100%"
+        ref="conferenceTable"
+        :default-sort="{prop: 'date', order: 'descending'}"
+        :row-class-name="tableRowClassName"
+        @row-click="rowClick"
+        :header-cell-style="{background:'rgb(236, 235, 235)',color:'#000'}"
       >
-        <!-- 发送人员 start -->
-        <el-col :span="16">
-          <el-select
-            v-model="add_list"
-            filterable
-            clearable
-            placeholder="请选择"
-            size="small"
-            ref="knowInput"
-          >
-            <el-option
-              v-for="item in userList"
-              :key="item.index"
-              :label="item.label"
-              :value="item.value"
-              :disabled="item.disabled"
-            ></el-option>
-          </el-select>
-          <!-- {{add_list}} -->
-        </el-col>
-        <el-col :span="6" :offset="2">
-          <el-button size="small" type="primary" @click="showInput">添加</el-button>
-        </el-col>
-        <el-col :span="24" class="know_pop">
-          <el-tag
-            :key="tag.index"
-            v-for="(tag, index) in dynamicTags0"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag,index)"
-            class="know_pop_list"
-          >{{tag}}</el-tag>
-        </el-col>
-        <!-- 发送人员 end -->
-        <!-- {{dynamicTags0}}
-        {{dynamicTagsId}} -->
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisibleSend = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisibleSend = false">确 定</el-button>
-        </span>
-      </el-dialog>
+        <el-table-column width="24"></el-table-column>
+        <el-table-column prop="kehu" label="客户" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="type" label="会议类型" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="time" label="会议时间" sortable show-overflow-tooltip></el-table-column>
+        <el-table-column prop="pop" label="参会人员" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="record" label="记录人" width="130"></el-table-column>
+        <el-table-column label="操作" width="240">
+          <template>
+            <el-button type="primary" size="mini">新增记录</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
     <el-col class="paging">
       <div class="block">
@@ -269,7 +160,7 @@
 import taskDetail from '@/pages/template/taskDetail'
 
 export default {
-  name: 'document',
+  name: 'conference',
   props: {
     allBusinessList: Array,
     allClientIdList: Array,
@@ -294,10 +185,10 @@ export default {
       isUsual: '', //是否是专项
       name: '', //搜索的关键字
       loading: false, //是否正在加载中
-      // 项目类型1选择
-      tab1_act: '',
-      // 项目类型2选择
-      tab2_act: '',
+      // // 项目类型1选择
+      // tab1_act: '',
+      // // 项目类型2选择
+      // tab2_act: '',
       businessList: this.$store.state.businessList, // 业务列表
       moreShow: false, // 显示更多业务
       clientIdList: this.$store.state.clientIdList, //客户列表
@@ -522,7 +413,7 @@ export default {
     //下一页
     handleCurrentChange(page) {
       this.$nextTick(() => {
-        this.$refs.documentTable.bodyWrapper.scrollTop = 0
+        this.$refs.conferenceTable.bodyWrapper.scrollTop = 0
       })
       this.pageNum = page
       this.getTaskfilePageList()
@@ -599,30 +490,30 @@ export default {
       }
     },
     // 查询按钮
-    tab1_change(id) {
-      // console.log(e)
-      let serviceId = this.serviceId
-      // let tab1_act = this.tab1_act
-      if (serviceId == id) {
-        this.serviceId = ''
-      } else {
-        this.serviceId = id
-      }
-    },
+    // tab1_change(id) {
+    //   // console.log(e)
+    //   let serviceId = this.serviceId
+    //   // let tab1_act = this.tab1_act
+    //   if (serviceId == id) {
+    //     this.serviceId = ''
+    //   } else {
+    //     this.serviceId = id
+    //   }
+    // },
     tab1_more(e) {
       let moreShow = this.moreShow
       this.moreShow = !moreShow
     },
     //
-    tab2_change(e, id) {
-      if (this.tab2_act == e) {
-        this.tab2_act = ''
-        this.isUsual = '' //0 是日常 1是专项
-      } else {
-        this.tab2_act = e
-        this.isUsual = id //0 是日常 1是专项
-      }
-    },
+    // tab2_change(e, id) {
+    //   if (this.tab2_act == e) {
+    //     this.tab2_act = ''
+    //     this.isUsual = '' //0 是日常 1是专项
+    //   } else {
+    //     this.tab2_act = e
+    //     this.isUsual = id //0 是日常 1是专项
+    //   }
+    // },
     // 搜索处理
     searchHandle: function() {
       this.getTaskfilePageList()
@@ -731,7 +622,7 @@ export default {
     // 获取文档列表
     getTaskfilePageList(data) {
       if (!this.loading) {
-        this.loading = true
+        // this.loading = true
 
         let data = {
           userid: this.userId,
@@ -742,32 +633,43 @@ export default {
           isUsual: this.isUsual, //是否是专项
           name: this.name //搜索的关键字
         }
-        this.$axios
-          .post('/pmbs/api/taskfile/getTaskfilePageList', data)
-          .then(this.getTaskfilePageListSuss)
-      }
-    },
-    // 获取文档列表回调
-    getTaskfilePageListSuss(res) {
-      // console.log(res)
-      this.loading = false
-      if (res.status == 200) {
-        let data = res.data.items
-        for (let i = 0; i < data.length; i++) {
-          let element = data[i]
-          data[i].updateTime = this.$time(element.updateTime)
-        }
-        this.totalnum = res.data.totalRows
-        let clientIdList = this.allClientIdList
-        data.forEach((element, i) => {
-          clientIdList.forEach(element_ => {
-            if (element.clientId == element_.value) {
-              data[i].clientName = element_.label
-            }
+        this.tableData
+        let list = [1, 2, 3, 4, 5, 6]
+        list.forEach(element => {})
+        for (let i = 0; i < 30; i++) {
+          this.tableData.push({
+            kehu: '沃尔沃',
+            type: '客户汇报',
+            time: '20-06-21 09:00-10:00',
+            pop: '黄震宇，唐潘',
+            record: 'Carmen'
           })
-        })
-        this.tableData = data
-        console.log(data)
+        }
+        this.totalnum = 10
+        // this.$axios
+        //   .post('/pmbs/api/taskfile/getTaskfilePageList', data)
+        //   .then(res => {
+        //     console.log(res)
+        //     this.loading = false
+        //     if (res.status == 200) {
+        //       let data = res.data.items
+        //       for (let i = 0; i < data.length; i++) {
+        //         let element = data[i]
+        //         data[i].updateTime = this.$time(element.updateTime)
+        //       }
+        //       this.totalnum = res.data.totalRows
+        //       let clientIdList = this.allClientIdList
+        //       data.forEach((element, i) => {
+        //         clientIdList.forEach(element_ => {
+        //           if (element.clientId == element_.value) {
+        //             data[i].clientName = element_.label
+        //           }
+        //         })
+        //       })
+        //       this.tableData = data
+        //       console.log(data)
+        //     }
+        //   })
       }
     },
     // 关闭任务详情回调
@@ -815,9 +717,9 @@ export default {
       this.dynamicTagsId.splice(index, 1)
     },
     // 关闭弹窗
-    closeSend(){
-      this.dynamicTags0=[]
-      this.dynamicTagsId=[]
+    closeSend() {
+      this.dynamicTags0 = []
+      this.dynamicTagsId = []
     },
     // 消息提示
     messageWin(message) {
@@ -842,8 +744,19 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#document {
+#conference {
   height: 100%;
+  .top {
+    height: 36px;
+    .filtrateClient {
+      width: 100%;
+    }
+    .title {
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+    }
+  }
   .tabs {
     font-weight: 700;
     font-size: 16px;
@@ -906,101 +819,28 @@ export default {
   }
 }
 
-.document .top {
-  height: 36px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
-.document .top .filtrateClient {
-  width: 100%;
-}
-.document .top .title {
-  height: 32px;
-  line-height: 32px;
-  text-align: center;
-}
-.document .top .tab3 {
-  /*height: 36px;*/
-  border: none;
-  color: white;
-}
-.document .top .tab3 .sousuo {
-  width: 320px;
-  /*height: 36px;*/
-  border: none;
-  color: white;
-}
-.document .top .tab1 {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-.document .top .tab2 {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-.document .top .tab3 {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-.document .top .tab1 button:nth-of-type(3) {
-  border-left: 0;
-}
-.document .top .tab1 .box-card {
-  width: 272px;
-  padding: 0 8px;
-  position: absolute;
-  top: 36px;
-  left: 50%;
-  margin-left: -147px;
-  z-index: 9999;
-}
-.document .top .tab1 .box-card >>> .el-card__body {
-  padding: 9px 0;
-}
-.document .top .tab1 .box-card .moreBus {
-  margin-bottom: 9px;
-}
-.document .top button {
-  width: 72px;
-  padding: 9px;
-}
-.document .top .more {
-  width: 32px;
-  padding: 9px;
-}
-.document .top .tab1 .el-button--primary.is-plain {
+.conference .top .tab1 .el-button--primary.is-plain {
   border-color: #ddd;
 }
-.document .top .tab2 .el-button--primary.is-plain {
+.conference .top .tab2 .el-button--primary.is-plain {
   border-color: #ddd;
 }
-.document .top .tab1 >>> .el-button,
-.document .top .tab2 >>> .el-button {
+.conference .top .tab1 >>> .el-button,
+.conference .top .tab2 >>> .el-button {
   background: #fff;
   color: black;
 }
-.document .top .tab1 >>> .el-button:nth-of-type(4) {
+.conference .top .tab1 >>> .el-button:nth-of-type(4) {
   border-left: none;
 }
-.document .top .tab1 >>> .el-button:hover,
-.document .top .tab2 >>> .el-button:hover {
+.conference .top .tab1 >>> .el-button:hover,
+.conference .top .tab2 >>> .el-button:hover {
   background: #409eff;
   color: white;
   border: 1px solid #409eff;
 }
-.document .top .tab1 >>> .el-button.act,
-.document .top .tab2 >>> .el-button.act {
+.conference .top .tab1 >>> .el-button.act,
+.conference .top .tab2 >>> .el-button.act {
   background: #409eff;
   color: white;
   border: 1px solid #409eff;

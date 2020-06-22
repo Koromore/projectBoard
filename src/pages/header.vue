@@ -163,7 +163,7 @@ export default {
   }
 }
 </script>
-<style >
+<style lang="scss">
 .topheader {
   padding-bottom: 75px;
   background-color: rgb(13, 13, 13);
@@ -232,9 +232,9 @@ export default {
 .topheader .el-dropdown {
   font-size: 15px;
 }
-.el-dropdown-menu {
-  min-width: 160px;
-}
+// .el-dropdown-menu {
+//   min-width: 160px;
+// }
 .el-dropdown-menu span {
   text-align: center;
   display: block;
