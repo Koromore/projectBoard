@@ -11,27 +11,16 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // http://3m4igwpda0.53http.tech/pmbs/api/statistic/listAjax
-      '/pmbs_back': {
-        target: 'http://176.10.10.235:8081/', // 线上接口的域名
-        // target: 'http://176.10.10.19:8089/', // 本地接口的域名 强
-        // target: 'http://176.10.10.13:8089/', // 本地接口的域名 俊
-        
-        'secure': false, // 如果是https接口，需要配置这个参数
-        'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
-        'pathRewrite': {
-          '^/pmbs_back': 'pmbs_back'
-        }
-      },
       '/pmbs': {
-        target: 'http://218.106.254.122:8084/', // 线上接口的域名
+        // target: 'http://218.106.254.122:8084/', // 线上接口的域名
+        target: 'http://176.10.10.235:8081/', // 测试接口的域名
         // target: 'http://176.10.10.19:8089/', // 本地接口的域名 强
         // target: 'http://176.10.10.13:8089/', // 本地接口的域名 俊
-        
         'secure': false, // 如果是https接口，需要配置这个参数
         'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
         'pathRewrite': {
-          '^/pmbs': 'pmbs'
+          // '^/pmbs': 'pmbs'
+          '^/pmbs': 'pmbs_back'
         }
       }
       

@@ -23,6 +23,13 @@
             @click="table_tab(2)"
             :class="[tabs_activity=='2' ? 'act' : '']"
           >项目需求</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            @click="table_tab(3)"
+            :class="[tabs_activity=='3' ? 'act' : '']"
+          >文档</el-button>
         </el-button-group>
       </el-col>
       <el-col :span="7" :offset="10" class="detail_list">
@@ -58,7 +65,7 @@
         </el-col>
       </el-col>
       <!--------- 任务列表 start --------->
-      <el-col :span="24" class="table table1" v-if="tabs_activity == 1">
+      <el-col :span="24" class="table table1" v-show="tabs_activity == 1">
         <!--  -->
         <el-table
           v-loading="loading"
@@ -217,7 +224,7 @@
       </el-col>
       <!--------- 任务列表 end --------->
       <!--------- 项目需求 start --------->
-      <el-col :span="24" class="table table2" v-if="tabs_activity == 2" v-loading="loading">
+      <el-col :span="24" class="table table2" v-show="tabs_activity == 2" v-loading="loading">
         <el-col :span="14" class="need">
           <el-col :span="24" class="span">信息</el-col>
           <el-col :span="24" class="content">
@@ -319,11 +326,100 @@
         </el-col>
       </el-col>
       <!--------- 项目需求 end --------->
+      <el-col :span="24" class="table table3" v-show="tabs_activity == 3" v-loading="loading">
+        <el-col :span="24" class="tabs">
+          <div @click="docTable_tab(1)" :class="[docTabs_activity==1 ? 'act' : '']">客户资料</div>
+          <div @click="docTable_tab(2)" :class="[docTabs_activity==2 ? 'act' : '']">策划方案</div>
+          <div @click="docTable_tab(3)" :class="[docTabs_activity==3 ? 'act' : '']">执行方案</div>
+          <div @click="docTable_tab(4)" :class="[docTabs_activity==4 ? 'act' : '']">其他资料</div>
+        </el-col>
+        <el-col :span="24" class="table-main" v-loading="loading">
+          <el-scrollbar style="width: 100%;height: 100%">
+            <el-col :span="24" class="tableList">
+              <el-col :span="11" v-for="(item, index) in docTableData" :key="index" class="list">
+                <el-col :span="4" class="icon">
+                  <img src="static/images/icon/word.png" alt srcset />
+                </el-col>
+                <el-col :span="10" class="text">
+                  <el-col :span="24" class="docName">{{item.fileName}}</el-col>
+                  <el-col :span="24" class="docMesg">{{item.realName}} 更新于{{item.updateTime}}</el-col>
+                </el-col>
+                <el-col :span="10" class="oper">
+                  <!-- <i class="el-icon-view"></i>
+                  <i
+                    class="el-icon-refresh"
+                    @click="upload2(index, item)"
+                    v-if="item.doUserId == userId && item.status!=3 && item.status!=5"
+                  ></i>
+                  <i class="el-icon-download" @click="download(item)"></i>
+                  <i class="el-icon-time" @click="lookHistory(index,item)"></i>
+                  <i class="el-icon-s-promotion" @click="dialogVisibleSend = true"></i> -->
+                  <i class="el-icon-view" @click="preview(item.localPath)"></i>
+                  <!-- <i class="el-icon-refresh"></i> -->
+                  <i class="el-icon-download" @click="download(item)"></i>
+                  <!-- <i class="el-icon-time"></i> -->
+                  <i class="el-icon-s-promotion" ></i>
+                </el-col>
+              </el-col>
+            </el-col>
+          </el-scrollbar>
+          <!-- <el-dialog title="发送人员" :visible.sync="dialogVisibleSend" width="30%" @close="closeSend">
+            <el-col :span="16">
+              <el-select
+                v-model="add_list"
+                filterable
+                clearable
+                placeholder="请选择"
+                size="small"
+                ref="knowInput"
+              >
+                <el-option
+                  v-for="item in userList"
+                  :key="item.index"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="6" :offset="2">
+              <el-button size="small" type="primary" @click="showInput">添加</el-button>
+            </el-col>
+            <el-col :span="24" class="know_pop">
+              <el-tag
+                :key="tag.index"
+                v-for="(tag, index) in dynamicTags0"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag,index)"
+                class="know_pop_list"
+              >{{tag}}</el-tag>
+            </el-col>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogVisibleSend = false">取 消</el-button>
+              <el-button type="primary" @click="dialogVisibleSend = false">确 定</el-button>
+            </span>
+          </el-dialog>-->
+        </el-col>
+        <!-- <el-col class="paging">
+          <div class="block">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageNum"
+              layout="total, prev, pager, next"
+              :page-size="30"
+              :total="totalnum"
+              background
+            ></el-pagination>
+          </div>
+        </el-col>-->
+      </el-col>
       <!--------- 抽屉创建任务 --------->
       <el-drawer title="创建任务" :visible.sync="drawer1" @close="addTaskClose">
         <el-scrollbar style="height: 100%">
-          <el-row class="add_box">
-            <el-col :span="6" class="title">父任务</el-col>
+          <el-row class="add_box" v-loading="drawerLoading">
+            <el-col :span="6" class="title snowflake">父任务</el-col>
             <el-col :span="18">
               <el-select
                 v-model="new_task.faTask"
@@ -343,7 +439,7 @@
               </el-select>
             </el-col>
             <el-col :span="24">
-              <el-col :span="6" class="title title2">执行人</el-col>
+              <el-col :span="6" class="title title2 snowflake">执行人</el-col>
               <el-col :span="18" class="department">
                 <!-- <el-radio
                   v-model="new_task.department"
@@ -367,13 +463,20 @@
                 </el-cascader>-->
               </el-col>
             </el-col>
-            <el-col :span="6" class="title">任务名称</el-col>
+            <el-col :span="6" class="title snowflake">任务名称</el-col>
             <el-col :span="18">
               <el-input placeholder="请输入内容" v-model="new_task.new_name" clearable></el-input>
             </el-col>
-            <el-col :span="6" class="title">任务类型</el-col>
+            <el-col :span="6" class="title snowflake">任务类型</el-col>
             <el-col :span="18" class="task_type">
-              <el-select v-model="task_type_value" placeholder="请选择任务类型" no-data-text="请先选择部门">
+              <el-select
+                v-model="task_type_value"
+                placeholder="请选择任务类型"
+                clearable
+                filterable
+                no-data-text="请先选择部门"
+                @change="taskTypeChange"
+              >
                 <el-option
                   v-for="item in task_type"
                   :key="item.value"
@@ -382,7 +485,7 @@
                 ></el-option>
               </el-select>
             </el-col>
-            <el-col :span="6" class="title">预计时间</el-col>
+            <el-col :span="6" class="title snowflake">预计时间</el-col>
             <el-col :span="18" class="presetTime">
               <el-date-picker
                 v-model="new_task.presetTime"
@@ -391,16 +494,35 @@
                 :picker-options="pickerOptions"
               ></el-date-picker>
             </el-col>
-            <el-col :span="6" class="title">需求</el-col>
-            <el-col :span="18">
-              <el-input
-                type="textarea"
-                :autosize="{ minRows: 6, maxRows: 8}"
-                placeholder="请输入内容"
-                v-model="new_task.remark"
-                maxlength="300"
-                show-word-limit
-              ></el-input>
+            <el-col :span="24" v-for="(item, index) in taskToNeeds" :key="index">
+              <el-col
+                :span="6"
+                class="title"
+                :class="[item.isMust ? 'snowflake title' : 'title']"
+              >{{item.needName}}</el-col>
+              <el-col :span="18">
+                <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 3, maxRows: 6}"
+                  :placeholder="item.needDesc"
+                  v-model="item.content"
+                  maxlength="300"
+                  show-word-limit
+                ></el-input>
+              </el-col>
+            </el-col>
+            <el-col :span="24" v-if="!taskToNeeds.length">
+              <el-col :span="6" class="title snowflake">需求</el-col>
+              <el-col :span="18">
+                <el-input
+                  type="textarea"
+                  :autosize="{ minRows: 3, maxRows: 6}"
+                  placeholder="请输入内容"
+                  v-model="new_task.remark"
+                  maxlength="300"
+                  show-word-limit
+                ></el-input>
+              </el-col>
             </el-col>
             <!-- 上传 -->
             <el-col :span="6" class="title nobgimg">附件</el-col>
@@ -409,12 +531,11 @@
                 :action="uploadUrl"
                 :on-remove="handleRemove"
                 :on-success="handleSuccess"
-                :limit="1"
-                :on-exceed="exceed"
+                :on-change="taskFileChange"
                 ref="addUpload"
+                :auto-upload="false"
               >
-                <el-button size="small" type="primary">点击上传附件</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传一个文件</div>
+                <el-button slot="trigger" size="small" type="primary">点击上传附件</el-button>
               </el-upload>
             </el-col>
             <!-- 上传 -->
@@ -425,6 +546,23 @@
           <el-button size="small" type="primary" @click="putIn">提交</el-button>
         </el-col>
       </el-drawer>
+      <!-- <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button> -->
+
+      <el-dialog title="文档分类" :visible.sync="docDialogVisible" width="40%">
+        <!-- <span>这是一段信息</span> -->
+        <div>
+          <el-radio-group v-model="sortId">
+            <el-radio :label="1">客户资料</el-radio>
+            <el-radio :label="2">策划方案</el-radio>
+            <el-radio :label="3">执行方案</el-radio>
+            <el-radio :label="4">其他资料</el-radio>
+          </el-radio-group>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="confirmTaskFile(0)">取 消</el-button>
+          <el-button type="primary" @click="confirmTaskFile(1)">确 定</el-button>
+        </span>
+      </el-dialog>
       <!--------- 历史记录抽屉 start --------->
       <el-drawer title="历史记录" :visible.sync="drawer2" @open="openRecords" @close="closeRecords">
         <el-row class="records">
@@ -542,6 +680,7 @@
   </div>
 </template>
 <script>
+import {preview} from "@/utils/preview";// 引入文件预览方法
 import taskDetail from '@/pages/template/taskDetail'
 
 export default {
@@ -583,6 +722,7 @@ export default {
       // 1执行中 2审核中 3已完成 4延期
       // 我参与 我发起选项卡
       tabs_activity: 1,
+      docTabs_activity: 1,
       table_show: true,
       // 父任务列表
       faTaskList: [],
@@ -596,6 +736,7 @@ export default {
         task_type: '',
         remark: ''
       },
+      taskToNeeds: [],
       // 禁止选择当前时间之前的时间
       proExpertTime: '',
       pickerOptions: {},
@@ -638,6 +779,8 @@ export default {
       listProFileResult: [], // 上传文件信息列表
       fileList1: [],
       oldFileId: '',
+      docDialogVisible: false,
+      sortId: 0,
       // 更换执行人
       changeDoUserNameShow: 'true',
       nextuserList: [], // 下属信息
@@ -645,12 +788,14 @@ export default {
       // 详情内更换执行人
       changeNameShow: false,
       userValue: '', // 修改后执行人
-      knowUserShow: true // 知晓人添加任务按钮判断
+      knowUserShow: true, // 知晓人添加任务按钮判断
       // 任务详情页传递参数
       // transferTask: {
       //   taskId: '',
       //   proExpertTime: ''
       // }
+      // 文档列表
+      docTableData: []
     }
   },
   // 侦听器
@@ -679,8 +824,22 @@ export default {
       this.getParams()
     }
   },
+  // 钩子函数
+  mounted() {
+    // this.widthheight()
+    // 获取页面传参
+    this.getParams()
+    this.upload()
+
+    // 获取文档列表
+    this.getTaskfilePageList()
+
+    // this.getProjectapiDetai() // 获取立项背景
+    // console.log(Date.now('2030-03-17 00:00:00'))
+  },
   // 方法
   methods: {
+    preview,
     pickerOptionsTime() {
       let expertTime = this.proExpertTime
       this.pickerOptions = {
@@ -767,6 +926,16 @@ export default {
         this.getProjectShowDetail(proId)
       }
     },
+    // 文档选项卡
+    docTable_tab(e) {
+      this.docTabs_activity = e
+      // if (e == 1) {
+      //   this.getParams()
+      // } else if (e == 2) {
+      //   let proId = this.proId
+      //   this.getProjectShowDetail(proId)
+      // }
+    },
     redact(taskId) {
       this.$confirm('是否忽略此任务', '确认信息', {
         distinguishCancelAndClose: true,
@@ -851,7 +1020,7 @@ export default {
       let data = ''
       let userId = this.userId
       if (sousuo != undefined) {
-         data = {
+        data = {
           proId: proId,
           taskName: sousuo,
           userId: userId
@@ -967,8 +1136,7 @@ export default {
       let data = `?projectId=${proId}`
       this.$axios
         .post(
-          'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax'+
-          data
+          'http://pms.guoxinad.com.cn/pas/projectapi/projectDetailAjax' + data
         )
         .then(this.getProjectapiDetaiSuss)
     },
@@ -987,7 +1155,7 @@ export default {
     getDeptList(res) {
       let list = this.deptList
       if (list.length == 0) {
-        let data = { pageNum: 1 }
+        let data = {}
         this.$axios
           .post('/pmbs/department/deptList', data)
           .then(this.getDeptListSuss)
@@ -1045,7 +1213,7 @@ export default {
       // let data = `?userId=${userId}&proId=${proId}&depId=${depId}`
       let data = {
         userId: userId,
-        proId: proId*1,
+        proId: proId * 1,
         depId: depId
       }
       this.$axios
@@ -1082,6 +1250,22 @@ export default {
       `
       this.uploadUrl = uploadUrl
     },
+    // 文件状态改变时
+    taskFileChange(file, fileList) {
+      // console.log(file)
+      // console.log(fileList)
+      if (file.status == 'ready') {
+        this.docDialogVisible = true
+        this.sortId = ''
+      }
+    },
+    confirmTaskFile(prm) {
+      this.docDialogVisible = false
+      if (!prm) {
+        this.sortId = ''
+      }
+      this.$refs.addUpload.submit()
+    },
     // 上传回调
     handleSuccess(res, file, fileList) {
       // console.log('上传附件成功')
@@ -1095,6 +1279,7 @@ export default {
           fileId: '', // 文档ID
           fileName: resData.fileName, //'附件名称',
           isPro: 1, // '项目任务需求（0-项目需求，1-任务需求）',
+          sortId: this.sortId,
           deleteFlag: false, // 是否删除
           ptId: this.taskData.taskId || '', //所属任务ID
           localPath: resData.path, //'本地路径',
@@ -1168,10 +1353,10 @@ export default {
         initUserId: this.userId, //'发起人id',
         proFileList: this.listProFile, // 上传文档列表
         proId: this.proId, // '所属项目id',
-        remark: this.new_task.remark, // '需求',
+        // remark: this.new_task.remark, // '需求',
         taskName: this.new_task.new_name, //'任务名',
         typeId: this.task_type_value, //'任务类型id'
-
+        taskToNeeds: this.taskToNeeds,
         // 操作标识
         operationDetail: '',
         operationType: 4,
@@ -1189,16 +1374,26 @@ export default {
       ) {
         this.messageError('带*信息不能为空')
       } else {
-        this.taskSave(data)
-        this.drawer1 = false
-        this.new_task.presetTime = ''
-        this.new_task.faTask = ''
-        this.new_task.department = ''
-        this.new_task.new_name = ''
-        this.new_task.presetTime = ''
-        this.task_type_value = ''
-        this.new_task.remark = ''
-        this.listProFile = []
+        let falg = true
+        data.taskToNeeds.forEach(element => {
+          if (element.isMust && element.content == '') {
+            falg = false
+          }
+        })
+        if (falg) {
+          this.drawerloading = true
+          this.taskSave(data)
+          this.new_task.presetTime = ''
+          this.new_task.faTask = ''
+          this.new_task.department = ''
+          this.new_task.new_name = ''
+          this.new_task.presetTime = ''
+          this.task_type_value = ''
+          this.new_task.remark = ''
+          this.listProFile = []
+        } else {
+          this.messageError('带*信息不能为空')
+        }
       }
     },
     ///////// 任务新增/修改/完成 start /////////
@@ -1211,6 +1406,8 @@ export default {
     taskSaveSuss(res) {
       // console.log(res)
       if (res.status == 200) {
+        this.drawer1 = false
+        this.drawerloading = true
         // this.projectListJoin = res.data.data
         this.messageWin(res.data.msg)
 
@@ -1222,6 +1419,17 @@ export default {
       }
     },
     ///////// 任务新增/修改/完成 end /////////
+
+    ///////// 上传文档类型选择关闭回调 end /////////
+    // docDialogClose(done) {
+    //   this.$confirm('确认关闭？')
+    //     .then(_ => {
+    //       done()
+    //     })
+    //     .catch(_ => {})
+    // },
+    ///////// 上传文档类型选择关闭回调 end /////////
+
     ///////// 上传附件 start /////////
     handleRemoveFeedback(file, fileList) {
       // console.log(file)
@@ -1315,18 +1523,23 @@ export default {
     },
     // 任务类型获取
     getDepTypeList(res) {
-      if (res != undefined) {
+      console.log(res)
+      if (res.length != 0) {
         let deptId = this.new_task.department[0]
         let data = {
           depType: {
-            deptId: res[0]
+            deptId: res[0],
+            deleteFlag: false
           },
           pageSize: 100,
           pageNum: 1
         }
         this.$axios
+          // .post('/pmbs/api/depType/listAjax', data)
           .post('/pmbs/api/depType/listAjax', data)
           .then(this.getDepTypeListSuss)
+      } else {
+        this.task_type = []
       }
     },
     // 任务类型获取回调
@@ -1345,6 +1558,35 @@ export default {
         }
         this.task_type = task_type
       }
+    },
+    // 任务类型切换
+    taskTypeChange(val) {
+      // console.log(res)
+      let data = {
+        typeId: val
+      }
+      this.$axios
+        .post('/pmbs/api/depType/show', data)
+        .then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            let data = res.data
+            let taskToNeeds = []
+            data.depNeeds.forEach(element => {
+              taskToNeeds.push({
+                needName: element.needName,
+                needDesc: element.needDesc,
+                content: '',
+                isMust: element.isMust,
+                needId: element.needId
+              })
+            })
+            this.taskToNeeds = taskToNeeds
+          }
+        })
+        .catch(res => {
+          this.drawerLoading = false
+        })
     },
     // 修改执行人
     changeDoUserName(e, list) {
@@ -1520,6 +1762,42 @@ export default {
       )
       a.click()
     },
+    // 获取文档列表
+    getTaskfilePageList() {
+      // if (!this.loading) {
+      this.loading = true
+
+      let data = {
+        proId: this.proId,
+        // taskFile: { proId: 5 }
+      }
+      this.$axios
+        .post('/pmbs/api/project/getProFileByProjectAndTask', data)
+        // .post('/pmbs/api/taskfile/getTaskfilePageList', data)
+        .then(res => {
+          console.log(res)
+          this.loading = false
+          if (res.status == 200) {
+            let data = res.data.data.proFileList
+            // for (let i = 0; i < data.length; i++) {
+            //   let element = data[i]
+            //   data[i].updateTime = this.$time(element.updateTime)
+            // }
+            // this.totalnum = res.data.totalRows
+            // // let clientIdList = this.allClientIdList
+            // // data.forEach((element, i) => {
+            // //   clientIdList.forEach(element_ => {
+            // //     if (element.clientId == element_.value) {
+            // //       data[i].clientName = element_.label
+            // //     }
+            // //   })
+            // // })
+            this.docTableData = data
+            // console.log(data)
+          }
+        })
+      // }
+    },
     // 消息提示
     messageWin(message) {
       // 成功提示
@@ -1539,37 +1817,82 @@ export default {
       // 错误提示
       this.$message.error(message)
     }
-  },
-  // 钩子函数
-  mounted() {
-    // this.widthheight()
-    // 获取页面传参
-    this.getParams()
-    this.upload()
-
-    // this.getProjectapiDetai() // 获取立项背景
-    // console.log(Date.now('2030-03-17 00:00:00'))
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 /* .project {
   background: red;
 } */
-.project_details .top {
-  /* display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center; */
-  margin-bottom: 24px;
+.project_details {
+  .top {
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  .table3 {
+    .tabs {
+      font-weight: 700;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin: 13px 0 13px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+      div {
+        margin-right: 32px;
+        height: 32px;
+        line-height: 32px;
+        color: rgba(164, 167, 170, 1);
+        box-sizing: border-box;
+        padding-bottom: 13px;
+        cursor: pointer;
+      }
+      .act {
+        border-bottom: 2px solid black;
+        color: black;
+      }
+    }
+  }
+  .table-main {
+    .tableList {
+      // height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-content: flex-start;
+      .list {
+        border: 1px solid #ddd3d3;
+        margin-bottom: 24px;
+        height: 99px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        .icon {
+          text-align: center;
+        }
+        .text {
+          .docMesg {
+            font-size: 14px;
+            color: #959595;
+          }
+        }
+        .oper {
+          i {
+            font-size: 24px;
+            margin-right: 9px;
+            cursor: pointer;
+          }
+        }
+      }
+      // .list:nth-of-type(2n){
+      //   margin-left: 30px;
+      // }
+    }
+  }
 }
-.project_details .top {
-  font-size: 13px;
-}
-.project_details .top .act >>> .el-breadcrumb__inner {
-  font-weight: bold;
-  color: #000;
-}
+
 .project_details .top .tab {
   height: 26px;
   text-align: center;
@@ -1610,6 +1933,9 @@ export default {
 }
 .project_details .tabs {
   margin-bottom: 13px;
+  button {
+    width: 80px;
+  }
 }
 .project_details .tabs .el-button--primary.is-plain {
   border-color: #ddd;
@@ -1838,9 +2164,9 @@ export default {
   box-sizing: border-box;
   padding: 0 9px;
   text-align: justify;
-  background: url('../../../../static/images/task/snowflake.png') left center
-    no-repeat;
-  background-size: 7px;
+  // background: url('/static/images/task/snowflake.png') left center
+  //   no-repeat;
+  // background-size: 7px;
 }
 .project_details .add_box .title:after {
   display: inline-block;
@@ -2003,11 +2329,17 @@ export default {
 .project_details .snow {
   box-sizing: border-box;
   padding-left: 9px;
-  background: url('../../../../static/images/task/snowflake.png') 0 center
-    no-repeat;
+  background: url('/static/images/task/snowflake.png') 0 center no-repeat;
   background-size: 7px;
 }
 .project_details .colorBlack {
   color: black;
+}
+</style>
+<style lang="scss">
+.snowflake {
+  padding: 0 9px;
+  background: url('/static/images/task/snowflake.png') left center no-repeat;
+  background-size: 7px;
 }
 </style>

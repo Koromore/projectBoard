@@ -5,7 +5,7 @@
       <el-col :span="24" class="tabs">
         <div @click="table_tab(1)" :class="[tabs_activity==1 ? 'act' : '']">业务类型</div>
         <div @click="table_tab(2)" :class="[tabs_activity==2 ? 'act' : '']">客户</div>
-        <div @click="table_tab(3)" :class="[tabs_activity==3 ? 'act' : '']">会议模板</div>
+        <!-- <div @click="table_tab(3)" :class="[tabs_activity==3 ? 'act' : '']">会议模板</div> -->
         <div @click="table_tab(4)" :class="[tabs_activity==4 ? 'act' : '']">需求模板</div>
       </el-col>
       <!--  -->
@@ -74,6 +74,7 @@
         <el-col :span="24" class="page">
           <el-pagination
             background
+            :current-page="1"
             layout="total, prev, pager, next"
             :total="businessPage.totalRows"
             @current-change="businessListPage"
@@ -114,6 +115,7 @@
         <el-col :span="24" class="page">
           <el-pagination
             background
+            :current-page="1"
             layout="total, prev, pager, next"
             :page-size="30"
             :total="clientPage"
@@ -153,6 +155,7 @@
         <el-col :span="24" class="page">
           <el-pagination
             background
+            :current-page="1"
             layout="total, prev, pager, next"
             :total="businessPage.totalRows"
             @current-change="businessListPage"
@@ -191,6 +194,7 @@
         <el-col :span="24" class="page">
           <el-pagination
             background
+            :current-page="1"
             layout="total, prev, pager, next"
             :pageSize="30"
             :total="total"
@@ -253,7 +257,7 @@
       </el-row>
     </el-drawer>
     <!--------- 抽屉新增需求模板 start --------->
-    <el-drawer :title="drawerTitle" :visible.sync="drawerDemand">
+    <el-drawer :title="drawerTitle" :visible.sync="drawerDemand" @opened="drawerDemandOpened">
       <el-row class="addDemand" v-loading="drawerLoading">
         <el-scrollbar style="height: 100%">
           <el-col :span="24" class="new_name">
@@ -263,14 +267,7 @@
             </el-col>
             <el-col :span="5" :offset="1" class="title snowflake">需求</el-col>
             <el-col :span="22" :offset="1" class="demandList">
-              <el-table
-                v-loading="loading"
-                ref="businessTable"
-                :data="depNeeds"
-                style="width: 100%"
-                height="100%"
-                border
-              >
+              <el-table :data="depNeeds" style="width: 100%" height="100%" border>
                 <el-table-column prop="name" label="需求名称">
                   <template slot-scope="scope">
                     <el-input
@@ -279,6 +276,7 @@
                       clearable
                       :disabled="disabled"
                     ></el-input>
+                    <!-- {{scope.row.needName}} -->
                   </template>
                 </el-table-column>
                 <el-table-column prop="hint" label="输入提示">
@@ -366,26 +364,20 @@ export default {
       demandList: [],
       choiceList: [
         {
-          value: '0',
+          value: 0,
           label: '可填'
         },
         {
-          value: '1',
+          value: 1,
           label: '必填'
         }
       ],
       ///////// 需求模板 /////////
+      depTypeDetail: {},
       // 新增
+      typeId: '',
       typeName: '',
-      depNeeds: [
-        {
-          deleteFlag: false,
-          initUserId: this.$store.state.user.userId,
-          needName: '', // 需求名字
-          needDesc: '', // 输入提示
-          isMust: '' // 0-可填 1-必填
-        }
-      ],
+      depNeeds: [],
       depTypeList: [],
       // 分页
       total: 0,
@@ -409,12 +401,12 @@ export default {
     }
     ///////// 业务类型列表获取 start /////////
     this.getBusinessListAjax()
-    ///////// 客户列表获取 start /////////
-    this.getClientListAjax()
-    ///////// 会议模板列表获取 start /////////
-    this.getmeetingType()
-    ///////// 需求模板列表获取 start /////////
-    this.getDepTypeList()
+    // ///////// 客户列表获取 start /////////
+    // this.getClientListAjax()
+    // ///////// 会议模板列表获取 start /////////
+    // this.getmeetingType()
+    // ///////// 需求模板列表获取 start /////////
+    // this.getDepTypeList()
   },
   // 方法
   methods: {
@@ -435,6 +427,19 @@ export default {
     // 选项卡
     table_tab(e) {
       this.tabs_activity = e
+      if (e == 1) {
+        ///////// 业务类型列表获取 start /////////
+        this.getBusinessListAjax()
+      } else if (e == 2) {
+        ///////// 客户列表获取 start /////////
+        this.getClientListAjax()
+      } else if (e == 3) {
+        ///////// 会议模板列表获取 start /////////
+        this.getmeetingType()
+      } else if (e == 4) {
+        ///////// 需求模板列表获取 start /////////
+        this.getDepTypeList()
+      }
     },
     ///////// 业务类型列表获取 start /////////
     getBusinessListAjax(data) {
@@ -525,15 +530,13 @@ export default {
       // if (data == undefined) {
       //   data = {}
       // }
-      let test = 'http://176.10.10.235:8081/pmbs_back/api/meetingType/listAjax'
-      console.log(test.indexOf('http://176.10.10.235:8081'))
       let data = {
         meetingType: {
           deleteFlag: false
         }
       }
       this.$axios
-        .post('/pmbs_back/api/meetingType/listAjax', data)
+        .post('/pmbs/api/meetingType/listAjax', data)
         .then(res => {
           // console.log(res)
           if (res.status == 200) {
@@ -568,13 +571,12 @@ export default {
       let data = {
         pageNum: this.pageNum,
         pageSize: 30,
-        depType:{
+        depType: {
           deleteFlag: false
         }
-        
       }
       this.$axios
-        .post('/pmbs_back/api/depType/listAjax', data)
+        .post('/pmbs/api/depType/listAjax', data)
         .then(res => {
           // console.log(res)
           this.loading = false
@@ -887,62 +889,90 @@ export default {
     //   this.drawerDemand = true
     //   this.drawerTitle = '新增需求模板'
     // },
-    addDemand(prm) {
-      console.log(prm)
-      this.drawerDemand = true
-      this.drawerTitle = '新增需求模板'
-      if (prm) {
-        console.log(1)
+    drawerDemandOpened() {
+      let depTypeDetail = this.depTypeDetail
+      if (depTypeDetail.typeId) {
+        this.drawerLoading = true
+        this.drawerTitle = '修改需求模板'
         let data = {
-          typeId: prm.typeId
+          typeId: depTypeDetail.typeId
         }
         this.$axios
-          .post('/pmbs_back/api/depType/show', data)
+          .post('/pmbs/api/depType/show', data)
           .then(res => {
-            console.log(res)
+            // console.log(res)
+            if (res.status == 200) {
+              let data = res.data
+              this.typeId = data.depType.typeId
+              this.typeName = data.depType.typeName
+              data.depNeeds.forEach((element, i) => {
+                let isMust = ''
+                if (element.isMust) {
+                  isMust = 1
+                } else {
+                  isMust = 0
+                }
+                this.depNeeds[i].initUserId = element.initUserId
+                this.depNeeds[i].needName = element.needName
+                this.depNeeds[i].needDesc = element.needDesc
+                this.depNeeds[i].isMust = isMust
+              })
+              this.drawerLoading = false
+              // console.log(this.depNeeds)
+            }
           })
-          .catch(res => {})
-      } else {
-        console.log(0)
+          .catch(res => {
+            this.drawerLoading = false
+          })
+      }else {
+        this.drawerTitle = '新增需求模板'
       }
+    },
+    addDemand(prm) {
+      // console.log(prm)
+      this.drawerDemand = true
+      this.depTypeDetail = prm
     },
     depTypeSave() {
       this.drawerLoading = true
       let depNeeds = this.depNeeds
       let list = []
 
-      console.log(depNeeds)
+      // console.log(depNeeds)
       depNeeds.forEach((element, i) => {
         if (element.needName) {
           // element.deleteFlag = true
           list.push(element)
         }
       })
-      console.log(list)
+      // console.log(list)
       let data = {
         depNeeds: list,
         depType: {
           deptId: this.deptId,
+          typeId: this.typeId,
           typeName: this.typeName
         }
       }
+      // console.log(data)
       if (this.typeName == '') {
         this.$message.error('信息不能为空')
-        this.drawerLoading = true
+        this.drawerLoading = false
       } else {
         this.$axios
-          .post('/pmbs_back/api/depType/save', data)
+          .post('/pmbs/api/depType/save', data)
           .then(res => {
-            this.drawerLoading = true
-            console.log(res)
+            this.drawerLoading = false
+            // console.log(res)
             if (res.status == 200) {
+              this.drawerDemand = false
               this.$message.success(res.data.msg)
               ///////// 需求模板列表获取 start /////////
               this.getDepTypeList()
             }
           })
           .catch(res => {
-            this.drawerLoading = true
+            this.drawerLoading = false
           })
       }
     },
@@ -968,7 +998,7 @@ export default {
         typeId: id
       }
       this.$axios
-        .post('/pmbs_back/api/depType/delete', data)
+        .post('/pmbs/api/depType/delete', data)
         .then(res => {
           // this.drawerLoading = true
           console.log(res)

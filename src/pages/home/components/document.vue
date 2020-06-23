@@ -96,13 +96,13 @@
         </el-col>
       </el-row>
     </div>
-    <el-col :span="24" class="tabs" v-if="userId != 152">
-      <div @click="table_tab(0)" :class="[tabs_activity==0 ? 'act' : '']">客户资料</div>
-      <div @click="table_tab(1)" :class="[tabs_activity==1 ? 'act' : '']">策划方案</div>
-      <div @click="table_tab(2)" :class="[tabs_activity==2 ? 'act' : '']">执行方案</div>
-      <div @click="table_tab(3)" :class="[tabs_activity==3 ? 'act' : '']">其他资料</div>
+    <el-col :span="24" class="tabs">
+      <div @click="table_tab(1)" :class="[tabs_activity==1 ? 'act' : '']">客户资料</div>
+      <div @click="table_tab(2)" :class="[tabs_activity==2 ? 'act' : '']">策划方案</div>
+      <div @click="table_tab(3)" :class="[tabs_activity==3 ? 'act' : '']">执行方案</div>
+      <div @click="table_tab(4)" :class="[tabs_activity==4 ? 'act' : '']">其他资料</div>
     </el-col>
-    <div class="table-main">
+    <el-col :span="24" class="table-main" v-loading="loading">
       <el-scrollbar style="width: 100%;height: 100%">
         <el-col :span="24" class="tableList">
           <el-col :span="11" v-for="(item, index) in tableData" :key="index" class="list">
@@ -127,12 +127,7 @@
           </el-col>
         </el-col>
       </el-scrollbar>
-      <el-dialog
-        title="发送人员"
-        :visible.sync="dialogVisibleSend"
-        width="30%"
-        @close="closeSend"
-      >
+      <el-dialog title="发送人员" :visible.sync="dialogVisibleSend" width="30%" @close="closeSend">
         <!-- 发送人员 start -->
         <el-col :span="16">
           <el-select
@@ -168,13 +163,13 @@
         </el-col>
         <!-- 发送人员 end -->
         <!-- {{dynamicTags0}}
-        {{dynamicTagsId}} -->
+        {{dynamicTagsId}}-->
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleSend = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisibleSend = false">确 定</el-button>
         </span>
       </el-dialog>
-    </div>
+    </el-col>
     <el-col class="paging">
       <div class="block">
         <el-pagination
@@ -286,7 +281,7 @@ export default {
       userId: this.$store.state.user.userId, // 用户ID
       deptId: this.$store.state.user.deptId, // 部门ID
       taskId: 0,
-      tabs_activity: 0,
+      tabs_activity: 1,
       openHistory: false, //控制文档历史记录侧栏状态
       editFileName: '', //修改的文件名
       clientId: '', //客户ID
@@ -438,6 +433,8 @@ export default {
       this.pageNum = 1
       this.pageNum_ = 1
       this.tabs_activity = e
+      // 获取文档列表
+      this.getTaskfilePageList()
     },
     ///////// 选项卡 end /////////
     pickerOptionsTime() {
@@ -729,7 +726,7 @@ export default {
       }
     },
     // 获取文档列表
-    getTaskfilePageList(data) {
+    getTaskfilePageList() {
       if (!this.loading) {
         this.loading = true
 
@@ -740,7 +737,10 @@ export default {
           clientId: this.clientId, //客户ID
           serviceId: this.serviceId, //
           isUsual: this.isUsual, //是否是专项
-          name: this.name //搜索的关键字
+          name: this.name, //搜索的关键字
+          taskFile: {
+            sortId: this.tabs_activity
+          }
         }
         this.$axios
           .post('/pmbs/api/taskfile/getTaskfilePageList', data)
@@ -815,9 +815,9 @@ export default {
       this.dynamicTagsId.splice(index, 1)
     },
     // 关闭弹窗
-    closeSend(){
-      this.dynamicTags0=[]
-      this.dynamicTagsId=[]
+    closeSend() {
+      this.dynamicTags0 = []
+      this.dynamicTagsId = []
     },
     // 消息提示
     messageWin(message) {
@@ -1018,7 +1018,7 @@ export default {
   line-height: 100px;
 }
 .table-main {
-  height: calc(100% - 150px);
+  height: calc(100% - 190px);
   margin-top: 13px;
 }
 .fileName {
@@ -1029,7 +1029,7 @@ export default {
   font-size: 14px;
 }
 .paging {
-  margin-top: 54px;
+  margin-top: 32px;
   text-align: center;
 }
 /*  */
@@ -1037,5 +1037,8 @@ export default {
 <style lang="scss">
 .el-select {
   width: 100%;
+}
+.table-main .el-scrollbar__wrap {
+  overflow-x: inherit;
 }
 </style>

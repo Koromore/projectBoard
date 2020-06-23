@@ -126,22 +126,43 @@
               <el-col :span="5" class="title">完成时间</el-col>
               <el-col :span="1">:</el-col>
               <el-col :span="18">{{$time(taskData.overTime)}}</el-col>
-              <el-col :span="5" class="title">需求</el-col>
-              <el-col :span="1">:</el-col>
-              <el-col :span="18">
-                <template
-                  v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
-                >
-                  <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 3, maxRows: 9}"
-                    placeholder="请输入内容"
-                    v-model="taskData.remark"
-                    maxlength="300"
-                    show-word-limit
-                  ></el-input>
-                </template>
-                <template v-else>{{taskData.remark}}</template>
+              <!-- <el-col :span="24">
+                <el-col :span="5" class="title">需求</el-col>
+                <el-col :span="1">:</el-col>
+                <el-col :span="18">
+                  <template
+                    v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
+                  >
+                    <el-input
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 9}"
+                      placeholder="请输入内容"
+                      v-model="taskData.remark"
+                      maxlength="300"
+                      show-word-limit
+                    ></el-input>
+                  </template>
+                  <template v-else>{{taskData.remark}}</template>
+                </el-col>
+              </el-col> -->
+              <el-col :span="24" v-for="(item, index) in taskData.taskToNeeds" :key="index">
+                <el-col :span="5" class="title">{{item.needName}}</el-col>
+                <el-col :span="1">:</el-col>
+                <el-col :span="18">
+                  <template
+                    v-if="taskData.doUserId == userId && taskData.status != 2 && taskData.status != 3 && taskData.status != 5"
+                  >
+                    <el-input
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 9}"
+                      placeholder="请输入内容"
+                      v-model="item.content"
+                      maxlength="300"
+                      show-word-limit
+                    ></el-input>
+                  </template>
+                  <template v-else>{{item.content}}</template>
+                </el-col>
               </el-col>
               <el-col :span="5" class="title">附件</el-col>
               <el-col :span="1">:</el-col>
@@ -581,7 +602,7 @@ export default {
     // 获取任务详情回调
     getTaskShowSuss(res) {
       this.drawerLoading = false
-      // console.log(res)
+      console.log(res)
       if (res.status == 200) {
         let data = res.data.data
         // console.log(data)

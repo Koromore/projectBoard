@@ -77,6 +77,8 @@ export default {
   mounted() {
     // test(){
     let data = {
+      createTime: '2020-06-23T02:25:24.822Z',
+      deleteFlag: true,
       depNeeds: [
         {
           createTime: {
@@ -120,20 +122,120 @@ export default {
           }
         }
       ],
-      depType: {
-        createTime: '2020-06-22T01:41:56.186Z',
-        deleteFlag: true,
-        deptId: 0,
-        typeId: 0,
-        typeName: 'string',
-        updateTime: '2020-06-22T01:41:56.186Z'
-      },
-      ids: 'string',
-      limit: 0,
-      offset: 0,
-      orderBys: 'string',
-      pageNum: 0,
-      pageSize: 0,
+      deptId: 0,
+      deptIdList: [0],
+      deptName: 'string',
+      doUserId: 0,
+      doUserName: 'string',
+      endTime: '2020-06-23T02:25:24.822Z',
+      expertTime: '2020-06-23T02:25:24.822Z',
+      faTask: 0,
+      faTaskName: 'string',
+      feedbackList: [
+        {
+          deleteFlag: true,
+          deptName: 'string',
+          feedback: 'string',
+          feedbackFileList: [
+            {
+              createTime: '2020-06-23T02:25:24.822Z',
+              deleteFlag: true,
+              feedbackId: 0,
+              fileId: 0,
+              fileName: 'string',
+              localPath: 'string',
+              suffix: 'string',
+              taskId: 0,
+              updateTime: '2020-06-23T02:25:24.822Z'
+            }
+          ],
+          feedbackId: 0,
+          feedbackUserName: 'string',
+          initUserId: 0,
+          moreTaskId: 'string',
+          nowUserId: 0,
+          proId: 0,
+          taskId: 0,
+          updateTime: '2020-06-23T02:25:24.822Z'
+        }
+      ],
+      ifUpdateStatus: true,
+      ignore: true,
+      initUserId: 0,
+      initUserName: 'string',
+      isIgnore: true,
+      listOaUser: [
+        {
+          companyId: 0,
+          companyName: 'string',
+          deleteFlag: true,
+          deptId: 0,
+          deptName: 'string',
+          email: 'string',
+          headPortrait: 'string',
+          isPass: true,
+          isSubNode: true,
+          jobDate: {
+            date: 0,
+            day: 0,
+            hours: 0,
+            minutes: 0,
+            month: 0,
+            nanos: 0,
+            seconds: 0,
+            time: 0,
+            timezoneOffset: 0,
+            year: 0
+          },
+          kqNumber: 'string',
+          layer: 0,
+          mail: 'string',
+          postId: 0,
+          postName: 'string',
+          qq: 'string',
+          realName: 'string',
+          sex: true,
+          subordinate: 0,
+          telephone: 'string',
+          unionId: 'string',
+          userId: 0,
+          userName: 'string',
+          userPwd: 'string'
+        }
+      ],
+      listUserId: [0],
+      nowUserId: 0,
+      operationDetail: 'string',
+      operationType: 0,
+      operationUserId: 0,
+      overDesc: 'string',
+      overTime: '2020-06-23T02:25:24.822Z',
+      overUserId: 0,
+      proExpertTime: '2020-06-23T02:25:24.822Z',
+      proFileList: [
+        {
+          createTime: '2020-06-23T02:25:24.822Z',
+          deleteFlag: true,
+          fileId: 0,
+          fileName: 'string',
+          isPro: 0,
+          localPath: 'string',
+          oldProFileId: 0,
+          pro: 0,
+          proIdList: [0],
+          ptId: 0,
+          sortId: 0,
+          suffix: 'string',
+          updateTime: '2020-06-23T02:25:24.822Z'
+        }
+      ],
+      proId: 0,
+      proName: 'string',
+      remark: 'string',
+      startTime: '2020-06-23T02:25:24.822Z',
+      status: 0,
+      taskId: 0,
+      taskName: 'string',
       taskToNeeds: [
         {
           content: 'string',
@@ -159,7 +261,39 @@ export default {
             year: 0
           }
         }
-      ]
+      ],
+      taskfileList: [
+        {
+          clientId: 0,
+          clientName: 'string',
+          createTime: '2020-06-23T02:25:24.822Z',
+          deleteFlag: true,
+          doUserId: 0,
+          fileId: 'string',
+          fileName: 'string',
+          initUserId: 0,
+          isHistory: 0,
+          listUserId: [0],
+          localPath: 'string',
+          nowEdition: 'string',
+          nowUserId: 0,
+          oldFileId: 'string',
+          proId: 0,
+          proName: 'string',
+          realName: 'string',
+          sortId: 0,
+          status: 0,
+          suffix: 'string',
+          taskId: 0,
+          taskName: 'string',
+          updateTime: '2020-06-23T02:25:24.822Z',
+          updateUserId: 0,
+          userName: 'string'
+        }
+      ],
+      typeId: 0,
+      typeName: 'string',
+      updateTime: '2020-06-23T02:25:24.822Z'
     }
     // rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY
     // let datatst = this.$Encrypt(JSON.stringify(data))

@@ -14,7 +14,7 @@ Vue.prototype.$axios = axios;
 Vue.use(Router)
 
 // 请求超时时间
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 20000;
 
 // axios.defaults.baseURL = process.env.API_ROOT;
 // post请求头
@@ -30,7 +30,7 @@ axios.interceptors.request.use(
       const userSign = store.state.userSign;
       token && (config.headers.token = token);
       userSign && (config.headers.userSign = userSign);
-      config.data = Encrypt(JSON.stringify(config.data))
+      // config.data = Encrypt(JSON.stringify(config.data))
     }
     // console.log(config)
     // if (config.url === '/pmbs/save') {

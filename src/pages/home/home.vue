@@ -29,7 +29,7 @@
           <!-- <div :class="[show_acti=='7'?'title act':'title']" @click="change_show(6,'resource')">
             <i class="el-icon-folder-opened"></i>
             资源
-          </div> -->
+          </div>-->
           <div
             :class="[show_acti=='1'?'title act':'title']"
             @click="change_show(1,'statistics')"
@@ -202,7 +202,10 @@
               :action="uploadUrl"
               :on-remove="handleRemove"
               :on-success="handleSuccess"
+              :on-change="proFileChange"
+              ref="addProUpload"
               :file-list="fileList"
+              :auto-upload="false"
             >
               <el-button size="mini" type="primary" v-show="disabled0">点击上传附件</el-button>
             </el-upload>
@@ -300,6 +303,21 @@
       </el-row>
     </el-drawer>
     <!--------- 抽屉添加项目 end --------->
+    <el-dialog title="文档分类" :visible.sync="docDialogVisible" width="40%">
+      <!-- <span>这是一段信息</span> -->
+      <div>
+        <el-radio-group v-model="sortId">
+          <el-radio :label="1">客户资料</el-radio>
+          <el-radio :label="2">策划方案</el-radio>
+          <el-radio :label="3">执行方案</el-radio>
+          <el-radio :label="4">其他资料</el-radio>
+        </el-radio-group>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="confirmTaskFile(0)">取 消</el-button>
+        <el-button type="primary" @click="confirmTaskFile(1)">确 定</el-button>
+      </span>
+    </el-dialog>
     <!--------- 抽屉消息面板 start --------->
     <el-drawer title="消息列表" :visible.sync="drawer2">
       <el-row class="messageBox">
@@ -550,6 +568,8 @@ export default {
       clientList: [],
       uploadUrl: '',
       fileList: [],
+      docDialogVisible: false,
+      sortId: '',
       // 新增项目时传值获取项目列表
       update: 0,
       // 统计/设置显示
@@ -1315,6 +1335,22 @@ export default {
       `
       this.uploadUrl = uploadUrl
     },
+    // 文件状态改变时
+    proFileChange(file, fileList) {
+      // console.log(file)
+      // console.log(fileList)
+      if (file.status == 'ready') {
+        this.docDialogVisible = true
+        this.sortId = ''
+      }
+    },
+    confirmTaskFile(prm) {
+      this.docDialogVisible = false
+      if (!prm) {
+        this.sortId = ''
+      }
+      this.$refs.addProUpload.submit()
+    },
     // 上传回调
     handleSuccess(res, file, fileList) {
       // console.log('上传附件成功')
@@ -1327,11 +1363,12 @@ export default {
           localPath: resData.path, //'本地路径',
           suffix: resData.fileType, //'文档后缀'
           isPro: 0, // 文档需求
+          sortId: this.sortId,
           ptId: this.proData.proId || '' //所属项目ID
         }
         listProFile.push(listProFileData)
         this.listProFile = listProFile
-        // console.log(this.listProFile)
+        console.log(this.listProFile)
       }
     },
     // 删除
@@ -2112,10 +2149,5 @@ export default {
 }
 .home .knowAdd >>> .el-select {
   width: 100%;
-}
-</style>
-<style lang="scss">
-.el-scrollbar__wrap {
-  overflow-x: inherit;
 }
 </style>
