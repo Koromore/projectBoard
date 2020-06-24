@@ -1,20 +1,20 @@
 // 获取文件格式
 export function matchType(fileName) {
   // 后缀获取
-  var suffix = '';
-  // 获取类型结果
+  var suffix = fileName;
+  // // 获取类型结果
   var result = '';
-  try {
-    var flieArr = fileName.split('.');
-    suffix = flieArr[flieArr.length - 1];
-  } catch (err) {
-    suffix = '';
-  }
-  // fileName无后缀返回 false
-  if (!suffix) {
-    result = false;
-    return result;
-  }
+  // try {
+  //   var flieArr = fileName.split('.');
+  //   suffix = flieArr[flieArr.length - 1];
+  // } catch (err) {
+  //   suffix = '';
+  // }
+  // // fileName无后缀返回 false
+  // if (!suffix) {
+  //   result = false;
+  //   return result;
+  // }
   // 图片格式
   var imglist = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
   // 进行图片匹配
@@ -34,33 +34,43 @@ export function matchType(fileName) {
     result = 'txt';
     return result;
   };
-  // 匹配 word
-  var wordlist = ['doc', 'docx'];
-  result = wordlist.some(function (item) {
+  // 匹配 office
+  let officeList = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']
+  result = officeList.some(function (item) {
     return item == suffix;
   });
   if (result) {
-    result = 'word';
+    result = 'office';
     return result;
   };
-  // 匹配 excel
-  var excelist = ['xls', 'xlsx'];
-  result = excelist.some(function (item) {
-    return item == suffix;
-  });
-  if (result) {
-    result = 'excel';
-    return result;
-  };
-  // 匹配 ppt
-  var pptlist = ['ppt','pptx'];
-  result = pptlist.some(function (item) {
-    return item == suffix;
-  });
-  if (result) {
-    result = 'ppt';
-    return result;
-  };
+  // // 匹配 word
+  // var wordlist = ['doc', 'docx'];
+  // result = wordlist.some(function (item) {
+  //   return item == suffix;
+  // });
+  // if (result) {
+  //   result = 'word';
+  //   return result;
+  // };
+  // // 匹配 excel
+  // var excelist = ['xls', 'xlsx'];
+  // result = excelist.some(function (item) {
+  //   return item == suffix;
+  // });
+  // if (result) {
+  //   result = 'excel';
+  //   return result;
+  // };
+  // // 匹配 ppt
+  // var pptlist = ['ppt', 'pptx'];
+  // result = pptlist.some(function (item) {
+  //   return item == suffix;
+  // });
+  // if (result) {
+  //   result = 'ppt';
+  //   return result;
+  // };
+
   // 匹配 pdf
   var pdflist = ['pdf'];
   result = pdflist.some(function (item) {

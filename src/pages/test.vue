@@ -77,9 +77,21 @@ export default {
   mounted() {
     // test(){
     let data = {
-      createTime: '2020-06-23T02:25:24.822Z',
+      bearName: 'string',
+      businessName: 'string',
+      clientId: 0,
+      clientName: 'string',
+      createTime: '2020-06-24T01:47:32.096Z',
+      delayReason: 'string',
       deleteFlag: true,
-      depNeeds: [
+      department: 'string',
+      endTime: '2020-06-24T01:47:32.096Z',
+      expertTime: '2020-06-24T01:47:32.096Z',
+      initUserId: 0,
+      isPro: 0,
+      isUsual: true,
+      knowUser: 'string',
+      listBear: [
         {
           createTime: {
             chronology: {
@@ -97,13 +109,10 @@ export default {
             second: 0,
             year: 0
           },
-          deleteFlag: true,
-          initUserId: 0,
-          isMust: true,
-          needDesc: 'string',
-          needId: 0,
-          needName: 'string',
-          typeId: 0,
+          deleteFlag: 0,
+          id: 0,
+          projectId: 0,
+          realName: 'string',
           updateTime: {
             chronology: {
               calendarType: 'string',
@@ -119,102 +128,385 @@ export default {
             nano: 0,
             second: 0,
             year: 0
-          }
+          },
+          userId: 0
         }
       ],
-      deptId: 0,
-      deptIdList: [0],
-      deptName: 'string',
-      doUserId: 0,
-      doUserName: 'string',
-      endTime: '2020-06-23T02:25:24.822Z',
-      expertTime: '2020-06-23T02:25:24.822Z',
-      faTask: 0,
-      faTaskName: 'string',
-      feedbackList: [
+      listDept: [
         {
+          createTime: '2020-06-24T01:47:32.096Z',
           deleteFlag: true,
+          deptCode: 'string',
+          deptId: 0,
           deptName: 'string',
-          feedback: 'string',
-          feedbackFileList: [
+          ids: [0],
+          isMaterial: true,
+          isPlatform: true,
+          isSubNode: true,
+          layer: 0,
+          listUser: [
             {
-              createTime: '2020-06-23T02:25:24.822Z',
+              companyId: 0,
+              companyName: 'string',
               deleteFlag: true,
-              feedbackId: 0,
-              fileId: 0,
-              fileName: 'string',
-              localPath: 'string',
-              suffix: 'string',
-              taskId: 0,
-              updateTime: '2020-06-23T02:25:24.822Z'
+              deptId: 0,
+              deptName: 'string',
+              email: 'string',
+              headPortrait: 'string',
+              isPass: true,
+              isSubNode: true,
+              jobDate: {
+                date: 0,
+                day: 0,
+                hours: 0,
+                minutes: 0,
+                month: 0,
+                nanos: 0,
+                seconds: 0,
+                time: 0,
+                timezoneOffset: 0,
+                year: 0
+              },
+              kqNumber: 'string',
+              layer: 0,
+              mail: 'string',
+              postId: 0,
+              postName: 'string',
+              qq: 'string',
+              realName: 'string',
+              sex: true,
+              subordinate: 0,
+              telephone: 'string',
+              unionId: 'string',
+              userId: 0,
+              userName: 'string',
+              userPwd: 'string'
             }
           ],
-          feedbackId: 0,
-          feedbackUserName: 'string',
-          initUserId: 0,
-          moreTaskId: 'string',
-          nowUserId: 0,
-          proId: 0,
-          taskId: 0,
-          updateTime: '2020-06-23T02:25:24.822Z'
+          predeptId: 0,
+          principal: 'string',
+          principalUserId: 0,
+          projectList: [{}],
+          taskList: [
+            {
+              createTime: '2020-06-24T01:47:32.097Z',
+              deleteFlag: true,
+              depNeeds: [
+                {
+                  createTime: {
+                    chronology: {
+                      calendarType: 'string',
+                      id: 'string'
+                    },
+                    dayOfMonth: 0,
+                    dayOfWeek: 'MONDAY',
+                    dayOfYear: 0,
+                    hour: 0,
+                    minute: 0,
+                    month: 'JANUARY',
+                    monthValue: 0,
+                    nano: 0,
+                    second: 0,
+                    year: 0
+                  },
+                  deleteFlag: true,
+                  initUserId: 0,
+                  isMust: true,
+                  needDesc: 'string',
+                  needId: 0,
+                  needName: 'string',
+                  typeId: 0,
+                  updateTime: {
+                    chronology: {
+                      calendarType: 'string',
+                      id: 'string'
+                    },
+                    dayOfMonth: 0,
+                    dayOfWeek: 'MONDAY',
+                    dayOfYear: 0,
+                    hour: 0,
+                    minute: 0,
+                    month: 'JANUARY',
+                    monthValue: 0,
+                    nano: 0,
+                    second: 0,
+                    year: 0
+                  }
+                }
+              ],
+              deptId: 0,
+              deptIdList: [0],
+              deptName: 'string',
+              doUserId: 0,
+              doUserName: 'string',
+              endTime: '2020-06-24T01:47:32.097Z',
+              expertTime: '2020-06-24T01:47:32.097Z',
+              faTask: 0,
+              faTaskName: 'string',
+              feedbackList: [
+                {
+                  deleteFlag: true,
+                  deptName: 'string',
+                  feedback: 'string',
+                  feedbackFileList: [
+                    {
+                      createTime: '2020-06-24T01:47:32.097Z',
+                      deleteFlag: true,
+                      feedbackId: 0,
+                      fileId: 0,
+                      fileName: 'string',
+                      localPath: 'string',
+                      suffix: 'string',
+                      taskId: 0,
+                      updateTime: '2020-06-24T01:47:32.097Z'
+                    }
+                  ],
+                  feedbackId: 0,
+                  feedbackUserName: 'string',
+                  initUserId: 0,
+                  moreTaskId: 'string',
+                  nowUserId: 0,
+                  proId: 0,
+                  taskId: 0,
+                  updateTime: '2020-06-24T01:47:32.097Z'
+                }
+              ],
+              ifUpdateStatus: true,
+              ignore: true,
+              initUserId: 0,
+              initUserName: 'string',
+              isIgnore: true,
+              listOaUser: [
+                {
+                  companyId: 0,
+                  companyName: 'string',
+                  deleteFlag: true,
+                  deptId: 0,
+                  deptName: 'string',
+                  email: 'string',
+                  headPortrait: 'string',
+                  isPass: true,
+                  isSubNode: true,
+                  jobDate: {
+                    date: 0,
+                    day: 0,
+                    hours: 0,
+                    minutes: 0,
+                    month: 0,
+                    nanos: 0,
+                    seconds: 0,
+                    time: 0,
+                    timezoneOffset: 0,
+                    year: 0
+                  },
+                  kqNumber: 'string',
+                  layer: 0,
+                  mail: 'string',
+                  postId: 0,
+                  postName: 'string',
+                  qq: 'string',
+                  realName: 'string',
+                  sex: true,
+                  subordinate: 0,
+                  telephone: 'string',
+                  unionId: 'string',
+                  userId: 0,
+                  userName: 'string',
+                  userPwd: 'string'
+                }
+              ],
+              listUserId: [0],
+              nowUserId: 0,
+              operationDetail: 'string',
+              operationType: 0,
+              operationUserId: 0,
+              overDesc: 'string',
+              overTime: '2020-06-24T01:47:32.097Z',
+              overUserId: 0,
+              proExpertTime: '2020-06-24T01:47:32.097Z',
+              proFileList: [
+                {
+                  createTime: '2020-06-24T01:47:32.097Z',
+                  deleteFlag: true,
+                  fileId: 0,
+                  fileName: 'string',
+                  isPro: 0,
+                  localPath: 'string',
+                  oldProFileId: 0,
+                  pro: 0,
+                  proIdList: [0],
+                  ptId: 0,
+                  sortId: 0,
+                  suffix: 'string',
+                  updateTime: '2020-06-24T01:47:32.097Z'
+                }
+              ],
+              proId: 0,
+              proName: 'string',
+              remark: 'string',
+              startTime: '2020-06-24T01:47:32.097Z',
+              status: 0,
+              taskId: 0,
+              taskName: 'string',
+              taskToNeeds: [
+                {
+                  content: 'string',
+                  deleteFlag: true,
+                  id: 0,
+                  needId: 0,
+                  needName: 'string',
+                  taskId: 0,
+                  updateTime: {
+                    chronology: {
+                      calendarType: 'string',
+                      id: 'string'
+                    },
+                    dayOfMonth: 0,
+                    dayOfWeek: 'MONDAY',
+                    dayOfYear: 0,
+                    hour: 0,
+                    minute: 0,
+                    month: 'JANUARY',
+                    monthValue: 0,
+                    nano: 0,
+                    second: 0,
+                    year: 0
+                  }
+                }
+              ],
+              taskfileList: [
+                {
+                  clientId: 0,
+                  clientName: 'string',
+                  createTime: '2020-06-24T01:47:32.097Z',
+                  deleteFlag: true,
+                  doUserId: 0,
+                  fileId: 'string',
+                  fileName: 'string',
+                  initUserId: 0,
+                  isHistory: 0,
+                  listUserId: [0],
+                  localPath: 'string',
+                  nowEdition: 'string',
+                  nowUserId: 0,
+                  oldFileId: 'string',
+                  proId: 0,
+                  proName: 'string',
+                  realName: 'string',
+                  sortId: 0,
+                  status: 0,
+                  suffix: 'string',
+                  taskId: 0,
+                  taskName: 'string',
+                  updateTime: '2020-06-24T01:47:32.097Z',
+                  updateUserId: 0,
+                  userName: 'string'
+                }
+              ],
+              typeId: 0,
+              typeName: 'string',
+              updateTime: '2020-06-24T01:47:32.097Z'
+            }
+          ],
+          updateTime: '2020-06-24T01:47:32.097Z'
         }
       ],
-      ifUpdateStatus: true,
-      ignore: true,
-      initUserId: 0,
-      initUserName: 'string',
-      isIgnore: true,
-      listOaUser: [
+      listImplementer: [
         {
-          companyId: 0,
-          companyName: 'string',
+          createTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          id: 0,
+          proId: 0,
+          realName: 'string',
+          updateTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
+          userId: 0
+        }
+      ],
+      listKnowUser: [
+        {
+          captcha: 'string',
           deleteFlag: true,
           deptId: 0,
           deptName: 'string',
-          email: 'string',
-          headPortrait: 'string',
-          isPass: true,
-          isSubNode: true,
-          jobDate: {
-            date: 0,
-            day: 0,
-            hours: 0,
-            minutes: 0,
-            month: 0,
-            nanos: 0,
-            seconds: 0,
-            time: 0,
-            timezoneOffset: 0,
-            year: 0
-          },
-          kqNumber: 'string',
-          layer: 0,
-          mail: 'string',
+          headImg: 'string',
+          ids: [0],
+          loginName: 'string',
+          password: 'string',
           postId: 0,
           postName: 'string',
-          qq: 'string',
           realName: 'string',
-          sex: true,
-          subordinate: 0,
-          telephone: 'string',
-          unionId: 'string',
+          roleId: 0,
+          roleList: [
+            {
+              id: 0,
+              name: 'string',
+              permissionSet: ['string'],
+              permissions: [
+                {
+                  childPerms: 'string',
+                  id: 0,
+                  name: 'string',
+                  permList: [{}],
+                  pid: 0,
+                  token: 'string'
+                }
+              ],
+              pids: 'string',
+              token: 'string'
+            }
+          ],
+          updateTime: {
+            chronology: {
+              calendarType: 'string',
+              id: 'string'
+            },
+            dayOfMonth: 0,
+            dayOfWeek: 'MONDAY',
+            dayOfYear: 0,
+            hour: 0,
+            minute: 0,
+            month: 'JANUARY',
+            monthValue: 0,
+            nano: 0,
+            second: 0,
+            year: 0
+          },
           userId: 0,
-          userName: 'string',
-          userPwd: 'string'
+          userName: 'string'
         }
       ],
-      listUserId: [0],
-      nowUserId: 0,
-      operationDetail: 'string',
-      operationType: 0,
-      operationUserId: 0,
-      overDesc: 'string',
-      overTime: '2020-06-23T02:25:24.822Z',
-      overUserId: 0,
-      proExpertTime: '2020-06-23T02:25:24.822Z',
-      proFileList: [
+      listProFile: [
         {
-          createTime: '2020-06-23T02:25:24.822Z',
+          createTime: '2020-06-24T01:47:32.097Z',
           deleteFlag: true,
           fileId: 0,
           fileName: 'string',
@@ -226,74 +518,253 @@ export default {
           ptId: 0,
           sortId: 0,
           suffix: 'string',
-          updateTime: '2020-06-23T02:25:24.822Z'
+          updateTime: '2020-06-24T01:47:32.097Z'
         }
       ],
-      proId: 0,
-      proName: 'string',
-      remark: 'string',
-      startTime: '2020-06-23T02:25:24.822Z',
-      status: 0,
-      taskId: 0,
-      taskName: 'string',
-      taskToNeeds: [
+      listTask: [
         {
-          content: 'string',
+          createTime: '2020-06-24T01:47:32.098Z',
           deleteFlag: true,
-          id: 0,
-          needId: 0,
-          needName: 'string',
-          taskId: 0,
-          updateTime: {
-            chronology: {
-              calendarType: 'string',
-              id: 'string'
-            },
-            dayOfMonth: 0,
-            dayOfWeek: 'MONDAY',
-            dayOfYear: 0,
-            hour: 0,
-            minute: 0,
-            month: 'JANUARY',
-            monthValue: 0,
-            nano: 0,
-            second: 0,
-            year: 0
-          }
-        }
-      ],
-      taskfileList: [
-        {
-          clientId: 0,
-          clientName: 'string',
-          createTime: '2020-06-23T02:25:24.822Z',
-          deleteFlag: true,
+          depNeeds: [
+            {
+              createTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
+                },
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
+              },
+              deleteFlag: true,
+              initUserId: 0,
+              isMust: true,
+              needDesc: 'string',
+              needId: 0,
+              needName: 'string',
+              typeId: 0,
+              updateTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
+                },
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
+              }
+            }
+          ],
+          deptId: 0,
+          deptIdList: [0],
+          deptName: 'string',
           doUserId: 0,
-          fileId: 'string',
-          fileName: 'string',
+          doUserName: 'string',
+          endTime: '2020-06-24T01:47:32.098Z',
+          expertTime: '2020-06-24T01:47:32.098Z',
+          faTask: 0,
+          faTaskName: 'string',
+          feedbackList: [
+            {
+              deleteFlag: true,
+              deptName: 'string',
+              feedback: 'string',
+              feedbackFileList: [
+                {
+                  createTime: '2020-06-24T01:47:32.098Z',
+                  deleteFlag: true,
+                  feedbackId: 0,
+                  fileId: 0,
+                  fileName: 'string',
+                  localPath: 'string',
+                  suffix: 'string',
+                  taskId: 0,
+                  updateTime: '2020-06-24T01:47:32.098Z'
+                }
+              ],
+              feedbackId: 0,
+              feedbackUserName: 'string',
+              initUserId: 0,
+              moreTaskId: 'string',
+              nowUserId: 0,
+              proId: 0,
+              taskId: 0,
+              updateTime: '2020-06-24T01:47:32.098Z'
+            }
+          ],
+          ifUpdateStatus: true,
+          ignore: true,
           initUserId: 0,
-          isHistory: 0,
+          initUserName: 'string',
+          isIgnore: true,
+          listOaUser: [
+            {
+              companyId: 0,
+              companyName: 'string',
+              deleteFlag: true,
+              deptId: 0,
+              deptName: 'string',
+              email: 'string',
+              headPortrait: 'string',
+              isPass: true,
+              isSubNode: true,
+              jobDate: {
+                date: 0,
+                day: 0,
+                hours: 0,
+                minutes: 0,
+                month: 0,
+                nanos: 0,
+                seconds: 0,
+                time: 0,
+                timezoneOffset: 0,
+                year: 0
+              },
+              kqNumber: 'string',
+              layer: 0,
+              mail: 'string',
+              postId: 0,
+              postName: 'string',
+              qq: 'string',
+              realName: 'string',
+              sex: true,
+              subordinate: 0,
+              telephone: 'string',
+              unionId: 'string',
+              userId: 0,
+              userName: 'string',
+              userPwd: 'string'
+            }
+          ],
           listUserId: [0],
-          localPath: 'string',
-          nowEdition: 'string',
           nowUserId: 0,
-          oldFileId: 'string',
+          operationDetail: 'string',
+          operationType: 0,
+          operationUserId: 0,
+          overDesc: 'string',
+          overTime: '2020-06-24T01:47:32.098Z',
+          overUserId: 0,
+          proExpertTime: '2020-06-24T01:47:32.098Z',
+          proFileList: [
+            {
+              createTime: '2020-06-24T01:47:32.098Z',
+              deleteFlag: true,
+              fileId: 0,
+              fileName: 'string',
+              isPro: 0,
+              localPath: 'string',
+              oldProFileId: 0,
+              pro: 0,
+              proIdList: [0],
+              ptId: 0,
+              sortId: 0,
+              suffix: 'string',
+              updateTime: '2020-06-24T01:47:32.098Z'
+            }
+          ],
           proId: 0,
           proName: 'string',
-          realName: 'string',
-          sortId: 0,
+          remark: 'string',
+          startTime: '2020-06-24T01:47:32.098Z',
           status: 0,
-          suffix: 'string',
           taskId: 0,
           taskName: 'string',
-          updateTime: '2020-06-23T02:25:24.822Z',
-          updateUserId: 0,
-          userName: 'string'
+          taskToNeeds: [
+            {
+              content: 'string',
+              deleteFlag: true,
+              id: 0,
+              needId: 0,
+              needName: 'string',
+              taskId: 0,
+              updateTime: {
+                chronology: {
+                  calendarType: 'string',
+                  id: 'string'
+                },
+                dayOfMonth: 0,
+                dayOfWeek: 'MONDAY',
+                dayOfYear: 0,
+                hour: 0,
+                minute: 0,
+                month: 'JANUARY',
+                monthValue: 0,
+                nano: 0,
+                second: 0,
+                year: 0
+              }
+            }
+          ],
+          taskfileList: [
+            {
+              clientId: 0,
+              clientName: 'string',
+              createTime: '2020-06-24T01:47:32.098Z',
+              deleteFlag: true,
+              doUserId: 0,
+              fileId: 'string',
+              fileName: 'string',
+              initUserId: 0,
+              isHistory: 0,
+              listUserId: [0],
+              localPath: 'string',
+              nowEdition: 'string',
+              nowUserId: 0,
+              oldFileId: 'string',
+              proId: 0,
+              proName: 'string',
+              realName: 'string',
+              sortId: 0,
+              status: 0,
+              suffix: 'string',
+              taskId: 0,
+              taskName: 'string',
+              updateTime: '2020-06-24T01:47:32.098Z',
+              updateUserId: 0,
+              userName: 'string'
+            }
+          ],
+          typeId: 0,
+          typeName: 'string',
+          updateTime: '2020-06-24T01:47:32.098Z'
         }
       ],
-      typeId: 0,
-      typeName: 'string',
-      updateTime: '2020-06-23T02:25:24.822Z'
+      listUserId: [0],
+      manager: 0,
+      managerName: 'string',
+      nowUserId: 0,
+      operationDetail: 'string',
+      operationType: 0,
+      operationUserId: 0,
+      overTime: '2020-06-24T01:47:32.098Z',
+      pasproName: 'string',
+      pasprojectId: 0,
+      proId: 0,
+      proName: 'string',
+      projectType: 'string',
+      realName: 'string',
+      remark: 'string',
+      serviceId: 0,
+      sortId: 0,
+      startTime: '2020-06-24T01:47:32.098Z',
+      status: 0,
+      taskName: 'string',
+      updateTime: '2020-06-24T01:47:32.098Z',
+      userId: 0,
+      usual: true
     }
     // rZmk8WfCzgCsPtpt9PJwa28CrGpEt8nqm9LBng4YBtJEc7kxqe…GPa3Vi0y8Kihiwj4mFsVqXE2qCMOj0Vzi7il4CSRNwKOvX8EY
     // let datatst = this.$Encrypt(JSON.stringify(data))

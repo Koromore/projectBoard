@@ -518,6 +518,9 @@ export default {
       restaurants: [], // 用户列表
       deptList: [], // 部门列表
       userList: [], // 用户列表
+      popObj: {
+        userList: []
+      },
       radio2: '1', // 项目经理,执行部门 选择
       disabled1: false,
       disabled2: false,
@@ -628,6 +631,12 @@ export default {
       },
       // loading动画
       drawerLoading: false
+    }
+  },
+  //依赖注入传值
+  provide() {
+    return {
+      pop: this.popObj
     }
   },
   // 侦听器
@@ -1461,6 +1470,7 @@ export default {
           userList.push(userListData)
         }
         this.userList = userList
+        this.popObj.userList = userList
         this.restaurants = userList
         // console.log(restaurants)
       }

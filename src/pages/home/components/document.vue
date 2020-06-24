@@ -122,13 +122,13 @@
               ></i>
               <i class="el-icon-download" @click="download(item)"></i>
               <i class="el-icon-time" @click="lookHistory(index,item)"></i>
-              <i class="el-icon-s-promotion" @click="dialogVisibleSend = true"></i>
+              <i class="el-icon-s-promotion" @click="openDocForward"></i>
             </el-col>
           </el-col>
         </el-col>
       </el-scrollbar>
-      <el-dialog title="发送人员" :visible.sync="dialogVisibleSend" width="30%" @close="closeSend">
-        <!-- 发送人员 start -->
+      <!-- <el-dialog title="发送人员" :visible.sync="dialogVisibleSend" width="30%" @close="closeSend">
+        发送人员 start
         <el-col :span="16">
           <el-select
             v-model="add_list"
@@ -146,7 +146,6 @@
               :disabled="item.disabled"
             ></el-option>
           </el-select>
-          <!-- {{add_list}} -->
         </el-col>
         <el-col :span="6" :offset="2">
           <el-button size="small" type="primary" @click="showInput">添加</el-button>
@@ -161,14 +160,12 @@
             class="know_pop_list"
           >{{tag}}</el-tag>
         </el-col>
-        <!-- 发送人员 end -->
-        <!-- {{dynamicTags0}}
-        {{dynamicTagsId}}-->
+        发送人员 end
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleSend = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisibleSend = false">确 定</el-button>
         </span>
-      </el-dialog>
+      </el-dialog> -->
     </el-col>
     <el-col class="paging">
       <div class="block">
@@ -239,6 +236,9 @@
     <!--------- 任务详情 start --------->
     <taskDetail :taskId="taskId" @closeDrawer="closeDrawer"></taskDetail>
     <!--------- 任务详情 end --------->
+    <!--------- 任务详情 start --------->
+    <docForward :dialogDocFor="dialogDocFor"></docForward>
+    <!--------- 任务详情 end --------->
     <!-- 重新上传弹框 -->
     <el-dialog :close="fileClose" title="修改附件" :visible.sync="dialogFileVisible">
       <div>
@@ -261,7 +261,8 @@
   </div>
 </template>
 <script>
-import taskDetail from '@/pages/template/taskDetail'
+import taskDetail from '@/pages/template/taskDetail' // 引入任务详情组件
+import docForward from '@/pages/template/docForward' // 引入转发文档组件
 
 export default {
   name: 'document',
@@ -274,7 +275,8 @@ export default {
     userList: Array
   },
   components: {
-    taskDetail
+    taskDetail,
+    docForward
   },
   data() {
     return {
@@ -381,13 +383,8 @@ export default {
           address: '上海市普陀区金沙江路 1518 弄'
         }
       ],
-      // dialogVisibleSend
-      dialogVisibleSend: false,
-      // 知晓人
-      add_list: '',
-      add_list0: '',
-      dynamicTags0: [], // 知晓人
-      dynamicTagsId: [] // 知晓人
+      
+      dialogDocFor: 0
     }
   },
   // 侦听器
@@ -767,7 +764,7 @@ export default {
           })
         })
         this.tableData = data
-        console.log(data)
+        // console.log(data)
       }
     },
     // 关闭任务详情回调
@@ -778,46 +775,11 @@ export default {
         this.getParams()
       }
     },
-    // 添加知晓人标签
-    showInput() {
-      let list = this.dynamicTags0
-      let listId = this.dynamicTagsId
-      let add_list = this.add_list
-      let userList = this.userList
-      let cf = true
-      if (add_list != '') {
-        let add_list_data = ''
-        for (let i = 0; i < userList.length; i++) {
-          const element = userList[i]
-          if (element.value == add_list) {
-            add_list_data = element.label
-          }
-        }
-        for (let i = 0; i < list.length; i++) {
-          const element = list[i]
-          if (element == add_list_data) {
-            this.messageWarning('请勿重复添加')
-            cf = false
-          }
-        }
-        if (cf) {
-          list.push(add_list_data)
-          listId.push(add_list)
-          this.add_list = ''
-        }
-      } else if (add_list == '') {
-        this.messageWarning('信息为空')
-      }
-    },
-    // 删除知晓人标签
-    handleClose(tag, index) {
-      this.dynamicTags0.splice(this.dynamicTags0.indexOf(tag), 1)
-      this.dynamicTagsId.splice(index, 1)
-    },
-    // 关闭弹窗
-    closeSend() {
-      this.dynamicTags0 = []
-      this.dynamicTagsId = []
+    
+    
+    openDocForward(){
+      this.dialogDocFor += 1
+      console.log(this.dialogDocFor)
     },
     // 消息提示
     messageWin(message) {

@@ -326,7 +326,8 @@
         </el-col>
       </el-col>
       <!--------- 项目需求 end --------->
-      <el-col :span="24" class="table table3" v-show="tabs_activity == 3" v-loading="loading">
+      <!--------- 项目文档 start --------->
+      <el-col :span="24" class="table table3" v-show="tabs_activity == 3">
         <el-col :span="24" class="tabs">
           <div @click="docTable_tab(1)" :class="[docTabs_activity==1 ? 'act' : '']">客户资料</div>
           <div @click="docTable_tab(2)" :class="[docTabs_activity==2 ? 'act' : '']">策划方案</div>
@@ -338,11 +339,15 @@
             <el-col :span="24" class="tableList">
               <el-col :span="11" v-for="(item, index) in docTableData" :key="index" class="list">
                 <el-col :span="4" class="icon">
+                  <!-- <img src="static/images/icon/word.png" alt srcset /> -->
+                  <!-- {{matchType(item.suffix)}} -->
                   <img src="static/images/icon/word.png" alt srcset />
+                  <!-- <img src="static/images/icon/word.png" alt srcset />
+                  <img src="static/images/icon/word.png" alt srcset /> -->
                 </el-col>
                 <el-col :span="10" class="text">
                   <el-col :span="24" class="docName">{{item.fileName}}</el-col>
-                  <el-col :span="24" class="docMesg">{{item.realName}} 更新于{{item.updateTime}}</el-col>
+                  <el-col :span="24" class="docMesg">{{item.realName}} 更新于{{$date(item.updateTime)}}</el-col>
                 </el-col>
                 <el-col :span="10" class="oper">
                   <!-- <i class="el-icon-view"></i>
@@ -353,12 +358,12 @@
                   ></i>
                   <i class="el-icon-download" @click="download(item)"></i>
                   <i class="el-icon-time" @click="lookHistory(index,item)"></i>
-                  <i class="el-icon-s-promotion" @click="dialogVisibleSend = true"></i> -->
-                  <i class="el-icon-view" @click="preview(item.localPath)"></i>
+                  <i class="el-icon-s-promotion" @click="dialogVisibleSend = true"></i>-->
+                  <i class="el-icon-view" @click="preview(item.localPath, item.suffix)"></i>
                   <!-- <i class="el-icon-refresh"></i> -->
                   <i class="el-icon-download" @click="download(item)"></i>
                   <!-- <i class="el-icon-time"></i> -->
-                  <i class="el-icon-s-promotion" ></i>
+                  <i class="el-icon-s-promotion"></i>
                 </el-col>
               </el-col>
             </el-col>
@@ -415,6 +420,7 @@
           </div>
         </el-col>-->
       </el-col>
+      <!--------- 项目文档 end --------->
       <!--------- 抽屉创建任务 --------->
       <el-drawer title="创建任务" :visible.sync="drawer1" @close="addTaskClose">
         <el-scrollbar style="height: 100%">
@@ -676,11 +682,26 @@
       <!--------- 任务详情抽屉 start --------->
       <taskDetail :taskId="taskId" @closeDrawer="closeDrawer"></taskDetail>
       <!--------- 任务详情抽屉 end --------->
+
+      <!-- 图片预览 start -->
+      <el-dialog
+      title="预览"
+      :visible.sync="imgDialogVisible"
+      width="80%">
+      <div class="previewImage">
+        <img :src="previewImage" alt="">
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="imgDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 图片预览 end -->
     </el-row>
   </div>
 </template>
 <script>
-import {preview} from "@/utils/preview";// 引入文件预览方法
+import { preview } from '@/utils/preview' // 引入文件预览方法
+import { matchType } from '@/utils/matchType' // 引入文件格式判断方法
 import taskDetail from '@/pages/template/taskDetail'
 
 export default {
@@ -795,7 +816,9 @@ export default {
       //   proExpertTime: ''
       // }
       // 文档列表
-      docTableData: []
+      docTableData: [],
+      imgDialogVisible: false, // 图片预览
+      previewImage: ''
     }
   },
   // 侦听器
@@ -830,16 +853,13 @@ export default {
     // 获取页面传参
     this.getParams()
     this.upload()
-
-    // 获取文档列表
-    this.getTaskfilePageList()
-
     // this.getProjectapiDetai() // 获取立项背景
     // console.log(Date.now('2030-03-17 00:00:00'))
   },
   // 方法
   methods: {
     preview,
+    matchType,
     pickerOptionsTime() {
       let expertTime = this.proExpertTime
       this.pickerOptions = {
@@ -924,11 +944,16 @@ export default {
       } else if (e == 2) {
         let proId = this.proId
         this.getProjectShowDetail(proId)
+      } else if (e == 3) {
+        // 获取文档列表
+        this.getTaskfilePageList()
       }
     },
     // 文档选项卡
     docTable_tab(e) {
       this.docTabs_activity = e
+      // 获取文档列表
+      this.getTaskfilePageList()
       // if (e == 1) {
       //   this.getParams()
       // } else if (e == 2) {
@@ -1768,7 +1793,9 @@ export default {
       this.loading = true
 
       let data = {
-        proId: this.proId,
+        nowUserId: this.userId,
+        sortId: this.docTabs_activity,
+        proId: this.proId
         // taskFile: { proId: 5 }
       }
       this.$axios
@@ -1825,6 +1852,9 @@ export default {
   background: red;
 } */
 .project_details {
+  .previewImage{
+    text-align: center;
+  }
   .top {
     margin-bottom: 24px;
     font-size: 13px;
